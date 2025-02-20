@@ -6,37 +6,47 @@ import {
   Navigate,
 } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
-import ProtectedRoutes from "./components/ProtectedRoutes";
+import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/Login";
 import UserConsole from "./pages/UserConsole";
 import AdminDashboard from "./pages/AdminDashboard";
+import SessionAlert from "./components/SessionAlert";
+
+function AppContent() {
+  return (
+    <>
+      <SessionAlert />
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route
+          path="/user-console"
+          element={
+            <ProtectedRoute allowedRole="user">
+              <UserConsole />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin-dashboard"
+          element={
+            <ProtectedRoute allowedRole="admin">
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </>
+  );
+}
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route
-            path="/user-console"
-            element={
-              <ProtectedRoutes allowedRole="user">
-                <UserConsole />
-              </ProtectedRoutes>
-            }
-          />
-          <Route
-            path="/admin-dashboard"
-            element={
-              <ProtectedRoutes allowedRole="admin">
-                <AdminDashboard />
-              </ProtectedRoutes>
-            }
-          />
-          <Route path="/" element={<Navigate to="/login" replace />} />
-        </Routes>
-      </Router>
-    </AuthProvider>
+    <Router>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </Router>
   );
 }
 
