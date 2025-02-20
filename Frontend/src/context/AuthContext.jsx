@@ -1,34 +1,21 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { isTokenExpired, updateTokenActivity } from "../utils/auth";
+import { isTokenExpired } from "../utils/auth";
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [sessionMessage, setSessionMessage] = useState("");
-  const navigate = useNavigate();
-
-  const showSessionExpiredMessage = (reason) => {
-    setSessionMessage(reason);
-    setTimeout(() => setSessionMessage(""), 5000); // Clear message after 5 seconds
-  };
 
   // Function to check token expiration and clear if expired
   const checkAndClearExpiredToken = () => {
     const token = localStorage.getItem("token");
-    if (token) {
-      const { expired, reason } = isTokenExpired(token);
-      if (expired) {
-        // Token is expired, clear everything
-        setUser(null);
-        localStorage.removeItem("token");
-        localStorage.removeItem("userInfo");
-        showSessionExpiredMessage(reason);
-        navigate("/login");
-        return true;
-      }
+    if (token && isTokenExpired(token)) {
+      // Token is expired, clear everything
+      setUser(null);
+      localStorage.removeItem("token");
+      localStorage.removeItem("userInfo");
+      return true;
     }
     return false;
   };
@@ -50,26 +37,9 @@ export const AuthProvider = ({ children }) => {
       checkAndClearExpiredToken();
     }, 60000); // Check every minute
 
-    // Set up activity listeners
-    const activityEvents = ["mousedown", "keydown", "scroll", "touchstart"];
-    const handleActivity = () => {
-      if (user) {
-        updateTokenActivity();
-      }
-    };
-
-    activityEvents.forEach((event) => {
-      window.addEventListener(event, handleActivity);
-    });
-
-    // Cleanup interval and event listeners on unmount
-    return () => {
-      clearInterval(interval);
-      activityEvents.forEach((event) => {
-        window.removeEventListener(event, handleActivity);
-      });
-    };
-  }, [user, navigate]);
+    // Cleanup interval on unmount
+    return () => clearInterval(interval);
+  }, []);
 
   const login = (userData, token) => {
     setUser(userData);
@@ -88,7 +58,7 @@ export const AuthProvider = ({ children }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, sessionMessage }}>
+    <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

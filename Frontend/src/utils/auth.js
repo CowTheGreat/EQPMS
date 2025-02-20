@@ -5,8 +5,8 @@ const generateToken = (user) => {
     JSON.stringify({
       id: Math.random().toString(36).substr(2, 9),
       role: user.role,
-      exp: Date.now() + 15 * 60 * 1000, // 15 minutes expiration
-      lastActivity: Date.now(),
+      exp: Date.now() + 2 * 60 * 60 * 1000,
+      //   exp: Date.now() + 5000,
     })
   );
 
@@ -16,36 +16,10 @@ const generateToken = (user) => {
 const isTokenExpired = (token) => {
   try {
     const decodedToken = JSON.parse(atob(token));
-    const now = Date.now();
-
-    // Check if token has expired
-    if (decodedToken.exp <= now) {
-      return { expired: true, reason: "Token has expired" };
-    }
-
-    // Check for inactivity (15 minutes)
-    const inactivityPeriod = now - decodedToken.lastActivity;
-    if (inactivityPeriod > 15 * 60 * 1000) {
-      return { expired: true, reason: "Session expired due to inactivity" };
-    }
-
-    return { expired: false, reason: null };
+    return decodedToken.exp <= Date.now();
   } catch (error) {
-    return { expired: true, reason: "Invalid token" };
+    return true; // If token can't be decoded, consider it expired
   }
 };
 
-const updateTokenActivity = () => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    try {
-      const decodedToken = JSON.parse(atob(token));
-      decodedToken.lastActivity = Date.now();
-      localStorage.setItem("token", btoa(JSON.stringify(decodedToken)));
-    } catch (error) {
-      console.error("Error updating token activity:", error);
-    }
-  }
-};
-
-export { generateToken, isTokenExpired, updateTokenActivity };
+export { generateToken, isTokenExpired };
