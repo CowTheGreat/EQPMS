@@ -62,8 +62,10 @@ def login(user: LoginRequest):
         if not db_user:
             raise HTTPException(status_code=401, detail="Invalid credentials")
 
-        # If password_changed = 0, force user to change password
-        if db_user["password_changed"] == 0:
+        # Ensure password_changed is treated as an integer
+        password_changed = int(db_user["password_changed"])
+
+        if password_changed == 0:
             return {"force_password_change": True}
 
         # Generate JWT Token

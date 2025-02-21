@@ -32,7 +32,7 @@ const Login = () => {
         throw new Error(data.detail || "Login failed");
       }
 
-      if (data.force_password_change) {
+      if (Boolean(data.force_password_change)) {
         navigate("/change-password", { state: { id: credentials.id } });
         return;
       }
