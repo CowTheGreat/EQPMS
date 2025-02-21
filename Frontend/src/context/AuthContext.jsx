@@ -1,73 +1,43 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { isTokenExpired } from "../utils/auth";
+import { createContext, useContext, useState, useEffect } from "react";
 
-const AuthContext = createContext(null);
+const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  // Function to check token expiration and clear if expired
-  const checkAndClearExpiredToken = () => {
-    const token = localStorage.getItem("token");
-    if (token && isTokenExpired(token)) {
-      // Token is expired, clear everything
-      setUser(null);
-      localStorage.removeItem("token");
-      localStorage.removeItem("userInfo");
-      return true;
-    }
-    return false;
-  };
-
-  useEffect(() => {
-    // Check if there's a token in localStorage on initial load
-    const token = localStorage.getItem("token");
-    if (token) {
-      if (!checkAndClearExpiredToken()) {
-        // Token is valid, set user info
-        const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-        setUser(userInfo);
-      }
-    }
-    setLoading(false);
-
-    // Set up interval to check token expiration every minute
-    const interval = setInterval(() => {
-      checkAndClearExpiredToken();
-    }, 60000); // Check every minute
-
-    // Cleanup interval on unmount
-    return () => clearInterval(interval);
-  }, []);
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
 
   const login = (userData, token) => {
     setUser(userData);
+    localStorage.setItem("user", JSON.stringify(userData));
     localStorage.setItem("token", token);
-    localStorage.setItem("userInfo", JSON.stringify(userData));
   };
 
   const logout = () => {
     setUser(null);
+    localStorage.removeItem("user");
     localStorage.removeItem("token");
-    localStorage.removeItem("userInfo");
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const updatePasswordChanged = () => {
+    setUser((prevUser) => {
+      if (!prevUser) return null; // Prevent crashes if user is null
+      const updatedUser = { ...prevUser, passwordChanged: true };
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      return updatedUser;
+    });
+  };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, login, logout, updatePasswordChanged }}
+    >
       {children}
     </AuthContext.Provider>
   );
 };
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
+  return useContext(AuthContext);
 };

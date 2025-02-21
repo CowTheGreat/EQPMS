@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { generateToken } from "../utils/auth";
+// import { generateToken } from "../utils/auth";
 import styles from "../page_styles/Login.module.css";
 
 const Login = () => {
@@ -9,39 +9,47 @@ const Login = () => {
   const [credentials, setCredentials] = useState({ id: "", password: "" });
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const location = useLocation();
+  // const location = useLocation();
   const { login } = useAuth();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
-    // This is a simple mock authentication
-    // In a real application, you would validate against a backend
-    if (isUser) {
-      if (credentials.id === "user" && credentials.password === "pass") {
-        const userData = {
+    try {
+      const response = await fetch("http://localhost:8080/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           id: credentials.id,
-          role: "user",
-        };
-        const token = generateToken(userData);
-        login(userData, token);
-        navigate("/user-console");
-      } else {
-        setError("Invalid user credentials");
+          password: credentials.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.detail || "Login failed");
       }
-    } else {
-      if (credentials.id === "admin" && credentials.password === "admin123") {
-        const userData = {
+
+      if (data.force_password_change) {
+        navigate("/change-password", { state: { id: credentials.id } });
+        return;
+      }
+
+      localStorage.setItem("token", data.token);
+      login(
+        {
           id: credentials.id,
-          role: "admin",
-        };
-        const token = generateToken(userData);
-        login(userData, token);
-        navigate("/admin-dashboard");
-      } else {
-        setError("Invalid admin credentials");
-      }
+          role: data.role,
+          passwordChanged: data.password_changed,
+        },
+        data.token
+      );
+
+      navigate(data.role === "admin" ? "/admin-dashboard" : "/user-console");
+    } catch (error) {
+      setError(error.message);
     }
   };
 

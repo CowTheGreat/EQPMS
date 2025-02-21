@@ -5,11 +5,30 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import Login from "./pages/Login";
+import ChangePassword from "./pages/ChangePassword";
 import UserConsole from "./pages/UserConsole";
 import AdminDashboard from "./pages/AdminDashboard";
+
+function ProtectedWithPasswordCheck({ allowedRole, children }) {
+  const { user } = useAuth();
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (!user.passwordChanged) {
+    return <Navigate to="/change-password" replace />;
+  }
+
+  if (user.role !== allowedRole) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+}
 
 function App() {
   return (
@@ -17,20 +36,21 @@ function App() {
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/change-password" element={<ChangePassword />} />
           <Route
             path="/user-console"
             element={
-              <ProtectedRoutes allowedRole="user">
+              <ProtectedWithPasswordCheck allowedRole="user">
                 <UserConsole />
-              </ProtectedRoutes>
+              </ProtectedWithPasswordCheck>
             }
           />
           <Route
             path="/admin-dashboard"
             element={
-              <ProtectedRoutes allowedRole="admin">
+              <ProtectedWithPasswordCheck allowedRole="admin">
                 <AdminDashboard />
-              </ProtectedRoutes>
+              </ProtectedWithPasswordCheck>
             }
           />
           <Route path="/" element={<Navigate to="/login" replace />} />
