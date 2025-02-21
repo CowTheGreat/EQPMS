@@ -14,22 +14,15 @@ import AdminDashboard from "./pages/AdminDashboard";
 function ProtectedWithPasswordCheck({ allowedRole, children }) {
   const { user } = useAuth();
 
-  console.log("DEBUG: Protected route check - user =", user);
-
   if (!user) {
-    console.log("DEBUG: No user, redirecting to login...");
     return <Navigate to="/login" replace />;
   }
 
   if (user.passwordChanged === false || user.passwordChanged === 0) {
-    console.log(
-      "DEBUG: Password not changed, redirecting to change-password..."
-    );
     return <Navigate to="/change-password" replace />;
   }
 
   if (user.role !== allowedRole) {
-    console.log("DEBUG: Unauthorized role, redirecting to login...");
     return <Navigate to="/login" replace />;
   }
 
