@@ -1,7 +1,6 @@
 import React from "react";
-import { Link, useLocation, Navigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import styles from "./AdminSidebar.module.css";
-import { useAuth } from "../../context/AuthContext";
 import {
   FiHome,
   FiUserPlus,
@@ -9,61 +8,67 @@ import {
   FiClipboard,
   FiLogOut,
 } from "react-icons/fi";
+import { useAuth } from "../../context/AuthContext";
 
-const AdminSidebar = ({ onLogout }) => {
-  const location = useLocation();
-  const { user } = useAuth();
-
-  // Redirect if user is not logged in or not an admin
-  if (!user || user.role !== "admin") {
-    return <Navigate to="/login" replace />;
-  }
+const AdminSidebar = () => {
+  const { logout } = useAuth();
 
   return (
     <div className={styles.sidebar}>
       <h2 className={styles.logo}>Admin Panel</h2>
       <ul className={styles.navList}>
-        <li className={location.pathname === "/assign-qp" ? styles.active : ""}>
-          <Link to="/assign-qp">
-            <FiClipboard className={styles.icon} />
-            Assign QP
-          </Link>
-        </li>
-
-        <li
-          className={
-            location.pathname === "/admin-dashboard" ? styles.active : ""
-          }
-        >
-          <Link to="/admin-dashboard">
+        <li>
+          <NavLink
+            to="/admin-dashboard"
+            className={({ isActive }) => (isActive ? styles.active : "")}
+          >
             <FiHome className={styles.icon} />
             Dashboard
-          </Link>
+          </NavLink>
         </li>
 
-        <li className={location.pathname === "/access-qp" ? styles.active : ""}>
-          <Link to="/access-qp">
+        <li>
+          <NavLink
+            to="/assign-qp"
+            className={({ isActive }) => (isActive ? styles.active : "")}
+          >
+            <FiClipboard className={styles.icon} />
+            Assign QP
+          </NavLink>
+        </li>
+
+        <li>
+          <NavLink
+            to="/access-qp"
+            className={({ isActive }) => (isActive ? styles.active : "")}
+          >
             <FiClipboard className={styles.icon} />
             Access QP
-          </Link>
+          </NavLink>
         </li>
 
-        <li className={location.pathname === "/add-user" ? styles.active : ""}>
-          <Link to="/add-user">
+        <li>
+          <NavLink
+            to="/add-user"
+            className={({ isActive }) => (isActive ? styles.active : "")}
+          >
             <FiUserPlus className={styles.icon} />
             Add New User
-          </Link>
+          </NavLink>
         </li>
 
-        <li className={location.pathname === "/settings" ? styles.active : ""}>
-          <Link to="/settings">
+        <li>
+          <NavLink
+            to="/settings"
+            className={({ isActive }) => (isActive ? styles.active : "")}
+          >
             <FiSettings className={styles.icon} />
             Settings
-          </Link>
+          </NavLink>
         </li>
       </ul>
 
-      <button className={styles.logout} onClick={onLogout}>
+      <button className={styles.logout} onClick={logout}>
         <FiLogOut className={styles.icon} />
         Logout
       </button>

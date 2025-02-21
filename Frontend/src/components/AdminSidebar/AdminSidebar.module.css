@@ -1,7 +1,7 @@
 .sidebar {
   width: 250px;
   height: 100vh;
-  background: #2a2e35;
+  background: #1f2937;
   color: white;
   display: flex;
   flex-direction: column;
@@ -12,35 +12,39 @@
 }
 
 .logo {
+  text-align: center;
   font-size: 22px;
   font-weight: bold;
   margin-bottom: 30px;
-  text-align: center;
 }
 
 .navList {
   list-style: none;
   padding: 0;
-  margin: 0;
 }
 
 .navList li {
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
-.navList li a {
-  color: white;
-  text-decoration: none;
+.navList a {
   display: flex;
   align-items: center;
-  padding: 10px;
+  color: #d1d5db;
+  text-decoration: none;
+  padding: 12px;
   border-radius: 5px;
-  transition: background 0.3s ease;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
-.navList li a:hover,
-.navList .active a {
-  background: #40464e;
+.navList a:hover {
+  background: #374151;
+  color: white;
+}
+
+.active {
+  background: #4f46e5;
+  color: white;
 }
 
 .icon {
@@ -49,18 +53,11 @@
 }
 
 .logout {
-  margin-top: auto;
-  background: #dc3545;
-  border: none;
+  background: #ef4444;
   color: white;
-  padding: 10px;
-  width: 100%;
+  padding: 12px;
+  border: none;
   border-radius: 5px;
   font-size: 16px;
   cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.logout:hover {
-  background: #b22234;
 }
