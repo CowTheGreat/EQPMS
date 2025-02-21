@@ -4,7 +4,6 @@ import { useAuth } from "../context/AuthContext";
 import styles from "../page_styles/ChangePassword.module.css";
 
 const ChangePassword = () => {
-  const [newPassword, setNewPassword] = useState("");
   const [passwords, setPasswords] = useState({
     newPassword: "",
     confirmPassword: "",

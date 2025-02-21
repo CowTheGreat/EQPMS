@@ -10,6 +10,11 @@ import Login from "./pages/Login";
 import ChangePassword from "./pages/ChangePassword";
 import UserConsole from "./pages/UserConsole";
 import AdminDashboard from "./pages/AdminDashboard";
+import AssignQP from "./pages/AssignQP";
+import AccessQP from "./pages/AccessQP";
+import AddUser from "./pages/AddUser";
+import Settings from "./pages/Settings";
+import AdminSidebar from "../src/components/AdminSidebar/AdminSidebar";
 
 function ProtectedWithPasswordCheck({ allowedRole, children }) {
   const { user } = useAuth();
@@ -29,6 +34,15 @@ function ProtectedWithPasswordCheck({ allowedRole, children }) {
   return children;
 }
 
+function AdminLayout({ children }) {
+  return (
+    <div style={{ display: "flex" }}>
+      <AdminSidebar />
+      <div style={{ flexGrow: 1, padding: "20px" }}>{children}</div>
+    </div>
+  );
+}
+
 function App() {
   return (
     <AuthProvider>
@@ -36,6 +50,8 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/change-password" element={<ChangePassword />} />
+
+          {/* User Routes */}
           <Route
             path="/user-console"
             element={
@@ -44,14 +60,59 @@ function App() {
               </ProtectedWithPasswordCheck>
             }
           />
+
+          {/* Admin Routes with Sidebar */}
           <Route
             path="/admin-dashboard"
             element={
               <ProtectedWithPasswordCheck allowedRole="admin">
-                <AdminDashboard />
+                <AdminLayout>
+                  <AdminDashboard />
+                </AdminLayout>
               </ProtectedWithPasswordCheck>
             }
           />
+          <Route
+            path="/assign-qp"
+            element={
+              <ProtectedWithPasswordCheck allowedRole="admin">
+                <AdminLayout>
+                  <AssignQP />
+                </AdminLayout>
+              </ProtectedWithPasswordCheck>
+            }
+          />
+          <Route
+            path="/access-qp"
+            element={
+              <ProtectedWithPasswordCheck allowedRole="admin">
+                <AdminLayout>
+                  <AccessQP />
+                </AdminLayout>
+              </ProtectedWithPasswordCheck>
+            }
+          />
+          <Route
+            path="/add-user"
+            element={
+              <ProtectedWithPasswordCheck allowedRole="admin">
+                <AdminLayout>
+                  <AddUser />
+                </AdminLayout>
+              </ProtectedWithPasswordCheck>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <ProtectedWithPasswordCheck allowedRole="admin">
+                <AdminLayout>
+                  <Settings />
+                </AdminLayout>
+              </ProtectedWithPasswordCheck>
+            }
+          />
+
           <Route path="/" element={<Navigate to="/login" replace />} />
         </Routes>
       </Router>
