@@ -5,6 +5,7 @@ import mysql.connector
 import jwt
 from datetime import datetime, timedelta
 import uvicorn
+from pydantic.networks import EmailStr
 
 # FastAPI instance
 app = FastAPI()
@@ -93,6 +94,53 @@ def update_password(data: PasswordUpdateRequest):
     
     except Exception as e:
         raise HTTPException(status_code=500, detail="Internal server error")
+    finally:
+        cursor.close()
+        conn.close()
+
+class AddUserRequest(BaseModel):
+    name: str
+    regno: str
+    mail: EmailStr
+    password: str
+    board: str
+    role: str  # 'user' or 'admin'
+
+@app.post("/add-user")
+def add_user(user: AddUserRequest):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Validate board and role fields
+        valid_boards = {"Science", "Commerce", "Arts"}
+        valid_roles = {"user", "admin"}
+        
+        if user.board not in valid_boards:
+            raise HTTPException(status_code=400, detail="Invalid board selection")
+        if user.role not in valid_roles:
+            raise HTTPException(status_code=400, detail="Invalid role selection")
+
+        # Check if user already exists
+        cursor.execute("SELECT regno FROM users WHERE regno = %s", (user.regno,))
+        existing_user = cursor.fetchone()
+        if existing_user:
+            raise HTTPException(status_code=400, detail="User already exists")
+
+        # Insert new user into the database
+        cursor.execute(
+            "INSERT INTO users (name, regno, mail, pwd, board, role, password_changed) VALUES (%s, %s, %s, %s, %s, %s, 0)",
+            (user.name, user.regno, user.mail, user.password, user.board, user.role)
+        )
+        conn.commit()
+
+        return {"message": "User added successfully!"}
+    
+    except mysql.connector.Error as db_err:
+        raise HTTPException(status_code=500, detail=f"Database error: {db_err}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Internal server error")
+    
     finally:
         cursor.close()
         conn.close()
