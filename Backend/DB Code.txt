@@ -1,0 +1,26 @@
+create database eqpms;
+use eqpms;
+show tables;
+
+select * from users;
+DESC users;
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    regno VARCHAR(50) UNIQUE NOT NULL,
+    mail VARCHAR(100) UNIQUE NOT NULL,
+    pwd VARCHAR(255) NOT NULL,
+    board VARCHAR(100),
+    password_changed INT DEFAULT 0,
+    role VARCHAR(50) NOT NULL DEFAULT 'user'
+);
+
+INSERT INTO users (name, regno, mail, pwd, board, password_changed, role) VALUES
+('Alice Johnson', '0432', 'alice@example.com', '1234', 'Science', 0, 'admin'),
+('Bob Smith', '18', 'bob@example.com', '1234', 'Commerce', 1, 'user');
+
+update users set password_changed = 1;
+select * from users;
+
+
