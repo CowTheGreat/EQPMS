@@ -39,3 +39,21 @@ INSERT INTO boards (board_name, subject_code, subject_name) VALUES
 ('CSE', 'CS22603', 'Cloud Computing'),
 ('CSE', 'CS22604', 'Compiler Design');
 
+QP Schema
+CREATE TABLE QP (
+    QP_Ref_no VARCHAR(50) NOT NULL,
+    QP_Session VARCHAR(50) NOT NULL,
+    QP_Degree VARCHAR(50) NOT NULL,
+    QP_Regulation VARCHAR(50) NOT NULL,
+    QP_Board VARCHAR(50) NOT NULL,
+    QP_Semester INT NOT NULL,
+    QP_Subjectcode VARCHAR(50) NOT NULL,
+    QP_Subject VARCHAR(255) NOT NULL,
+    QP_Faculty_assigned VARCHAR(100) NOT NULL,
+    QP_Faculty_assigned_Regno VARCHAR(100) NOT NULL,
+    QP_Status VARCHAR(50) DEFAULT 'Assigned',
+    QP_Type VARCHAR(50) DEFAULT NULL,
+    PRIMARY KEY (QP_Ref_no) -- Assuming QP_Ref_no is the unique identifier
+);
+
+select * from QP;

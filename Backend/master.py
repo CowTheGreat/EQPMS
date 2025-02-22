@@ -204,47 +204,41 @@ def assign_qp(data: AssignQPRequest):
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        # Generate unique QP_Ref_no
-        qp_ref_no = f"QP-{uuid.uuid4().hex[:8]}"  # Example: QP-1a2b3c4d
-
-        # Fetch faculty names based on registration numbers from users table
-        faculty_names = []
         for regno in data.assigned_faculty_regno:
+            # Generate a unique QP_Ref_no for each faculty entry
+            qp_ref_no = f"QP-{uuid.uuid4().hex[:8]}"  # Ensure uniqueness for each row
+            
+            # Fetch faculty name from users table
             cursor.execute("SELECT name FROM users WHERE regno = %s", (regno,))
             result = cursor.fetchone()
-            if result:
-                faculty_names.append(result[0])
-            else:
+            if not result:
                 raise HTTPException(status_code=404, detail=f"Faculty with regno {regno} not found")
+            faculty_name = result[0]
 
-        # Prepare faculty names and regnos as comma-separated values
-        faculty_names_str = ", ".join(faculty_names)
-        faculty_regnos_str = ", ".join(data.assigned_faculty_regno)
-
-        # Insert into QP table
-        cursor.execute(
-            """
-            INSERT INTO QP (QP_Ref_no, QP_Session, QP_Degree, QP_Regulation, QP_Board, 
-                            QP_Semester, QP_Subjectcode, QP_Subject, 
-                            QP_Faculty_assigned, QP_Faculty_assigned_Regno)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-            """,
-            (
-                qp_ref_no,
-                data.session,
-                data.degree,
-                data.regulation,
-                data.board,
-                data.semester,
-                data.subject_code,
-                data.subject_name,
-                faculty_names_str,
-                faculty_regnos_str
+            # Insert a separate row for each faculty member
+            cursor.execute(
+                """
+                INSERT INTO QP (QP_Ref_no, QP_Session, QP_Degree, QP_Regulation, QP_Board, 
+                                QP_Semester, QP_Subjectcode, QP_Subject, 
+                                QP_Faculty_assigned, QP_Faculty_assigned_Regno)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                """,
+                (
+                    qp_ref_no,
+                    data.session,
+                    data.degree,
+                    data.regulation,
+                    data.board,
+                    data.semester,
+                    data.subject_code,
+                    data.subject_name,
+                    faculty_name,
+                    regno
+                )
             )
-        )
 
         conn.commit()
-        return {"message": "QP assigned successfully!", "QP_Ref_no": qp_ref_no}
+        return {"message": "QP assigned successfully!"}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error assigning QP: {str(e)}")
@@ -252,7 +246,6 @@ def assign_qp(data: AssignQPRequest):
     finally:
         cursor.close()
         conn.close()
-
 
 if __name__ == "__main__":
     uvicorn.run("master:app", host="0.0.0.0", port=8080, reload=True)

@@ -131,7 +131,7 @@ const AssignQP = () => {
         <div className={styles.inputGroup}>
           <label>Session</label>
           <input
-            type="text"
+            type="month"
             name="session"
             value={formData.session}
             onChange={handleChange}
@@ -141,24 +141,32 @@ const AssignQP = () => {
 
         <div className={styles.inputGroup}>
           <label>Degree</label>
-          <input
-            type="text"
+          <select
             name="degree"
             value={formData.degree}
             onChange={handleChange}
             required
-          />
+          >
+            <option value="">Select Degree</option>
+            <option value="B.E">B.E</option>
+            <option value="B.Tech">B.Tech</option>
+            <option value="M.E">M.E</option>
+            <option value="Ph.D">Ph.D</option>
+          </select>
         </div>
 
         <div className={styles.inputGroup}>
           <label>Regulation</label>
-          <input
-            type="text"
+          <select
             name="regulation"
             value={formData.regulation}
             onChange={handleChange}
             required
-          />
+          >
+            <option value="">Select Regulation</option>
+            <option value="R2022">R2022</option>
+            <option value="R2018">R2018</option>
+          </select>
         </div>
 
         <div className={styles.inputGroup}>
@@ -183,6 +191,8 @@ const AssignQP = () => {
             name="semester"
             value={formData.semester}
             onChange={handleChange}
+            min="1"
+            max="10"
             required
           />
         </div>
