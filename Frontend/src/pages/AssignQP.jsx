@@ -129,10 +129,20 @@ const AssignQP = () => {
 
       <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.inputGroupRow}>
-          <div className={styles.inputGroup}>
+          {/* <div className={styles.inputGroup}>
             <label>Session</label>
             <input
               type="month"
+              name="session"
+              value={formData.session}
+              onChange={handleChange}
+              required
+            />
+          </div> */}
+          <div className={styles.inputGroup}>
+            <label>Session</label>
+            <input
+              type="text"
               name="session"
               value={formData.session}
               onChange={handleChange}
