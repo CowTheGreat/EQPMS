@@ -146,27 +146,93 @@ def add_user(user: AddUserRequest):
         cursor.close()
         conn.close()
 
-@app.get("/get-subjects")
-def get_subjects(board: str):
+@app.get("/get-regulations")
+def get_regulations(degree: str):
     try:
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
-        
-        cursor.execute("SELECT subject_code, subject_name FROM boards WHERE board_name = %s", (board,))
-        subjects = cursor.fetchall()
-        
-        if not subjects:
-            return {"message": "No subjects found for the given board", "subjects": []}
 
-        return subjects
+        cursor.execute("SELECT DISTINCT regulation FROM boards WHERE degree = %s", (degree,))
+        regulations = cursor.fetchall()
+
+        return regulations
     
     except Exception as e:
-        print(f"Error in get-subjects: {e}")  # Log error details
-        raise HTTPException(status_code=500, detail=f"Error fetching subjects: {str(e)}")  # Return error details
-    
+        print(f"Error in get-regulations: {e}")
+        raise HTTPException(status_code=500, detail="Error fetching regulations")
+
     finally:
         cursor.close()
         conn.close()
+
+@app.get("/get-boards")
+def get_boards(degree: str, regulation: str):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute(
+            "SELECT DISTINCT board_name FROM boards WHERE degree = %s AND regulation = %s",
+            (degree, regulation),
+        )
+        boards = cursor.fetchall()
+
+        return boards
+
+    except Exception as e:
+        print(f"Error in get-boards: {e}")
+        raise HTTPException(status_code=500, detail="Error fetching boards")
+
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.get("/get-subjects")
+def get_subjects(degree: str, regulation: str, board: str):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute(
+            "SELECT subject_code, subject_name FROM boards WHERE degree = %s AND regulation = %s AND board_name = %s",
+            (degree, regulation, board),
+        )
+        subjects = cursor.fetchall()
+
+        print(subjects)
+        return subjects
+
+    except Exception as e:
+        print(f"Error in get-subjects: {e}")
+        raise HTTPException(status_code=500, detail="Error fetching subjects")
+
+    finally:
+        cursor.close()
+        conn.close()
+
+
+
+# @app.get("/get-subjects")
+# def get_subjects(board: str):
+#     try:
+#         conn = get_db_connection()
+#         cursor = conn.cursor(dictionary=True)
+        
+#         cursor.execute("SELECT subject_code, subject_name FROM boards WHERE board_name = %s", (board,))
+#         subjects = cursor.fetchall()
+        
+#         if not subjects:
+#             return {"message": "No subjects found for the given board", "subjects": []}
+
+#         return subjects
+    
+#     except Exception as e:
+#         print(f"Error in get-subjects: {e}")  # Log error details
+#         raise HTTPException(status_code=500, detail=f"Error fetching subjects: {str(e)}")  # Return error details
+    
+#     finally:
+#         cursor.close()
+#         conn.close()
 
 
 @app.get("/get-faculty")

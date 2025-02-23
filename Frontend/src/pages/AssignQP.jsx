@@ -3,7 +3,6 @@ import styles from "../page_styles/AssignQP.module.css";
 
 const AssignQP = () => {
   const [formData, setFormData] = useState({
-    session: "",
     degree: "",
     regulation: "",
     board: "",
@@ -11,6 +10,8 @@ const AssignQP = () => {
     subjectCode: "",
   });
 
+  const [regulations, setRegulations] = useState([]);
+  const [boards, setBoards] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const [facultyList, setFacultyList] = useState([]);
   const [selectedFaculty, setSelectedFaculty] = useState([]);
@@ -18,18 +19,42 @@ const AssignQP = () => {
   const [facultyCount, setFacultyCount] = useState(3);
   const [message, setMessage] = useState("");
 
+  useEffect(() => {
+    if (formData.degree) {
+      fetch(`http://localhost:8080/get-regulations?degree=${formData.degree}`)
+        .then((res) => res.json())
+        .then((data) => setRegulations(data))
+        .catch(() => setRegulations([]));
+    }
+  }, [formData.degree]);
+
+  useEffect(() => {
+    if (formData.degree && formData.regulation) {
+      fetch(
+        `http://localhost:8080/get-boards?degree=${formData.degree}&regulation=${formData.regulation}`
+      )
+        .then((res) => res.json())
+        .then((data) => setBoards(data))
+        .catch(() => setBoards([]));
+    }
+  }, [formData.degree, formData.regulation]);
+
   // Fetch subjects when board is selected
   useEffect(() => {
-    if (formData.board) {
-      fetch(`http://localhost:8080/get-subjects?board=${formData.board}`)
+    if (
+      formData.degree &&
+      formData.regulation &&
+      formData.board &&
+      formData.semester
+    ) {
+      fetch(
+        `http://localhost:8080/get-subjects?degree=${formData.degree}&regulation=${formData.regulation}&board=${formData.board}`
+      )
         .then((res) => res.json())
-        .then((data) => {
-          console.log("Subjects API Response:", data);
-          setSubjects(Array.isArray(data) ? data : []); // Ensure it's an array
-        })
+        .then((data) => setSubjects(data))
         .catch(() => setSubjects([]));
     }
-  }, [formData.board]);
+  }, [formData.degree, formData.regulation, formData.board, formData.semester]);
 
   // Fetch faculty when board is selected
   useEffect(() => {
@@ -175,8 +200,11 @@ const AssignQP = () => {
               required
             >
               <option value="">Select Regulation</option>
-              <option value="R2022">R2022</option>
-              <option value="R2018">R2018</option>
+              {regulations.map((reg) => (
+                <option key={reg.regulation} value={reg.regulation}>
+                  {reg.regulation}
+                </option>
+              ))}
             </select>
           </div>
         </div>
@@ -191,9 +219,11 @@ const AssignQP = () => {
               required
             >
               <option value="">Select Board</option>
-              <option value="CSE">CSE</option>
-              <option value="ECE">ECE</option>
-              <option value="MECH">MECH</option>
+              {boards.map((brd) => (
+                <option key={brd.board_name} value={brd.board_name}>
+                  {brd.board_name}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -226,6 +256,22 @@ const AssignQP = () => {
               ))}
             </select>
           </div>
+          {/* <div className={styles.inputGroup}>
+            <label>Subject Code</label>
+            <select
+              name="subjectCode"
+              value={formData.subjectCode}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select Subject Code</option>
+              {subjects.map((sub) => (
+                <option key={sub.subject_code} value={sub.subject_code}>
+                  {sub.subject_code}
+                </option>
+              ))}
+            </select>
+          </div> */}
         </div>
 
         <div className={styles.inputGroupRow}>
