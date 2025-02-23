@@ -40,6 +40,7 @@ const AssignQP = () => {
   }, [formData.degree, formData.regulation]);
 
   // Fetch subjects when board is selected
+  // Fetch subjects when degree, regulation, board, or semester changes
   useEffect(() => {
     if (
       formData.degree &&
@@ -48,11 +49,19 @@ const AssignQP = () => {
       formData.semester
     ) {
       fetch(
-        `http://localhost:8080/get-subjects?degree=${formData.degree}&regulation=${formData.regulation}&board=${formData.board}`
+        `http://localhost:8080/get-subjects?degree=${formData.degree}&regulation=${formData.regulation}&board=${formData.board}&semester=${formData.semester}`
       )
         .then((res) => res.json())
-        .then((data) => setSubjects(data))
-        .catch(() => setSubjects([]));
+        .then((data) => {
+          console.log("Subjects API Response:", data);
+          setSubjects(Array.isArray(data) ? data : []); // Ensure it's an array
+        })
+        .catch((error) => {
+          console.error("Error fetching subjects:", error);
+          setSubjects([]); // Handle errors without breaking UI
+        });
+    } else {
+      setSubjects([]); // Reset subjects when filters are incomplete
     }
   }, [formData.degree, formData.regulation, formData.board, formData.semester]);
 
@@ -247,8 +256,13 @@ const AssignQP = () => {
               value={formData.subjectCode}
               onChange={handleChange}
               required
+              disabled={subjects.length === 0} // Disable if no subjects are available
             >
-              <option value="">Select Subject Code</option>
+              <option value="">
+                {subjects.length === 0
+                  ? "No subjects available"
+                  : "Select Subject Code"}
+              </option>
               {subjects.map((sub) => (
                 <option key={sub.subject_code} value={sub.subject_code}>
                   {sub.subject_code}
@@ -256,6 +270,7 @@ const AssignQP = () => {
               ))}
             </select>
           </div>
+
           {/* <div className={styles.inputGroup}>
             <label>Subject Code</label>
             <select

@@ -188,18 +188,17 @@ def get_boards(degree: str, regulation: str):
         conn.close()
 
 @app.get("/get-subjects")
-def get_subjects(degree: str, regulation: str, board: str):
+def get_subjects(degree: str, regulation: str, board: str, semester: int):
     try:
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
 
         cursor.execute(
-            "SELECT subject_code, subject_name FROM boards WHERE degree = %s AND regulation = %s AND board_name = %s",
-            (degree, regulation, board),
+            "SELECT subject_code, subject_name FROM boards WHERE degree = %s AND regulation = %s AND board_name = %s AND semester = %s",
+            (degree, regulation, board, semester),
         )
         subjects = cursor.fetchall()
 
-        print(subjects)
         return subjects
 
     except Exception as e:
