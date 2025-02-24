@@ -86,26 +86,28 @@ const AddUser = () => {
       {success && <p className={styles.success}>{success}</p>}
 
       <form className={styles.form} onSubmit={handleSubmit}>
-        <div className={styles.inputGroup}>
-          <label>Name</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
-        </div>
+        <div className={styles.row}>
+          <div className={styles.inputGroup}>
+            <label>Name</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-        <div className={styles.inputGroup}>
-          <label>Reg No</label>
-          <input
-            type="text"
-            name="regno"
-            value={formData.regno}
-            onChange={handleChange}
-            required
-          />
+          <div className={styles.inputGroup}>
+            <label>Reg No</label>
+            <input
+              type="text"
+              name="regno"
+              value={formData.regno}
+              onChange={handleChange}
+              required
+            />
+          </div>
         </div>
 
         <div className={styles.inputGroup}>
@@ -119,26 +121,28 @@ const AddUser = () => {
           />
         </div>
 
-        <div className={styles.inputGroup}>
-          <label>New Password</label>
-          <input
-            type="password"
-            name="newPassword"
-            value={passwords.newPassword}
-            onChange={handlePasswordChange}
-            required
-          />
-        </div>
+        <div className={styles.row}>
+          <div className={styles.inputGroup}>
+            <label>New Password</label>
+            <input
+              type="password"
+              name="newPassword"
+              value={passwords.newPassword}
+              onChange={handlePasswordChange}
+              required
+            />
+          </div>
 
-        <div className={styles.inputGroup}>
-          <label>Confirm Password</label>
-          <input
-            type="password"
-            name="confirmPassword"
-            value={passwords.confirmPassword}
-            onChange={handlePasswordChange}
-            required
-          />
+          <div className={styles.inputGroup}>
+            <label>Confirm Password</label>
+            <input
+              type="password"
+              name="confirmPassword"
+              value={passwords.confirmPassword}
+              onChange={handlePasswordChange}
+              required
+            />
+          </div>
         </div>
 
         <div className={styles.inputGroup}>
