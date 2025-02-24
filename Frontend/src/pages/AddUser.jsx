@@ -150,9 +150,9 @@ const AddUser = () => {
             required
           >
             <option value="">Select Board</option>
-            <option value="Science">Science</option>
-            <option value="Commerce">Commerce</option>
-            <option value="Arts">Arts</option>
+            <option value="CSE">CSE</option>
+            <option value="ECE">ECE</option>
+            <option value="EEE">EEE</option>
           </select>
         </div>
 

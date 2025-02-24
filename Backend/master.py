@@ -114,7 +114,7 @@ def add_user(user: AddUserRequest):
         cursor = conn.cursor()
 
         # Validate board and role fields
-        valid_boards = {"Science", "Commerce", "Arts"}
+        valid_boards = {"CSE", "ECE", "EEE"}
         valid_roles = {"user", "admin"}
         
         if user.board not in valid_boards:
