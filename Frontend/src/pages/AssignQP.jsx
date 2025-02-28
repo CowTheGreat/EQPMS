@@ -10,6 +10,7 @@ const AssignQP = () => {
     subjectCode: "",
   });
 
+  const [deadline, setDeadline] = useState("");
   const [regulations, setRegulations] = useState([]);
   const [boards, setBoards] = useState([]);
   const [subjects, setSubjects] = useState([]);
@@ -18,6 +19,11 @@ const AssignQP = () => {
   const [subjectName, setSubjectName] = useState("");
   const [facultyCount, setFacultyCount] = useState(1);
   const [message, setMessage] = useState("");
+
+  // Handle deadline change
+  const handleDeadlineChange = (e) => {
+    setDeadline(e.target.value);
+  };
 
   useEffect(() => {
     if (formData.degree) {
@@ -124,6 +130,7 @@ const AssignQP = () => {
       subject_code: formData.subjectCode,
       subject_name: subjectName,
       assigned_faculty_regno: selectedFaculty,
+      deadline: deadline, // Include deadline in the data
     };
 
     console.log("QP Data to be sent:", JSON.stringify(qpData, null, 2)); // Debugging
@@ -296,7 +303,6 @@ const AssignQP = () => {
             <label>Subject Name</label>
             <input type="text" value={subjectName} readOnly />
           </div>
-
           <div className={styles.inputGroup}>
             <label>Faculty Count</label>
             <input
@@ -307,6 +313,18 @@ const AssignQP = () => {
               onChange={(e) => setFacultyCount(Number(e.target.value))}
               required
             />
+          </div>
+          <div className={styles.inputGroupRow}>
+            <div className={styles.inputGroup}>
+              <label>Deadline</label>
+              <input
+                type="date"
+                name="deadline"
+                value={deadline}
+                onChange={handleDeadlineChange}
+                required
+              />
+            </div>
           </div>
         </div>
 

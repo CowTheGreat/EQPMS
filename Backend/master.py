@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 import uvicorn
 from pydantic.networks import EmailStr
 import uuid
+from datetime import datetime
 
 # FastAPI instance
 app = FastAPI()
@@ -209,31 +210,6 @@ def get_subjects(degree: str, regulation: str, board: str, semester: int):
         cursor.close()
         conn.close()
 
-
-
-# @app.get("/get-subjects")
-# def get_subjects(board: str):
-#     try:
-#         conn = get_db_connection()
-#         cursor = conn.cursor(dictionary=True)
-        
-#         cursor.execute("SELECT subject_code, subject_name FROM boards WHERE board_name = %s", (board,))
-#         subjects = cursor.fetchall()
-        
-#         if not subjects:
-#             return {"message": "No subjects found for the given board", "subjects": []}
-
-#         return subjects
-    
-#     except Exception as e:
-#         print(f"Error in get-subjects: {e}")  # Log error details
-#         raise HTTPException(status_code=500, detail=f"Error fetching subjects: {str(e)}")  # Return error details
-    
-#     finally:
-#         cursor.close()
-#         conn.close()
-
-
 @app.get("/get-faculty")
 def get_faculty(board: str):
     try:
@@ -263,6 +239,7 @@ class AssignQPRequest(BaseModel):
     subject_code: str
     subject_name: str
     assigned_faculty_regno: list[str] 
+    deadline: datetime
 
 @app.post("/assign-qp")
 def assign_qp(data: AssignQPRequest):
@@ -282,13 +259,13 @@ def assign_qp(data: AssignQPRequest):
                 raise HTTPException(status_code=404, detail=f"Faculty with regno {regno} not found")
             faculty_name = result[0]
 
-            # Insert a separate row for each faculty member
+            # Insert a separate row for each faculty member, including deadline
             cursor.execute(
                 """
                 INSERT INTO QP (QP_Ref_no, QP_Session, QP_Degree, QP_Regulation, QP_Board, 
                                 QP_Semester, QP_Subjectcode, QP_Subject, 
-                                QP_Faculty_assigned, QP_Faculty_assigned_Regno)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                                QP_Faculty_assigned, QP_Faculty_assigned_Regno, QP_Deadline)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """,
                 (
                     qp_ref_no,
@@ -300,7 +277,8 @@ def assign_qp(data: AssignQPRequest):
                     data.subject_code,
                     data.subject_name,
                     faculty_name,
-                    regno
+                    regno,
+                    data.deadline  # Store the deadline in the database
                 )
             )
 
