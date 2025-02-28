@@ -240,7 +240,8 @@ def get_faculty(board: str):
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
         
-        cursor.execute("SELECT regno, name FROM users WHERE board = %s", (board,))
+        # Fetch faculty sorted by name in ascending order
+        cursor.execute("SELECT regno, name FROM users WHERE board = %s ORDER BY name ASC", (board,))
         faculty = cursor.fetchall()
         
         return faculty
@@ -251,6 +252,7 @@ def get_faculty(board: str):
     finally:
         cursor.close()
         conn.close()
+
 
 class AssignQPRequest(BaseModel):
     session: str
