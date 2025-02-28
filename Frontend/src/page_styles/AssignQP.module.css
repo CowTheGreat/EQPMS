@@ -1,4 +1,4 @@
-/* .container {
+.container {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
@@ -40,15 +40,6 @@ h2 {
   font-size: 14px;
   margin-bottom: 5px;
   font-weight: bold;
-}
-
-.inputGroup input,
-.inputGroup select {
-  padding: 8px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  width: 100%;
 }
 
 .selectedFaculty {
@@ -94,4 +85,21 @@ h2 {
   .inputGroupRow {
     flex-direction: column;
   }
-} */
+}
+
+.facultyChecklist {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.facultyItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.facultyItem input {
+  transform: scale(1.2);
+  cursor: pointer;
+}

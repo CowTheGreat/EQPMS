@@ -89,13 +89,15 @@ const AssignQP = () => {
   };
 
   // Handle faculty selection
-  const handleFacultySelect = (e) => {
-    const selectedRegno = e.target.value;
-    if (
-      !selectedFaculty.includes(selectedRegno) &&
-      selectedFaculty.length < facultyCount
-    ) {
-      setSelectedFaculty([...selectedFaculty, selectedRegno]);
+  const handleFacultySelect = (e, regno) => {
+    if (e.target.checked) {
+      if (selectedFaculty.length < facultyCount) {
+        setSelectedFaculty([...selectedFaculty, regno]);
+      } else {
+        e.target.checked = false; // Prevent selecting more than the allowed count
+      }
+    } else {
+      setSelectedFaculty(selectedFaculty.filter((id) => id !== regno));
     }
   };
 
@@ -300,8 +302,8 @@ const AssignQP = () => {
             <input
               type="number"
               value={facultyCount}
-              min="3"
-              max="5"
+              min="1"
+              max="3"
               onChange={(e) => setFacultyCount(Number(e.target.value))}
               required
             />
@@ -311,26 +313,22 @@ const AssignQP = () => {
         <div className={styles.inputGroupRow}>
           <div className={styles.inputGroup}>
             <label>Select Faculty</label>
-            <select onChange={handleFacultySelect}>
-              <option value="">Select Faculty</option>
+            <div className={styles.facultyChecklist}>
               {facultyList.map((fac) => (
-                <option key={fac.regno} value={fac.regno}>
-                  {fac.name} ({fac.regno})
-                </option>
+                <div key={fac.regno} className={styles.facultyItem}>
+                  <input
+                    type="checkbox"
+                    id={`faculty-${fac.regno}`}
+                    value={fac.regno}
+                    checked={selectedFaculty.includes(fac.regno)}
+                    onChange={(e) => handleFacultySelect(e, fac.regno)}
+                  />
+                  <label htmlFor={`faculty-${fac.regno}`}>
+                    {fac.name} ({fac.regno})
+                  </label>
+                </div>
               ))}
-            </select>
-          </div>
-
-          <div className={styles.selectedFaculty}>
-            <p>Selected Faculty:</p>
-            {selectedFaculty.map((regno) => (
-              <div key={regno} className={styles.facultyTag}>
-                {facultyList.find((fac) => fac.regno === regno)?.name} ({regno})
-                <button type="button" onClick={() => removeFaculty(regno)}>
-                  X
-                </button>
-              </div>
-            ))}
+            </div>
           </div>
         </div>
 
