@@ -88,18 +88,21 @@ h2 {
 }
 
 .facultyChecklist {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Three columns */
+  gap: 10px;
 }
 
 .facultyItem {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
-.facultyItem input {
-  transform: scale(1.2);
-  cursor: pointer;
+.facultyItem label {
+  width: 180px; /* Adjust width to keep all names aligned */
+  white-space: nowrap; /* Prevents text from wrapping */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Adds "..." if text is too long */
+  font-size: 14px; /* Ensures uniform font size */
 }

@@ -332,6 +332,18 @@ const AssignQP = () => {
           </div>
         </div>
 
+        <div className={styles.selectedFaculty}>
+          <p>Selected Faculty:</p>
+          {selectedFaculty.map((regno) => (
+            <div key={regno} className={styles.facultyTag}>
+              {facultyList.find((fac) => fac.regno === regno)?.name} ({regno})
+              <button type="button" onClick={() => removeFaculty(regno)}>
+                X
+              </button>
+            </div>
+          ))}
+        </div>
+
         <button type="submit" className={styles.button}>
           Assign QP
         </button>
