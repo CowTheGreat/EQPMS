@@ -16,7 +16,7 @@ const AssignQP = () => {
   const [facultyList, setFacultyList] = useState([]);
   const [selectedFaculty, setSelectedFaculty] = useState([]);
   const [subjectName, setSubjectName] = useState("");
-  const [facultyCount, setFacultyCount] = useState(3);
+  const [facultyCount, setFacultyCount] = useState(1);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
