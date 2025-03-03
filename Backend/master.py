@@ -237,6 +237,28 @@ def get_subjects(degree: str, regulation: str, board: str, semester: int):
         cursor.close()
         conn.close()
 
+@app.delete("/delete-subject")
+def delete_subject(degree: str, regulation: str, board: str, subject_code: str):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "DELETE FROM boards WHERE degree = %s AND regulation = %s AND board_name = %s AND subject_code = %s",
+            (degree, regulation, board, subject_code),
+        )
+        conn.commit()
+
+        return {"message": "Subject deleted successfully"}
+
+    except Exception as e:
+        print(f"Error in delete-subject: {e}")
+        raise HTTPException(status_code=500, detail="Error deleting subject")
+
+    finally:
+        cursor.close()
+        conn.close()
+
 @app.get("/get-faculty")
 def get_faculty(board: str):
     try:
@@ -255,7 +277,6 @@ def get_faculty(board: str):
     finally:
         cursor.close()
         conn.close()
-
 
 class AssignQPRequest(BaseModel):
     session: str

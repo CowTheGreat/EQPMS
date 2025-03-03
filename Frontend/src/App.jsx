@@ -14,6 +14,7 @@ import AssignQP from "./pages/AssignQP";
 import AccessQP from "./pages/AccessQP";
 import AddUser from "./pages/AddUser";
 import AddSubjects from "./pages/AddSubjects";
+import DeleteSubject from "./pages/DeleteSubject";
 import Settings from "./pages/Settings";
 import AdminSidebar from "../src/components/AdminSidebar/AdminSidebar";
 
@@ -109,6 +110,16 @@ function App() {
               <ProtectedWithPasswordCheck allowedRole="admin">
                 <AdminLayout>
                   <AddSubjects />
+                </AdminLayout>
+              </ProtectedWithPasswordCheck>
+            }
+          />
+          <Route
+            path="/delete-subject"
+            element={
+              <ProtectedWithPasswordCheck allowedRole="admin">
+                <AdminLayout>
+                  <DeleteSubject />
                 </AdminLayout>
               </ProtectedWithPasswordCheck>
             }

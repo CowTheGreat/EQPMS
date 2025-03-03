@@ -63,7 +63,17 @@ const AdminSidebar = () => {
             className={({ isActive }) => (isActive ? styles.active : "")}
           >
             <FiClipboard className={styles.icon} />
-            Add / Delete Subject
+            Add Subject
+          </NavLink>
+        </li>
+
+        <li>
+          <NavLink
+            to="/delete-subject"
+            className={({ isActive }) => (isActive ? styles.active : "")}
+          >
+            <FiClipboard className={styles.icon} />
+            Delete Subject
           </NavLink>
         </li>
 
