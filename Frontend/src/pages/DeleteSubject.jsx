@@ -79,12 +79,16 @@ export default function DeleteSubjects() {
 
   const deleteSubject = async (subject_code) => {
     try {
-      await axios.delete(
+      console.log(`Deleting subject: ${subject_code}`);
+      const response = await axios.delete(
         `http://localhost:8080/delete-subject/${subject_code}`
       );
+      console.log("Response:", response.data);
+
       setSubjects(subjects.filter((sub) => sub.subject_code !== subject_code));
       setMessage("Subject deleted successfully.");
     } catch (error) {
+      console.error("Error:", error);
       setMessage(error.response?.data?.detail || "Error deleting subject");
     }
   };

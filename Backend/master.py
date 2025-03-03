@@ -237,27 +237,22 @@ def get_subjects(degree: str, regulation: str, board: str, semester: int):
         cursor.close()
         conn.close()
 
-@app.delete("/delete-subject")
-def delete_subject(degree: str, regulation: str, board: str, subject_code: str):
+@app.delete("/delete-subject/{subject_code}")
+def delete_subject(subject_code: str):
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
-
-        cursor.execute(
-            "DELETE FROM boards WHERE degree = %s AND regulation = %s AND board_name = %s AND subject_code = %s",
-            (degree, regulation, board, subject_code),
-        )
+        cursor.execute("DELETE FROM boards WHERE subject_code = %s", (subject_code,))
         conn.commit()
-
+        if cursor.rowcount == 0:
+            raise HTTPException(status_code=404, detail="Subject not found")
         return {"message": "Subject deleted successfully"}
-
     except Exception as e:
-        print(f"Error in delete-subject: {e}")
-        raise HTTPException(status_code=500, detail="Error deleting subject")
-
+        raise HTTPException(status_code=500, detail=str(e))
     finally:
         cursor.close()
         conn.close()
+
 
 @app.get("/get-faculty")
 def get_faculty(board: str):
