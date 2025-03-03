@@ -147,6 +147,32 @@ def add_user(user: AddUserRequest):
         cursor.close()
         conn.close()
 
+@app.delete("/delete-user/{regno}")
+def delete_user(regno: str):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Check if user exists
+        cursor.execute("SELECT * FROM users WHERE regno = %s", (regno,))
+        user = cursor.fetchone()
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        # Delete user
+        cursor.execute("DELETE FROM users WHERE regno = %s", (regno,))
+        conn.commit()
+
+        return {"message": "User deleted successfully"}
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Error deleting user")
+    
+    finally:
+        cursor.close()
+        conn.close()
+
+
 @app.get("/get-regulations")
 def get_regulations(degree: str):
     try:
