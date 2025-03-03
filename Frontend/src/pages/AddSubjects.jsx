@@ -44,6 +44,11 @@ export default function AddSubjects() {
     setMessage("");
   };
 
+  const deleteSubject = (index) => {
+    const updatedSubjects = subjects.filter((_, i) => i !== index);
+    setSubjects(updatedSubjects);
+  };
+
   const submitSubjects = async () => {
     if (subjects.length === 0) {
       setMessage("No subjects to submit!");
@@ -153,6 +158,27 @@ export default function AddSubjects() {
       </button>
 
       {message && <p className={styles.message}>{message}</p>}
+
+      <tbody>
+        {subjects.map((sub, index) => (
+          <tr key={index}>
+            <td>{sub.degree}</td>
+            <td>{sub.regulation}</td>
+            <td>{sub.board_name}</td>
+            <td>{sub.subject_code}</td>
+            <td>{sub.subject_name}</td>
+            <td>{sub.semester}</td>
+            <td>
+              <button
+                onClick={() => deleteSubject(index)}
+                className={styles.deleteButton}
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
     </div>
   );
 }
