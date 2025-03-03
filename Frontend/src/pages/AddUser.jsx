@@ -326,7 +326,7 @@ const AddUser = () => {
           </div>
 
           <div className={styles.inputGroup}>
-            <label>Reg No</label>
+            <label>Employee ID</label>
             <input
               type="text"
               name="regno"
