@@ -8,6 +8,7 @@ import uvicorn
 from pydantic.networks import EmailStr
 import uuid
 from datetime import datetime
+from typing import List
 
 # FastAPI instance
 app = FastAPI()
@@ -313,6 +314,45 @@ def assign_qp(data: AssignQPRequest):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error assigning QP: {str(e)}")
+
+    finally:
+        cursor.close()
+        conn.close()
+
+# Pydantic Model for Subject
+class Subject(BaseModel):
+    degree: str
+    regulation: str
+    board_name: str
+    subject_code: str
+    subject_name: str
+    semester: int
+
+@app.post("/add-subjects")
+def add_subjects(subjects: List[Subject]):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        for subject in subjects:
+            try:
+                # Insert subject into the database
+                cursor.execute(
+                    """
+                    INSERT INTO boards (degree, regulation, board_name, subject_code, subject_name, semester)
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                    """,
+                    (subject.degree, subject.regulation, subject.board_name, subject.subject_code, subject.subject_name, subject.semester)
+                )
+            except mysql.connector.IntegrityError:
+                # Handle duplicate subject_code error
+                raise HTTPException(status_code=400, detail=f"Subject {subject.subject_code} already exists")
+
+        conn.commit()
+        return {"message": "Subjects added successfully!"}
+
+    except mysql.connector.Error as db_err:
+        raise HTTPException(status_code=500, detail=f"Database error: {db_err}")
 
     finally:
         cursor.close()

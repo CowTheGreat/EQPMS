@@ -13,6 +13,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AssignQP from "./pages/AssignQP";
 import AccessQP from "./pages/AccessQP";
 import AddUser from "./pages/AddUser";
+import AddSubjects from "./pages/AddSubjects";
 import Settings from "./pages/Settings";
 import AdminSidebar from "../src/components/AdminSidebar/AdminSidebar";
 
@@ -98,6 +99,16 @@ function App() {
               <ProtectedWithPasswordCheck allowedRole="admin">
                 <AdminLayout>
                   <AddUser />
+                </AdminLayout>
+              </ProtectedWithPasswordCheck>
+            }
+          />
+          <Route
+            path="/add-subject"
+            element={
+              <ProtectedWithPasswordCheck allowedRole="admin">
+                <AdminLayout>
+                  <AddSubjects />
                 </AdminLayout>
               </ProtectedWithPasswordCheck>
             }

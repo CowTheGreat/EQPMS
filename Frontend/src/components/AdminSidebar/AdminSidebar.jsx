@@ -53,7 +53,17 @@ const AdminSidebar = () => {
             className={({ isActive }) => (isActive ? styles.active : "")}
           >
             <FiUserPlus className={styles.icon} />
-            Add New User
+            User Management
+          </NavLink>
+        </li>
+
+        <li>
+          <NavLink
+            to="/add-subject"
+            className={({ isActive }) => (isActive ? styles.active : "")}
+          >
+            <FiClipboard className={styles.icon} />
+            Add / Delete Subject
           </NavLink>
         </li>
 
