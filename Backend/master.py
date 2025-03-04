@@ -343,6 +343,7 @@ class Subject(BaseModel):
     subject_code: str
     subject_name: str
     semester: int
+    qp_type: str  # New field for QP Type
 
 @app.post("/add-subjects")
 def add_subjects(subjects: List[Subject]):
@@ -352,16 +353,14 @@ def add_subjects(subjects: List[Subject]):
 
         for subject in subjects:
             try:
-                # Insert subject into the database
                 cursor.execute(
                     """
-                    INSERT INTO boards (degree, regulation, board_name, subject_code, subject_name, semester)
-                    VALUES (%s, %s, %s, %s, %s, %s)
+                    INSERT INTO boards (degree, regulation, board_name, subject_code, subject_name, semester, qp_type)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
                     """,
-                    (subject.degree, subject.regulation, subject.board_name, subject.subject_code, subject.subject_name, subject.semester)
+                    (subject.degree, subject.regulation, subject.board_name, subject.subject_code, subject.subject_name, subject.semester, subject.qp_type)
                 )
             except mysql.connector.IntegrityError:
-                # Handle duplicate subject_code error
                 raise HTTPException(status_code=400, detail=f"Subject {subject.subject_code} already exists")
 
         conn.commit()

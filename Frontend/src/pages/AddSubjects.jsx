@@ -11,6 +11,7 @@ export default function AddSubjects() {
     subject_code: "",
     subject_name: "",
     semester: "",
+    qp_type: "T", // Default value for QP Type
   });
 
   const [message, setMessage] = useState("");
@@ -26,7 +27,8 @@ export default function AddSubjects() {
       !formData.board_name ||
       !formData.subject_code ||
       !formData.subject_name ||
-      !formData.semester
+      !formData.semester ||
+      !formData.qp_type
     ) {
       setMessage("Please fill all fields!");
       return;
@@ -40,6 +42,7 @@ export default function AddSubjects() {
       subject_code: "",
       subject_name: "",
       semester: "",
+      qp_type: "T",
     });
     setMessage("");
   };
@@ -120,6 +123,15 @@ export default function AddSubjects() {
           onChange={handleChange}
           className={styles.input}
         />
+        <select
+          name="qp_type"
+          value={formData.qp_type}
+          onChange={handleChange}
+          className={styles.input}
+        >
+          <option value="T">T</option>
+          <option value="TNP">TNP</option>
+        </select>
       </div>
 
       <button onClick={addSubject} className={styles.addButton}>
@@ -136,6 +148,8 @@ export default function AddSubjects() {
               <th>Code</th>
               <th>Name</th>
               <th>Semester</th>
+              <th>QP Type</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -147,6 +161,15 @@ export default function AddSubjects() {
                 <td>{sub.subject_code}</td>
                 <td>{sub.subject_name}</td>
                 <td>{sub.semester}</td>
+                <td>{sub.qp_type}</td>
+                <td>
+                  <button
+                    onClick={() => deleteSubject(index)}
+                    className={styles.deleteButton}
+                  >
+                    Delete
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -158,27 +181,6 @@ export default function AddSubjects() {
       </button>
 
       {message && <p className={styles.message}>{message}</p>}
-
-      <tbody>
-        {subjects.map((sub, index) => (
-          <tr key={index}>
-            <td>{sub.degree}</td>
-            <td>{sub.regulation}</td>
-            <td>{sub.board_name}</td>
-            <td>{sub.subject_code}</td>
-            <td>{sub.subject_name}</td>
-            <td>{sub.semester}</td>
-            <td>
-              <button
-                onClick={() => deleteSubject(index)}
-                className={styles.deleteButton}
-              >
-                Delete
-              </button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
     </div>
   );
 }
