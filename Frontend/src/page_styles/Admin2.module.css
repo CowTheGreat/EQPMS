@@ -1,0 +1,227 @@
+.container {
+  min-height: 100vh;
+  width: 100vw;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem;
+  font-family: 'Inter', sans-serif;
+  box-sizing: border-box;
+}
+
+.title {
+  color: #1a237e; /* Dark blue */
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+.topSection {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.boardsSection,
+.chartSection {
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+  color: #1a237e; /* Dark blue */
+}
+
+.boardsSection:hover,
+.chartSection:hover {
+  transform: translateY(-5px);
+}
+
+.chartContainer {
+  flex: 1;
+  min-height: 300px;
+  position: relative;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  color: #1a237e; /* Dark blue */
+}
+
+.table th {
+  background-color: #3f51b5; /* Darker blue */
+  color: white;
+  padding: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  position: sticky;
+  top: 0;
+}
+
+.table td {
+  padding: 1rem;
+  color: #1a237e; /* Dark blue */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  font-size: 0.95rem;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.table tr:hover {
+  background-color: rgba(102, 126, 234, 0.03);
+}
+
+.filterHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.filterContainer {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+}
+
+.filterInput {
+  width: 100%;
+  padding: 0.75rem 2rem 0.75rem 1rem;
+  border: 1px solid rgba(63, 81, 181, 0.3); /* Dark blue */
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.9);
+  transition: all 0.3s ease;
+  color: #1a237e; /* Dark blue */
+}
+
+.filterInput::placeholder {
+  color: #7986cb; /* Lighter blue */
+}
+
+.filterInput:focus {
+  outline: none;
+  border-color: #3f51b5;
+  box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.2);
+}
+
+.filterIcon {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #3f51b5; /* Dark blue */
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding: 1rem 0;
+}
+
+.paginationButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background: rgba(63, 81, 181, 0.1); /* Dark blue */
+  color: #3f51b5; /* Dark blue */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.paginationButton:hover:not(:disabled) {
+  background: #3f51b5; /* Dark blue */
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.paginationButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: rgba(0, 0, 0, 0.05);
+  color: rgba(63, 81, 181, 0.5); /* Semi-transparent dark blue */
+}
+
+@media (max-width: 1024px) {
+  .container {
+    padding: 1.5rem;
+  }
+  
+  .title {
+    font-size: 2rem;
+  }
+  
+  .boardsSection,
+  .chartSection {
+    min-height: auto;
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+  
+  .topSection {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .table th,
+  .table td {
+    padding: 0.8rem;
+  }
+  
+  .filterInput {
+    font-size: 0.9rem;
+    padding: 0.6rem 1.5rem;
+  }
+  
+  .paginationButton {
+    padding: 0.6rem 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  .pagination {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .paginationButton {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.7rem;
+  }
+  
+  .title {
+    font-size: 1.75rem;
+  }
+}
