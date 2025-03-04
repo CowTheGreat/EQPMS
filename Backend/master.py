@@ -222,7 +222,7 @@ def get_subjects(degree: str, regulation: str, board: str, semester: int):
         cursor = conn.cursor(dictionary=True)
 
         cursor.execute(
-            "SELECT subject_code, subject_name FROM boards WHERE degree = %s AND regulation = %s AND board_name = %s AND semester = %s",
+            "SELECT subject_code, subject_name, QP_Type FROM boards WHERE degree = %s AND regulation = %s AND board_name = %s AND semester = %s",
             (degree, regulation, board, semester),
         )
         subjects = cursor.fetchall()
@@ -281,34 +281,36 @@ class AssignQPRequest(BaseModel):
     semester: int
     subject_code: str
     subject_name: str
-    assigned_faculty_regno: list[str] 
+    subject_type: str  # ✅ Include QP_Type
+    assigned_faculty_regno: list[str]
     deadline: datetime
 
 @app.post("/assign-qp")
 def assign_qp(data: AssignQPRequest):
-    print("Received Data:", data.dict())
+    print("Received Data:", data.dict())  # ✅ Debugging
+
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
 
         for regno in data.assigned_faculty_regno:
-            # Generate a unique QP_Ref_no for each faculty entry
-            qp_ref_no = f"QP-{uuid.uuid4().hex[:8]}"  # Ensure uniqueness for each row
-            
-            # Fetch faculty name from users table
+            qp_ref_no = f"QP-{uuid.uuid4().hex[:8]}"  # Generate unique reference number
+
+            # Fetch faculty name
             cursor.execute("SELECT name FROM users WHERE regno = %s", (regno,))
             result = cursor.fetchone()
             if not result:
                 raise HTTPException(status_code=404, detail=f"Faculty with regno {regno} not found")
             faculty_name = result[0]
 
-            # Insert a separate row for each faculty member, including deadline
+            print(data)
+            # Insert into database, including `QP_Type`
             cursor.execute(
                 """
                 INSERT INTO QP (QP_Ref_no, QP_Session, QP_Degree, QP_Regulation, QP_Board, 
-                                QP_Semester, QP_Subjectcode, QP_Subject, 
+                                QP_Semester, QP_Subjectcode, QP_Subject, QP_Type,
                                 QP_Faculty_assigned, QP_Faculty_assigned_Regno, QP_Deadline)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """,
                 (
                     qp_ref_no,
@@ -319,9 +321,10 @@ def assign_qp(data: AssignQPRequest):
                     data.semester,
                     data.subject_code,
                     data.subject_name,
+                    data.subject_type,  # ✅ Store QP_Type
                     faculty_name,
                     regno,
-                    data.deadline  # Store the deadline in the database
+                    data.deadline
                 )
             )
 

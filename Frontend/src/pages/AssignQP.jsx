@@ -8,6 +8,7 @@ const AssignQP = () => {
     board: "",
     semester: "",
     subjectCode: "",
+    subjectType: "",
   });
 
   const [deadline, setDeadline] = useState("");
@@ -17,6 +18,7 @@ const AssignQP = () => {
   const [facultyList, setFacultyList] = useState([]);
   const [selectedFaculty, setSelectedFaculty] = useState([]);
   const [subjectName, setSubjectName] = useState("");
+  const [subjectType, setSubjectType] = useState("");
   const [facultyCount, setFacultyCount] = useState(1);
   const [message, setMessage] = useState("");
 
@@ -45,7 +47,6 @@ const AssignQP = () => {
     }
   }, [formData.degree, formData.regulation]);
 
-  // Fetch subjects when board is selected
   // Fetch subjects when degree, regulation, board, or semester changes
   useEffect(() => {
     if (
@@ -81,13 +82,20 @@ const AssignQP = () => {
     }
   }, [formData.board]);
 
-  // Update subject name when subject code is selected
+  // Update subject name and type when subject code is selected
   useEffect(() => {
     const selectedSubject = subjects.find(
       (sub) => sub.subject_code === formData.subjectCode
     );
-    setSubjectName(selectedSubject ? selectedSubject.subject_name : "");
-  }, [formData.subjectCode, subjects]);
+
+    if (selectedSubject) {
+      setSubjectName(selectedSubject.subject_name);
+      setSubjectType(selectedSubject.QP_Type);
+    } else {
+      setSubjectName("");
+      setSubjectType("");
+    }
+  }, [formData.subjectCode, subjects]); // ✅ Correct dependencies
 
   // Handle input changes
   const handleChange = (e) => {
@@ -129,11 +137,10 @@ const AssignQP = () => {
       semester: Number(formData.semester),
       subject_code: formData.subjectCode,
       subject_name: subjectName,
+      subject_type: subjectType, // ✅ Include QP_Type
       assigned_faculty_regno: selectedFaculty,
-      deadline: deadline, // Include deadline in the data
+      deadline: deadline,
     };
-
-    console.log("QP Data to be sent:", JSON.stringify(qpData, null, 2)); // Debugging
 
     try {
       const response = await fetch("http://localhost:8080/assign-qp", {
@@ -143,8 +150,6 @@ const AssignQP = () => {
       });
 
       const result = await response.json();
-      console.log("Server Response:", result); // Debugging
-
       if (response.ok) {
         setMessage("QP assigned successfully!");
         setFormData({
@@ -172,16 +177,6 @@ const AssignQP = () => {
 
       <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.inputGroupRow}>
-          {/* <div className={styles.inputGroup}>
-            <label>Session</label>
-            <input
-              type="month"
-              name="session"
-              value={formData.session}
-              onChange={handleChange}
-              required
-            />
-          </div> */}
           <div className={styles.inputGroup}>
             <label>Session</label>
             <input
@@ -279,29 +274,16 @@ const AssignQP = () => {
               ))}
             </select>
           </div>
-
-          {/* <div className={styles.inputGroup}>
-            <label>Subject Code</label>
-            <select
-              name="subjectCode"
-              value={formData.subjectCode}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select Subject Code</option>
-              {subjects.map((sub) => (
-                <option key={sub.subject_code} value={sub.subject_code}>
-                  {sub.subject_code}
-                </option>
-              ))}
-            </select>
-          </div> */}
         </div>
 
         <div className={styles.inputGroupRow}>
           <div className={styles.inputGroup}>
             <label>Subject Name</label>
             <input type="text" value={subjectName} readOnly />
+          </div>
+          <div className={styles.inputGroup}>
+            <label>Subject Type</label>
+            <input type="text" value={subjectType} readOnly />
           </div>
           <div className={styles.inputGroup}>
             <label>Faculty Count</label>
