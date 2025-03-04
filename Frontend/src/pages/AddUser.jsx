@@ -11,8 +11,8 @@ const AddUser = () => {
   });
 
   const [passwords, setPasswords] = useState({
-    newPassword: "",
-    confirmPassword: "",
+    newPassword: "svce1234", // ✅ Default password
+    confirmPassword: "svce1234", // ✅ Default password
   });
 
   const [error, setError] = useState("");
@@ -167,7 +167,7 @@ const AddUser = () => {
           <div className={styles.inputGroup}>
             <label>New Password</label>
             <input
-              type="password"
+              // type="password"
               name="newPassword"
               value={passwords.newPassword}
               onChange={handlePasswordChange}
@@ -178,7 +178,7 @@ const AddUser = () => {
           <div className={styles.inputGroup}>
             <label>Confirm Password</label>
             <input
-              type="password"
+              // type="password"
               name="confirmPassword"
               value={passwords.confirmPassword}
               onChange={handlePasswordChange}
