@@ -285,6 +285,59 @@ class AssignQPRequest(BaseModel):
     assigned_faculty_regno: list[str]
     deadline: datetime
 
+# @app.post("/assign-qp")
+# def assign_qp(data: AssignQPRequest):
+#     print("Received Data:", data.dict())  # ✅ Debugging
+
+#     try:
+#         conn = get_db_connection()
+#         cursor = conn.cursor()
+
+#         for regno in data.assigned_faculty_regno:
+#             qp_ref_no = f"QP-{uuid.uuid4().hex[:8]}"  # Generate unique reference number
+
+#             # Fetch faculty name
+#             cursor.execute("SELECT name FROM users WHERE regno = %s", (regno,))
+#             result = cursor.fetchone()
+#             if not result:
+#                 raise HTTPException(status_code=404, detail=f"Faculty with regno {regno} not found")
+#             faculty_name = result[0]
+
+#             print(data)
+#             # Insert into database, including `QP_Type`
+#             cursor.execute(
+#                 """
+#                 INSERT INTO QP (QP_Ref_no, QP_Session, QP_Degree, QP_Regulation, QP_Board, 
+#                                 QP_Semester, QP_Subjectcode, QP_Subject, QP_Type,
+#                                 QP_Faculty_assigned, QP_Faculty_assigned_Regno, QP_Deadline)
+#                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+#                 """,
+#                 (
+#                     qp_ref_no,
+#                     data.session,
+#                     data.degree,
+#                     data.regulation,
+#                     data.board,
+#                     data.semester,
+#                     data.subject_code,
+#                     data.subject_name,
+#                     data.subject_type,  # ✅ Store QP_Type
+#                     faculty_name,
+#                     regno,
+#                     data.deadline
+#                 )
+#             )
+
+#         conn.commit()
+#         return {"message": "QP assigned successfully!"}
+
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=f"Error assigning QP: {str(e)}")
+
+#     finally:
+#         cursor.close()
+#         conn.close()
+
 @app.post("/assign-qp")
 def assign_qp(data: AssignQPRequest):
     print("Received Data:", data.dict())  # ✅ Debugging
@@ -293,8 +346,38 @@ def assign_qp(data: AssignQPRequest):
         conn = get_db_connection()
         cursor = conn.cursor()
 
+        current_year = datetime.now().year
+        year_code = (current_year - 1) % 100 if data.semester % 2 == 0 else current_year % 100
+
+        # Odd (1) / Even (2) semester
+        semester_type = "1" if data.semester % 2 != 0 else "2"
+
+        # Degree Type: B.E or B.Tech are considered UG (1), others are PG (2)
+        if data.degree.upper() in ["B.E", "B.TECH"]:
+            degree_type = "1"  # UG
+        else:
+            degree_type = "2"  # PG
+
+        # QP Type (Internal: 1, External: 2)
+        qp_type = "1" if data.subject_type.lower() == "internal" else "2"
+
+        # Fetch last serial number from DB
+        cursor.execute(
+            """
+            SELECT MAX(CAST(SUBSTRING(QP_Ref_no, -3) AS UNSIGNED)) FROM QP 
+            WHERE QP_Session = %s AND QP_Degree = %s AND QP_Semester = %s AND QP_Type = %s
+            """,
+            (data.session, data.degree, data.semester, data.subject_type)
+        )
+        last_serial = cursor.fetchone()[0]
+        serial_number = int(last_serial) + 1 if last_serial else 1
+
+        # Format serial number as 3-digit (001, 002, ...)
+        serial_str = f"{serial_number:03}"
+
         for regno in data.assigned_faculty_regno:
-            qp_ref_no = f"QP-{uuid.uuid4().hex[:8]}"  # Generate unique reference number
+            # Generate unique QP Reference Number
+            qp_ref_no = f"{year_code}{semester_type}{degree_type}{qp_type}{serial_str}"
 
             # Fetch faculty name
             cursor.execute("SELECT name FROM users WHERE regno = %s", (regno,))
@@ -303,8 +386,7 @@ def assign_qp(data: AssignQPRequest):
                 raise HTTPException(status_code=404, detail=f"Faculty with regno {regno} not found")
             faculty_name = result[0]
 
-            print(data)
-            # Insert into database, including `QP_Type`
+            # Insert into database
             cursor.execute(
                 """
                 INSERT INTO QP (QP_Ref_no, QP_Session, QP_Degree, QP_Regulation, QP_Board, 
@@ -321,7 +403,7 @@ def assign_qp(data: AssignQPRequest):
                     data.semester,
                     data.subject_code,
                     data.subject_name,
-                    data.subject_type,  # ✅ Store QP_Type
+                    data.subject_type,  
                     faculty_name,
                     regno,
                     data.deadline
@@ -329,7 +411,7 @@ def assign_qp(data: AssignQPRequest):
             )
 
         conn.commit()
-        return {"message": "QP assigned successfully!"}
+        return {"message": "QP assigned successfully!", "QP_Ref_no": qp_ref_no}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error assigning QP: {str(e)}")
@@ -337,6 +419,8 @@ def assign_qp(data: AssignQPRequest):
     finally:
         cursor.close()
         conn.close()
+
+
 
 # Pydantic Model for Subject
 class Subject(BaseModel):
