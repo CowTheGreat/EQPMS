@@ -47,7 +47,6 @@ const AssignQP = () => {
     }
   }, [formData.degree, formData.regulation]);
 
-  // Fetch subjects when degree, regulation, board, or semester changes
   useEffect(() => {
     if (
       formData.degree &&

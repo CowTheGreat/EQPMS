@@ -320,10 +320,17 @@ def assign_qp(data: AssignQPRequest):
         cursor.execute(
             """
             SELECT MAX(CAST(SUBSTRING(QP_Ref_no, -3) AS UNSIGNED)) FROM QP 
-            WHERE QP_Session = %s AND QP_Degree = %s AND QP_Semester = %s AND QP_Type = %s
+            WHERE QP_Session = %s AND QP_Degree = %s
             """,
-            (data.session, data.degree, data.semester, data.subject_type)
+            (data.session, data.degree)
         )
+        # cursor.execute(
+        #     """
+        #     SELECT MAX(CAST(SUBSTRING(QP_Ref_no, -3) AS UNSIGNED)) FROM QP 
+        #     WHERE QP_Session = %s AND QP_Degree = %s AND QP_Semester = %s AND QP_Type = %s
+        #     """,
+        #     (data.session, data.degree, data.semester, data.subject_type)
+        # )
         last_serial = cursor.fetchone()[0]
         serial_number = int(last_serial) + 1 if last_serial else 1
 
@@ -375,8 +382,6 @@ def assign_qp(data: AssignQPRequest):
         cursor.close()
         conn.close()
 
-
-
 # Pydantic Model for Subject
 class Subject(BaseModel):
     degree: str
@@ -425,6 +430,8 @@ def add_subjects(subjects: List[Subject]):
 
 @app.get("/user_data/{faculty_id}")
 def get_user_data(faculty_id: str):
+    print(faculty_id)
+
     """Fetch all question papers assigned to a specific faculty member by ID."""
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -432,7 +439,7 @@ def get_user_data(faculty_id: str):
     query = """
         SELECT QP_Ref_no, QP_Session, QP_Degree, QP_Regulation, QP_Board, 
                QP_Semester, QP_Subjectcode, QP_Subject, QP_Status
-        FROM assignments WHERE QP_Faculty_assigned_Regno = %s 
+        FROM QP WHERE QP_Faculty_assigned_Regno = %s 
     """
     cursor.execute(query, (faculty_id,))
     data = cursor.fetchall()
@@ -455,7 +462,7 @@ def update_status(qp_ref: str, new_status: str):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    cursor.execute("UPDATE assignments SET QP_Status = %s WHERE QP_Ref_no = %s", (new_status.replace("+", " "), qp_ref))
+    cursor.execute("UPDATE QP SET QP_Status = %s WHERE QP_Ref_no = %s", (new_status.replace("+", " "), qp_ref))
     conn.commit()
 
     if cursor.rowcount == 0:
@@ -476,7 +483,7 @@ async def upload_file(file: UploadFile = File(...), username: str = Form(...), q
     cursor = conn.cursor(dictionary=True)
     cursor.execute("""
         SELECT QP_Session, QP_Degree, QP_Regulation, QP_Board, QP_Semester, QP_Subjectcode, QP_Subject
-        FROM assignments WHERE QP_Ref_no = %s
+        FROM qp WHERE QP_Ref_no = %s
     """, (qp_ref,))
     qp_data = cursor.fetchone()
     conn.close()
@@ -513,7 +520,7 @@ def get_uploaded_file(qp_ref: str):
         for file in files:
             if file.startswith(qp_ref):
                 file_path = os.path.join(root, file)
-                file_url = f"http://127.0.0.1:8000/download/{qp_ref}"
+                file_url = f"http://localhost:8080/download/{qp_ref}"
                 return {"file_url": file_url}
 
     raise HTTPException(status_code=404, detail="File not found.")
@@ -550,7 +557,7 @@ def download_order(username: str):
 
     cursor.execute("""
         SELECT QP_Ref_no, QP_Subject, QP_Subjectcode, QP_Semester
-        FROM assignments WHERE QP_Faculty_assigned_Regno = %s
+        FROM QP WHERE QP_Faculty_assigned_Regno = %s
     """, (username,))
     
     papers = cursor.fetchall()
