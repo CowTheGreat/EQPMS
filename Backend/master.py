@@ -314,7 +314,7 @@ def assign_qp(data: AssignQPRequest):
             degree_type = "2"  # PG
 
         # QP Type (Internal: 1, External: 2)
-        qp_type = "1" if data.subject_type.lower() == "internal" else "2"
+        qp_type = "1" if data.subject_type.lower() == "internal" else "1"
 
         # Fetch last serial number from DB
         cursor.execute(
