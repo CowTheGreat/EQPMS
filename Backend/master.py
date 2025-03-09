@@ -10,6 +10,14 @@ import uuid
 from datetime import datetime
 from typing import List
 
+#Gowtham
+from fastapi.responses import Response
+from reportlab.pdfgen import canvas
+from fastapi.responses import FileResponse
+from fastapi import FastAPI, HTTPException, UploadFile, File, Form
+import os
+import io
+
 # FastAPI instance
 app = FastAPI()
 
@@ -285,59 +293,6 @@ class AssignQPRequest(BaseModel):
     assigned_faculty_regno: list[str]
     deadline: datetime
 
-# @app.post("/assign-qp")
-# def assign_qp(data: AssignQPRequest):
-#     print("Received Data:", data.dict())  # ✅ Debugging
-
-#     try:
-#         conn = get_db_connection()
-#         cursor = conn.cursor()
-
-#         for regno in data.assigned_faculty_regno:
-#             qp_ref_no = f"QP-{uuid.uuid4().hex[:8]}"  # Generate unique reference number
-
-#             # Fetch faculty name
-#             cursor.execute("SELECT name FROM users WHERE regno = %s", (regno,))
-#             result = cursor.fetchone()
-#             if not result:
-#                 raise HTTPException(status_code=404, detail=f"Faculty with regno {regno} not found")
-#             faculty_name = result[0]
-
-#             print(data)
-#             # Insert into database, including `QP_Type`
-#             cursor.execute(
-#                 """
-#                 INSERT INTO QP (QP_Ref_no, QP_Session, QP_Degree, QP_Regulation, QP_Board, 
-#                                 QP_Semester, QP_Subjectcode, QP_Subject, QP_Type,
-#                                 QP_Faculty_assigned, QP_Faculty_assigned_Regno, QP_Deadline)
-#                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-#                 """,
-#                 (
-#                     qp_ref_no,
-#                     data.session,
-#                     data.degree,
-#                     data.regulation,
-#                     data.board,
-#                     data.semester,
-#                     data.subject_code,
-#                     data.subject_name,
-#                     data.subject_type,  # ✅ Store QP_Type
-#                     faculty_name,
-#                     regno,
-#                     data.deadline
-#                 )
-#             )
-
-#         conn.commit()
-#         return {"message": "QP assigned successfully!"}
-
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=f"Error assigning QP: {str(e)}")
-
-#     finally:
-#         cursor.close()
-#         conn.close()
-
 @app.post("/assign-qp")
 def assign_qp(data: AssignQPRequest):
     print("Received Data:", data.dict())  # ✅ Debugging
@@ -459,6 +414,165 @@ def add_subjects(subjects: List[Subject]):
     finally:
         cursor.close()
         conn.close()
+
+#Gowtham
+#Gowtham
+#Gowtham
+#Gowtham
+#Gowtham
+#Gowtham
+#Gowtham
+
+@app.get("/user_data/{faculty_id}")
+def get_user_data(faculty_id: str):
+    """Fetch all question papers assigned to a specific faculty member by ID."""
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    query = """
+        SELECT QP_Ref_no, QP_Session, QP_Degree, QP_Regulation, QP_Board, 
+               QP_Semester, QP_Subjectcode, QP_Subject, QP_Status
+        FROM assignments WHERE QP_Faculty_assigned_Regno = %s 
+    """
+    cursor.execute(query, (faculty_id,))
+    data = cursor.fetchall()
+    conn.close()
+
+    if not data:
+        raise HTTPException(status_code=404, detail="No question papers found")
+
+    return {"assignments": data}
+
+# ✅ Update Question Paper Status
+@app.put("/update_status/{qp_ref}")
+def update_status(qp_ref: str, new_status: str):
+    """Updates the status of a question paper."""
+    valid_statuses = ["Assigned", "In Progress", "Saved", "Locked"]
+
+    if new_status.replace("+", " ") not in valid_statuses:
+        raise HTTPException(status_code=400, detail="Invalid status")
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("UPDATE assignments SET QP_Status = %s WHERE QP_Ref_no = %s", (new_status.replace("+", " "), qp_ref))
+    conn.commit()
+
+    if cursor.rowcount == 0:
+        raise HTTPException(status_code=404, detail="Question Paper not found")
+
+    conn.close()
+    return {"message": f"Question Paper {qp_ref} status updated to {new_status.replace('+', ' ')}"}
+
+# ✅ File Upload Function (Organized in Proper Hierarchy)
+UPLOAD_DIR = "uploaded_papers"
+
+@app.post("/upload")
+async def upload_file(file: UploadFile = File(...), username: str = Form(...), qp_ref: str = Form(...)):
+    """Uploads a file and saves it in a structured folder hierarchy."""
+
+    # 📌 Get QP details from database
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("""
+        SELECT QP_Session, QP_Degree, QP_Regulation, QP_Board, QP_Semester, QP_Subjectcode, QP_Subject
+        FROM assignments WHERE QP_Ref_no = %s
+    """, (qp_ref,))
+    qp_data = cursor.fetchone()
+    conn.close()
+
+    if not qp_data:
+        raise HTTPException(status_code=404, detail="Question Paper not found.")
+
+    # 📌 Create folder hierarchy
+    session = qp_data["QP_Session"].replace(" ", "")
+    degree = qp_data["QP_Degree"].replace(" ", "")
+    regulation = qp_data["QP_Regulation"].replace(" ", "")
+    board = qp_data["QP_Board"].replace(" ", "")
+    semester = f"Sem{qp_data['QP_Semester']}"
+    subject_code = qp_data["QP_Subjectcode"].replace(" ", "")
+    subject_name = qp_data["QP_Subject"].replace(" ", "").replace("/", "_")
+
+    folder_path = os.path.join(UPLOAD_DIR, session, degree, board, regulation, semester, subject_code)
+    os.makedirs(folder_path, exist_ok=True)
+
+    # 📌 Save file with proper naming
+    file_name = f"{qp_ref}_{subject_code}_{subject_name}_{username}.docx"
+    file_path = os.path.join(folder_path, file_name)
+
+    with open(file_path, "wb") as buffer:
+        buffer.write(await file.read())
+
+    return {"message": f"File uploaded successfully: {file_name}", "file_path": file_path}
+
+# ✅ API to Fetch Uploaded Files
+@app.get("/uploaded_files/{qp_ref}")
+def get_uploaded_file(qp_ref: str):
+    """Returns the uploaded file path for a given QP reference number."""
+    for root, dirs, files in os.walk(UPLOAD_DIR):
+        for file in files:
+            if file.startswith(qp_ref):
+                file_path = os.path.join(root, file)
+                file_url = f"http://127.0.0.1:8000/download/{qp_ref}"
+                return {"file_url": file_url}
+
+    raise HTTPException(status_code=404, detail="File not found.")
+
+# ✅ API to Download Uploaded Files
+@app.get("/download/{qp_ref}")
+def download_file(qp_ref: str):
+    """Serves the uploaded file for download."""
+    for root, dirs, files in os.walk(UPLOAD_DIR):
+        for file in files:
+            if file.startswith(qp_ref):
+                file_path = os.path.join(root, file)
+                return FileResponse(file_path, filename=file, media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+
+    raise HTTPException(status_code=404, detail="File not found.")
+
+
+@app.get("/download_order/{username}")
+def download_order(username: str):
+    """Generates and returns an order PDF for assigned question papers without saving it to disk."""
+    buffer = io.BytesIO()  # ✅ Create an in-memory buffer
+
+    # ✅ Create a PDF in-memory
+    c = canvas.Canvas(buffer)
+    c.setFont("Helvetica-Bold", 16)
+    c.drawString(200, 800, "Question Paper Assignment Order")
+    
+    c.setFont("Helvetica", 12)
+    c.drawString(100, 750, f"Faculty Name: {username}")
+    c.drawString(100, 730, "Assigned Question Papers:")
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT QP_Ref_no, QP_Subject, QP_Subjectcode, QP_Semester
+        FROM assignments WHERE QP_Faculty_assigned_Regno = %s
+    """, (username,))
+    
+    papers = cursor.fetchall()
+    conn.close()
+
+    if not papers:
+        raise HTTPException(status_code=404, detail="No question papers assigned.")
+    
+    y_position = 710
+    for paper in papers:
+        c.drawString(120, y_position, f"- {paper}")
+        y_position -= 20  # Move down for next item
+
+    c.drawString(100, y_position - 40, "Signature: _____________________ (COE)")
+    
+    c.save()  # ✅ Save PDF to the buffer
+    buffer.seek(0)  # ✅ Move to start of the buffer
+
+    # ✅ Return the PDF directly for download
+    return Response(buffer.read(), media_type="application/pdf", headers={
+        "Content-Disposition": f"attachment; filename={username}_order.pdf"
+    })
 
 if __name__ == "__main__":
     uvicorn.run("master:app", host="0.0.0.0", port=8080, reload=True)
