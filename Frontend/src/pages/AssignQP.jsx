@@ -308,17 +308,18 @@ const AssignQP = () => {
               required
             />
           </div>
-          <div className={styles.inputGroupRow}>
-            <div className={styles.inputGroup}>
-              <label>Deadline</label>
-              <input
-                type="date"
-                name="deadline"
-                value={deadline}
-                onChange={handleDeadlineChange}
-                required
-              />
-            </div>
+        </div>
+
+        <div className={styles.inputGroupRow}>
+          <div className={styles.inputGroup}>
+            <label>Deadline</label>
+            <input
+              type="date"
+              name="deadline"
+              value={deadline}
+              onChange={handleDeadlineChange}
+              required
+            />
           </div>
         </div>
 
@@ -329,6 +330,7 @@ const AssignQP = () => {
               {facultyList.map((fac) => (
                 <div key={fac.regno} className={styles.facultyItem}>
                   <input
+                    className={styles.facultyCheckBox}
                     type="checkbox"
                     id={`faculty-${fac.regno}`}
                     value={fac.regno}
@@ -356,7 +358,7 @@ const AssignQP = () => {
           ))}
         </div>
 
-        <button type="submit" className={styles.button}>
+        <button type="submit" className={styles.submitButton}>
           Assign QP
         </button>
       </form>
