@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import styles from "../page_styles/Login.module.css";
+import styles from "../page_styles/UserConsole.module.css";
 import { AiOutlineClose } from "react-icons/ai";
 import { FiRefreshCw } from "react-icons/fi";
 
@@ -245,33 +245,95 @@ const UserConsole = () => {
                 <strong>Reference No:</strong> {selectedQP.QP_Ref_no}
               </p>
               <p>
+                <strong>Session:</strong> {selectedQP.QP_Session}
+              </p>
+              <p>
+                <strong>Degree:</strong> {selectedQP.QP_Degree}
+              </p>
+              <p>
+                <strong>Regulation:</strong> {selectedQP.QP_Regulation}
+              </p>
+              <p>
+                <strong>Board:</strong> {selectedQP.QP_Board}
+              </p>
+              <p>
+                <strong>Semester:</strong> {selectedQP.QP_Semester}
+              </p>
+              <p>
+                <strong>Subject Code:</strong> {selectedQP.QP_Subjectcode}
+              </p>
+              <p>
+                <strong>Subject:</strong> {selectedQP.QP_Subject}
+              </p>
+              <p>
                 <strong>Status:</strong> {selectedQP.QP_Status}
               </p>
 
-              {isEditing && (
-                <div className="file-upload-container">
-                  <input
-                    type="file"
-                    accept=".docx"
-                    onChange={handleFileChange}
-                  />
-                  <button onClick={handleFileUpload}>Upload</button>
-                  {uploadMessages[selectedQP.QP_Ref_no] && (
-                    <p className="upload-message">
-                      {uploadMessages[selectedQP.QP_Ref_no]}
-                    </p>
-                  )}
-                </div>
-              )}
+              {selectedQP.QP_Status === "Locked" ? (
+                <p className="locked-message">
+                  ❌ This Question Paper has been Locked.
+                </p>
+              ) : (
+                <>
+                  {isEditing && (
+                    <div className="file-upload-container">
+                      <input
+                        type="file"
+                        accept=".docx"
+                        onChange={handleFileChange}
+                      />
+                      <button onClick={handleFileUpload}>Upload</button>
 
-              {uploadedFiles[selectedQP.QP_Ref_no] && (
-                <a
-                  href={uploadedFiles[selectedQP.QP_Ref_no]}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  📄 View Uploaded File
-                </a>
+                      {/* ✅ Show File Upload Status Message */}
+                      {uploadMessages[selectedQP.QP_Ref_no] && (
+                        <p className="upload-message">
+                          {uploadMessages[selectedQP.QP_Ref_no]}
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  {uploadedFiles[selectedQP.QP_Ref_no] ? (
+                    <a
+                      href={uploadedFiles[selectedQP.QP_Ref_no]}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      📄 View Uploaded File
+                    </a>
+                  ) : (
+                    <p>No file uploaded yet.</p>
+                  )}
+
+                  {selectedQP.QP_Status === "Assigned" ||
+                  selectedQP.QP_Status === "In Progress" ? (
+                    <button
+                      onClick={() =>
+                        updateStatus(selectedQP.QP_Ref_no, "Saved")
+                      }
+                    >
+                      Save
+                    </button>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => {
+                          updateStatus(selectedQP.QP_Ref_no, "In Progress");
+                          setIsEditing(true);
+                        }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() =>
+                          updateStatus(selectedQP.QP_Ref_no, "Locked")
+                        }
+                      >
+                        Lock
+                      </button>
+                    </>
+                  )}
+                </>
               )}
             </div>
           </div>
