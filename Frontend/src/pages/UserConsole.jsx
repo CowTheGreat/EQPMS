@@ -203,27 +203,31 @@ const UserConsole = () => {
 
         <h3>Your Assigned Question Papers</h3>
         <ul className={styles.assignmentList}>
-          {assignments.map((qp, index) => (
-            <li
-              key={index}
-              onClick={() => {
-                if (qp.QP_Status !== "Locked") {
-                  if (qp.QP_Status === "Assigned") {
-                    updateStatus(qp.QP_Ref_no, "In Progress");
+          {assignments && assignments.length > 0 ? (
+            assignments.map((qp, index) => (
+              <li
+                key={index}
+                onClick={() => {
+                  if (qp.QP_Status !== "Locked") {
+                    if (qp.QP_Status === "Assigned") {
+                      updateStatus(qp.QP_Ref_no, "In Progress");
+                    }
+                    openModal(qp);
                   }
-                  openModal(qp);
-                }
-              }}
-              style={{
-                cursor: qp.QP_Status !== "Locked" ? "pointer" : "not-allowed",
-                opacity: qp.QP_Status === "Locked" ? 0.6 : 1,
-              }}
-              className={styles.assignmentItem}
-            >
-              <strong>{qp.QP_Ref_no}&nbsp;</strong>
-              {qp.QP_Subject} ({qp.QP_Subjectcode}) - Status: {qp.QP_Status}
-            </li>
-          ))}
+                }}
+                style={{
+                  cursor: qp.QP_Status !== "Locked" ? "pointer" : "not-allowed",
+                  opacity: qp.QP_Status === "Locked" ? 0.6 : 1,
+                }}
+                className={styles.assignmentItem}
+              >
+                <strong>{qp.QP_Ref_no}&nbsp;</strong>
+                {qp.QP_Subject} ({qp.QP_Subjectcode}) - Status: {qp.QP_Status}
+              </li>
+            ))
+          ) : (
+            <p>No assignments available</p>
+          )}
         </ul>
 
         {selectedQP && (
