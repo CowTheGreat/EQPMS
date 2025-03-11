@@ -118,7 +118,6 @@ class AddUserRequest(BaseModel):
     role: str  # 'user' or 'admin'
     employee_type: str  # 'Internal' or 'External'
 
-
 @app.post("/add-user")
 def add_user(user: AddUserRequest):
     try:
@@ -318,8 +317,15 @@ def assign_qp(data: AssignQPRequest):
         else:
             degree_type = "2"  # PG
 
+        # Fetch faculty Type
+        cursor.execute("SELECT employee_type FROM users WHERE regno = %s", (data.assigned_faculty_regno[0],))
+        result = cursor.fetchone()
+        if not result:
+            raise HTTPException(status_code=404, detail=f"Faculty with regno {data.assigned_faculty_regno[0]} not found")
+        faculty_type = result[0]
         # QP Type (Internal: 1, External: 2)
-        qp_type = "1" if data.subject_type.lower() == "internal" else "1"
+        # qp_type = "1" if data.subject_type.lower() == "internal" else "1"
+        qp_type = "1" if faculty_type == "Internal" else "2"
 
         # Fetch last serial number from DB
         cursor.execute(

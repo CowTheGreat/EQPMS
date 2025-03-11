@@ -71,11 +71,13 @@ const AddUser = () => {
       password: passwords.newPassword,
       board: formData.board,
       role: formData.role,
-      employeeType: formData.employeeType, // ✅ Include employee type
+      employee_type: formData.employeeType, // ✅ Include employee type
     };
 
     try {
-      const response = await fetch("http://localhost:8080/add-user", {
+      console.log(userData);
+
+      const response = await fetch(`http://localhost:8080/add-user`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(userData),
@@ -93,7 +95,6 @@ const AddUser = () => {
           role: "user",
           employeeType: "Internal",
         });
-
         setPasswords({ newPassword: "", confirmPassword: "" });
       } else {
         setError(result.detail || "Something went wrong.");
