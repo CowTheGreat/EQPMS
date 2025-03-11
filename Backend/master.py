@@ -116,6 +116,8 @@ class AddUserRequest(BaseModel):
     password: str
     board: str
     role: str  # 'user' or 'admin'
+    employee_type: str  # 'Internal' or 'External'
+
 
 @app.post("/add-user")
 def add_user(user: AddUserRequest):
@@ -126,11 +128,14 @@ def add_user(user: AddUserRequest):
         # Validate board and role fields
         valid_boards = {"CSE", "ECE", "EEE"}
         valid_roles = {"user", "admin"}
-        
+        valid_employee_types = {"Internal", "External"}
+
         if user.board not in valid_boards:
             raise HTTPException(status_code=400, detail="Invalid board selection")
         if user.role not in valid_roles:
             raise HTTPException(status_code=400, detail="Invalid role selection")
+        if user.employee_type not in valid_employee_types:
+            raise HTTPException(status_code=400, detail="Invalid employee type selection")
 
         # Check if user already exists
         cursor.execute("SELECT regno FROM users WHERE regno = %s", (user.regno,))
@@ -140,8 +145,8 @@ def add_user(user: AddUserRequest):
 
         # Insert new user into the database
         cursor.execute(
-            "INSERT INTO users (name, regno, mail, pwd, board, role, password_changed) VALUES (%s, %s, %s, %s, %s, %s, 0)",
-            (user.name, user.regno, user.mail, user.password, user.board, user.role)
+            "INSERT INTO users (name, regno, mail, pwd, board, role, password_changed, employee_type) VALUES (%s, %s, %s, %s, %s, %s, 0, %s)",
+            (user.name, user.regno, user.mail, user.password, user.board, user.role, user.employee_type)
         )
         conn.commit()
 

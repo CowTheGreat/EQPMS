@@ -8,6 +8,7 @@ const AddUser = () => {
     mail: "",
     board: "",
     role: "user",
+    employeeType: "Internal", // ✅ New field with default value
   });
 
   const [passwords, setPasswords] = useState({
@@ -70,6 +71,7 @@ const AddUser = () => {
       password: passwords.newPassword,
       board: formData.board,
       role: formData.role,
+      employeeType: formData.employeeType, // ✅ Include employee type
     };
 
     try {
@@ -83,7 +85,15 @@ const AddUser = () => {
 
       if (response.ok) {
         setSuccess("User added successfully!");
-        setFormData({ name: "", regno: "", mail: "", board: "", role: "user" });
+        setFormData({
+          name: "",
+          regno: "",
+          mail: "",
+          board: "",
+          role: "user",
+          employeeType: "Internal",
+        });
+
         setPasswords({ newPassword: "", confirmPassword: "" });
       } else {
         setError(result.detail || "Something went wrong.");
@@ -172,6 +182,7 @@ const AddUser = () => {
               value={passwords.newPassword}
               onChange={handlePasswordChange}
               required
+              readOnly
             />
           </div>
 
@@ -183,23 +194,39 @@ const AddUser = () => {
               value={passwords.confirmPassword}
               onChange={handlePasswordChange}
               required
+              readOnly
             />
           </div>
         </div>
 
-        <div className={styles.inputGroup}>
-          <label>Board</label>
-          <select
-            name="board"
-            value={formData.board}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Select Board</option>
-            <option value="CSE">CSE</option>
-            <option value="ECE">ECE</option>
-            <option value="EEE">EEE</option>
-          </select>
+        <div className={styles.row}>
+          <div className={styles.inputGroup}>
+            <label>Board</label>
+            <select
+              name="board"
+              value={formData.board}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select Board</option>
+              <option value="CSE">CSE</option>
+              <option value="ECE">ECE</option>
+              <option value="EEE">EEE</option>
+            </select>
+          </div>
+
+          <div className={styles.inputGroup}>
+            <label>Employee Type</label>
+            <select
+              name="employeeType"
+              value={formData.employeeType}
+              onChange={handleChange}
+              required
+            >
+              <option value="Internal">Internal</option>
+              <option value="External">External</option>
+            </select>
+          </div>
         </div>
 
         <div className={styles.inputGroup}>
