@@ -189,9 +189,9 @@ const UserConsole = () => {
 
   return (
     <div style={{ padding: "20px" }}>
-      <div className="container">
+      <div className={styles.container}>
         <h2>Welcome, {user.id}</h2>
-        <button className="logout-btn" onClick={handleLogout}>
+        <button className={styles.logoutBtn} onClick={handleLogout}>
           Logout
         </button>
         <button className="refresh-btn" onClick={refreshData}>
@@ -202,7 +202,7 @@ const UserConsole = () => {
         </button>
 
         <h3>Your Assigned Question Papers</h3>
-        <ul>
+        <ul className={styles.assignmentList}>
           {assignments.map((qp, index) => (
             <li
               key={index}
@@ -218,6 +218,7 @@ const UserConsole = () => {
                 cursor: qp.QP_Status !== "Locked" ? "pointer" : "not-allowed",
                 opacity: qp.QP_Status === "Locked" ? 0.6 : 1,
               }}
+              className={styles.assignmentItem}
             >
               <strong>{qp.QP_Ref_no}&nbsp;</strong>
               {qp.QP_Subject} ({qp.QP_Subjectcode}) - Status: {qp.QP_Status}
@@ -226,48 +227,56 @@ const UserConsole = () => {
         </ul>
 
         {selectedQP && (
-          <div className="modal">
-            <div className="modal-content">
-              <div className="modal-header">
+          <div className={styles.modal}>
+            <div className={styles.modalContent}>
+              <div className={styles.modalHeader}>
                 <FiRefreshCw
-                  className="refresh-icon"
+                  className={styles.refreshIcon}
                   onClick={refreshSingleQP}
                   title="Refresh Status"
                 />
                 <AiOutlineClose
-                  className="close-btn"
+                  className={styles.closeBtn}
                   onClick={() => setSelectedQP(null)}
                 />
               </div>
 
               <h3>Question Paper Details</h3>
-              <p>
-                <strong>Reference No:</strong> {selectedQP.QP_Ref_no}
-              </p>
-              <p>
-                <strong>Session:</strong> {selectedQP.QP_Session}
-              </p>
-              <p>
-                <strong>Degree:</strong> {selectedQP.QP_Degree}
-              </p>
-              <p>
-                <strong>Regulation:</strong> {selectedQP.QP_Regulation}
-              </p>
-              <p>
-                <strong>Board:</strong> {selectedQP.QP_Board}
-              </p>
-              <p>
-                <strong>Semester:</strong> {selectedQP.QP_Semester}
-              </p>
-              <p>
-                <strong>Subject Code:</strong> {selectedQP.QP_Subjectcode}
-              </p>
-              <p>
-                <strong>Subject:</strong> {selectedQP.QP_Subject}
-              </p>
-              <p>
-                <strong>Status:</strong> {selectedQP.QP_Status}
-              </p>
+              <div className={styles.qpDetails}>
+                <div className={styles.qpRow}>
+                  <p>
+                    <strong>Reference No:</strong> {selectedQP.QP_Ref_no}
+                  </p>
+                  <p>
+                    <strong>Session:</strong> {selectedQP.QP_Session}
+                  </p>
+                  <p>
+                    <strong>Degree:</strong> {selectedQP.QP_Degree}
+                  </p>
+                </div>
+                <div className={styles.qpRow}>
+                  <p>
+                    <strong>Regulation:</strong> {selectedQP.QP_Regulation}
+                  </p>
+                  <p>
+                    <strong>Board:</strong> {selectedQP.QP_Board}
+                  </p>
+                  <p>
+                    <strong>Semester:</strong> {selectedQP.QP_Semester}
+                  </p>
+                </div>
+                <div className={styles.qpRow}>
+                  <p>
+                    <strong>Subject Code:</strong> {selectedQP.QP_Subjectcode}
+                  </p>
+                  <p>
+                    <strong>Subject:</strong> {selectedQP.QP_Subject}
+                  </p>
+                  <p>
+                    <strong>Status:</strong> {selectedQP.QP_Status}
+                  </p>
+                </div>
+              </div>
 
               {selectedQP.QP_Status === "Locked" ? (
                 <p className="locked-message">

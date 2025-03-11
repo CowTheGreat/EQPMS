@@ -1,277 +1,107 @@
-/* styles.css */
-
-/* General Styles */
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
-  text-align: center;
-  margin: 0;
-  padding: 0;
-}
-
-/* Container */
 .container {
-  width: 40%;
-  margin: 50px auto;
-  background: white;
   padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Input Fields */
-input {
-  width: 80%;
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #ccc;
+.logoutBtn {
+  background-color: red;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
   border-radius: 5px;
+  margin-right: 10px;
 }
 
-/* Buttons */
-button {
+.refresh-btn,
+.download-btn {
   background-color: #007bff;
   color: white;
-  border: none;
   padding: 10px 15px;
-  font-size: 16px;
-  border-radius: 5px;
+  border: none;
   cursor: pointer;
-  transition: 0.3s;
+  border-radius: 5px;
+  margin-right: 10px;
 }
 
-button:hover {
-  background-color: #0056b3;
-}
-
-/* Error Messages */
-.error {
-  color: red;
-  font-weight: bold;
-}
-
-/* List Styling */
-ul {
-  list-style: none;
+.assignmentList {
+  list-style-type: none;
   padding: 0;
 }
 
-ul li {
-  background: white;
-  margin: 10px auto;
+.assignmentItem {
   padding: 10px;
-  border-radius: 5px;
-  width: 80%;
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
+  margin: 5px 0;
   cursor: pointer;
   transition: 0.3s;
 }
 
-ul li:hover {
-  background: #e0e0e0;
-}
-
-.upload-message {
-  margin-top: 10px;
-  font-weight: bold;
-  color: green;
-}
-
-input[type="file"] {
-  margin: 10px 0;
-  padding: 5px;
-}
-
-button {
-  margin-top: 10px;
-}
-
-/* Logout Button */
-.logout-btn {
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  font-size: 16px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: 0.3s;
-  margin-bottom: 20px;
-}
-
-.logout-btn:hover {
-  background-color: #c82333;
-}
-
-/* Refresh Button */
-.refresh-btn {
-  background-color: #28a745;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  font-size: 16px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: 0.3s;
-  margin-left: 10px;
-}
-
-.refresh-btn:hover {
-  background-color: #218838;
-}
-
-/* Locked Message */
-.locked-message {
-  color: red;
-  font-weight: bold;
-}
-
-/* Disabled Cursor */
-ul li[style*="not-allowed"] {
-  cursor: not-allowed !important;
+.assignmentItem:hover {
+  background-color: #f0f0f0;
 }
 
 .modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-content {
   background: white;
   padding: 20px;
-  border-radius: 8px;
-  width: 40%;
-  position: relative;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  width: 80vw;
 }
 
-/* Close Button */
-.close-btn {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  font-size: 24px;
-  cursor: pointer;
-  color: red;
-}
-
-/* Refresh Icon */
-.refresh-icon {
-  font-size: 20px;
-  cursor: pointer;
-  color: blue;
-  transition: 0.2s;
-}
-
-.refresh-icon:hover {
-  color: darkblue;
-}
-
-/* File Upload Container */
-.file-upload-container {
+.modalContent {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 10px;
 }
 
-/* Uploaded File Link */
-.upload-message {
-  font-weight: bold;
-  color: green;
-}
-
-a {
-  display: block;
-  margin-top: 10px;
-  color: blue;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-.modal-header {
+.modalHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-/* ✅ Button Group - Adds spacing between Save, Edit, and Lock buttons */
-.button-group {
+.refreshIcon {
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.closeBtn {
+  cursor: pointer;
+  font-size: 20px;
+  color: red;
+}
+
+.file-upload-container {
   display: flex;
-  gap: 10px; /* Space between buttons */
-  margin-top: 15px;
-  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
 }
 
-/* Save, Edit, Lock Button Styling */
-.save-btn {
-  background-color: #28a745;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  font-size: 16px;
+.upload-message {
+  color: green;
+  font-size: 14px;
+}
+
+.locked-message {
+  color: red;
+  font-weight: bold;
+}
+
+.qpDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.qpRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.qpRow p {
+  background-color: #f5f5f5;
+  padding: 10px;
   border-radius: 5px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.save-btn:hover {
-  background-color: #218838;
-}
-
-.edit-btn {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  font-size: 16px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.edit-btn:hover {
-  background-color: #0056b3;
-}
-
-.lock-btn {
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  font-size: 16px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.lock-btn:hover {
-  background-color: #c82333;
-}
-
-.download-btn {
-  background-color: #6f42c1;
-  color: white;
-  padding: 10px 15px;
-  font-size: 16px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-left: 10px;
-  transition: 0.3s;
-}
-
-.download-btn:hover {
-  background-color: #5a33a5;
+  text-align: center;
+  font-weight: 500;
 }
