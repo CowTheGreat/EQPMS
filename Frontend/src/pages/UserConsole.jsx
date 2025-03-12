@@ -212,37 +212,16 @@ const UserConsole = () => {
         <button className={styles.logoutBtn} onClick={handleLogout}>
           Logout
         </button>
-        <button className="refresh-btn" onClick={refreshData}>
+        <button className={styles.refresh} onClick={refreshData}>
           🔄 Refresh
         </button>
-        <button className="download-btn" onClick={handleDownloadOrder}>
+        <button className={styles.download} onClick={handleDownloadOrder}>
           📥 Download Order
         </button>
 
         <h3>Your Assigned Question Papers</h3>
         <ul className={styles.assignmentList}>
           {assignments && assignments.length > 0 ? (
-            // assignments.map((qp, index) => (
-            //   <li
-            //     key={index}
-            //     onClick={() => {
-            //       if (qp.QP_Status !== "Locked") {
-            //         if (qp.QP_Status === "Assigned") {
-            //           updateStatus(qp.QP_Ref_no, "In Progress");
-            //         }
-            //         openModal(qp);
-            //       }
-            //     }}
-            //     style={{
-            //       cursor: qp.QP_Status !== "Locked" ? "pointer" : "not-allowed",
-            //       opacity: qp.QP_Status === "Locked" ? 0.6 : 1,
-            //     }}
-            //     className={styles.assignmentItem}
-            //   >
-            //     <strong>{qp.QP_Ref_no}&nbsp;</strong>
-            //     {qp.QP_Subject} ({qp.QP_Subjectcode}) - Status: {qp.QP_Status}
-            //   </li>
-            // ))
             assignments.map((qp, index) => {
               const deadlineDate = new Date(qp.QP_Deadline);
               const currentTime = new Date();
@@ -256,6 +235,7 @@ const UserConsole = () => {
 
               return (
                 <li
+                  className={styles.assignmentListItem}
                   key={index}
                   onClick={() => {
                     if (qp.QP_Status !== "Locked") {
@@ -273,7 +253,6 @@ const UserConsole = () => {
                 >
                   <strong>{qp.QP_Ref_no}&nbsp;</strong>
                   {qp.QP_Subject} ({qp.QP_Subjectcode}) - Status: {qp.QP_Status}
-                  {/* Display deadline with color coding */}
                   <span style={{ color: deadlineColor, marginLeft: "10px" }}>
                     {daysLeft >= 0 ? `⏳ ${daysLeft} days left` : "❌ Deadline"}
                   </span>
@@ -445,6 +424,7 @@ const UserConsole = () => {
                         Edit
                       </button>
                       <button
+                        className="lock-button"
                         disabled={!allChecked}
                         onClick={() =>
                           updateStatus(selectedQP.QP_Ref_no, "Locked")
