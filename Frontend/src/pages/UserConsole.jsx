@@ -10,6 +10,24 @@ const UserConsole = () => {
   const navigate = useNavigate();
   console.log("User:", user.id);
 
+  const [showCheckboxes, setShowCheckboxes] = useState(false);
+  const [checkboxes, setCheckboxes] = useState({
+    cb1: false,
+    cb2: false,
+    cb3: false,
+  });
+
+  const handleSave = () => {
+    updateStatus(selectedQP.QP_Ref_no, "Saved");
+    setShowCheckboxes(true);
+  };
+
+  const handleCheckboxChange = (e) => {
+    setCheckboxes({ ...checkboxes, [e.target.name]: e.target.checked });
+  };
+
+  const allChecked = checkboxes.cb1 && checkboxes.cb2 && checkboxes.cb3;
+
   const handleLogout = () => {
     logout();
     navigate("/login");
@@ -358,8 +376,6 @@ const UserConsole = () => {
                         onChange={handleFileChange}
                       />
                       <button onClick={handleFileUpload}>Upload</button>
-
-                      {/* ✅ Show File Upload Status Message */}
                       {uploadMessages[selectedQP.QP_Ref_no] && (
                         <p className="upload-message">
                           {uploadMessages[selectedQP.QP_Ref_no]}
@@ -380,15 +396,44 @@ const UserConsole = () => {
                     <p>No file uploaded yet.</p>
                   )}
 
+                  {showCheckboxes && (
+                    <div className="checkboxes">
+                      <label>
+                        <input
+                          className={styles.checklistCheckBox}
+                          type="checkbox"
+                          name="cb1"
+                          checked={checkboxes.cb1}
+                          onChange={handleCheckboxChange}
+                        />{" "}
+                        Confirm Criteria 1
+                      </label>
+                      <label>
+                        <input
+                          className={styles.checklistCheckBox}
+                          type="checkbox"
+                          name="cb2"
+                          checked={checkboxes.cb2}
+                          onChange={handleCheckboxChange}
+                        />{" "}
+                        Confirm Criteria 2
+                      </label>
+                      <label>
+                        <input
+                          className={styles.checklistCheckBox}
+                          type="checkbox"
+                          name="cb3"
+                          checked={checkboxes.cb3}
+                          onChange={handleCheckboxChange}
+                        />{" "}
+                        Confirm Criteria 3
+                      </label>
+                    </div>
+                  )}
+
                   {selectedQP.QP_Status === "Assigned" ||
                   selectedQP.QP_Status === "In Progress" ? (
-                    <button
-                      onClick={() =>
-                        updateStatus(selectedQP.QP_Ref_no, "Saved")
-                      }
-                    >
-                      Save
-                    </button>
+                    <button onClick={handleSave}>Save</button>
                   ) : (
                     <>
                       <button
@@ -400,6 +445,7 @@ const UserConsole = () => {
                         Edit
                       </button>
                       <button
+                        disabled={!allChecked}
                         onClick={() =>
                           updateStatus(selectedQP.QP_Ref_no, "Locked")
                         }

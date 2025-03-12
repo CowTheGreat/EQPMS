@@ -127,10 +127,6 @@ button {
   transition: 0.3s;
 }
 
-button:hover {
-  background-color: #0056b3;
-}
-
 /* Error Messages */
 .error {
   color: red;
@@ -249,6 +245,17 @@ ul li[style*="not-allowed"] {
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow-y: auto; /* Enable vertical scrolling */
+  padding: 20px; /* Add padding to prevent content from sticking to edges */
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  max-width: 90%; /* Optional: prevent excessive width */
+  max-height: 90vh; /* Limit modal height */
+  overflow-y: auto; /* Enable scrolling inside modal */
+  border-radius: 10px;
 }
 
 .modalContent {
@@ -382,4 +389,10 @@ a:hover {
 
 .download-btn:hover {
   background-color: #5a33a5;
+}
+
+.checklistCheckBox {
+  width: 20px !important; /* Adjust checkbox width */
+  max-width: 20px !important;
+  min-width: 20px !important;
 }
