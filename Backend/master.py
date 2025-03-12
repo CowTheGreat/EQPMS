@@ -99,13 +99,13 @@ def get_boards():
         cursor.close()
         connection.close()
 
-# Endpoint to get all QPs
+# Endpoint to get all QPs from QP_main table
 @app.get("/api/qps")
 def get_qps():
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
     try:
-        cursor.execute("SELECT * FROM QP")
+        cursor.execute("SELECT * FROM QP_main")  # Changed table name here
         qps = cursor.fetchall()
         return qps
     except mysql.connector.Error as err:
@@ -113,6 +113,7 @@ def get_qps():
     finally:
         cursor.close()
         connection.close()
+
 
 
 # Start the Uvicorn server

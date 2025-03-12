@@ -20,7 +20,7 @@
   background: white;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  overflow-x: auto; /* Added horizontal scrolling */
   padding: 20px;
   margin: 0 auto;
   max-width: 1200px;
@@ -30,48 +30,32 @@
   width: 100%;
   border-collapse: collapse;
   background-color: white;
+  min-width: 1000px; /* Minimum table width */
 }
 
 .table th {
   background-color: #667eea;
   color: white;
-  padding: 1.2rem;
+  padding: 1rem;
   font-weight: 600;
   text-transform: uppercase;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   letter-spacing: 0.5px;
   position: sticky;
   top: 0;
+  white-space: nowrap;
 }
 
 .table td {
-  padding: 1.2rem;
+  padding: 1rem;
   color: #333;
   border-bottom: 1px solid #eee;
+  font-size: 0.9rem;
+  white-space: nowrap;
 }
 
 .row:hover {
   background-color: #f8f9fa;
-}
-
-.serial {
-  text-align: center;
-  width: 80px;
-  color: #666;
-}
-
-.name {
-  font-weight: 500;
-}
-
-.dept {
-  color: #667eea;
-  font-weight: 500;
-}
-
-.subject {
-  color: #764ba2;
-  font-weight: 500;
 }
 
 .pagination {
@@ -80,6 +64,24 @@
   margin-top: 2rem;
   gap: 0.5rem;
 }
+
+.headerContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.headerLabel {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
+.filterContainer {
+  display: flex;
+  justify-content: center;
+}
+
 
 .pageButton {
   background: #667eea;
@@ -116,7 +118,7 @@
   border-radius: 5px;
   background-color: rgba(255, 255, 255, 0.1);
   color: white;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   cursor: pointer;
   transition: all 0.3s ease;
   max-width: 150px;
@@ -132,35 +134,29 @@
   color: white;
 }
 
-@media (max-width: 768px) {
-  .container {
-    padding: 1rem;
-  }
-  
-  .title {
-    font-size: 2rem;
-  }
-  
-  .headerSelect {
-    max-width: 120px;
-    font-size: 0.8rem;
-    padding: 0.3rem 0.6rem;
-  }
-  
-  .table th {
-    padding: 0.8rem;
-  }
-  
-  .table td {
-    padding: 1rem;
-  }
-  
-  .pageButton {
-    padding: 0.6rem 1rem;
-  }
+.searchInput {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #000;
+  border-radius: 5px;
+  width: 100%;
+  max-width: 200px;
+  font-size: 0.9rem;
+  background: white;
+  color: black; /* Ensures the input text is black */
 }
 
-/* Add these styles to your FacultyList.module.css */
+.searchInput:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
+
+.headerFilter {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+}
+
 
 .downloadButtons {
   display: flex;
@@ -189,23 +185,6 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.downloadButton:active {
-  transform: translateY(0);
-}
-
-/* Add this to your media query */
-@media (max-width: 768px) {
-  .downloadButtons {
-    flex-direction: column;
-    width: 100%;
-  }
-  
-  .downloadButton {
-    width: 100%;
-    justify-content: center;
-  }
-}
-
 .statusBadge {
   padding: 4px 8px;
   border-radius: 12px;
@@ -215,26 +194,82 @@
   text-align: center;
 }
 
+/* Added Assigned status style */
 .statusBadge[data-status="Pending"] {
-  background-color: #f1c40f30;
-  color: #f1c40f;
-  border: 1px solid #f1c40f30;
-}
-
-.statusBadge[data-status="Approved"] {
-  background-color: #16a08530;
-  color: #16a085;
-  border: 1px solid #16a08530;
-}
-
-.statusBadge[data-status="Rejected"] {
-  background-color: #e74c3c30;
-  color: #e74c3c;
-  border: 1px solid #e74c3c30;
+  background-color: #ff000020;
+  color: #ff0000;
+  border: 1px solid #ff000030;
 }
 
 .statusBadge[data-status="Completed"] {
-  background-color: #3498db30;
-  color: #3498db;
-  border: 1px solid #3498db30;
+  background-color: #00ff0020;
+  color: #008000;
+  border: 1px solid #00ff0030;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+  
+  .title {
+    font-size: 2rem;
+  }
+  
+  .tableContainer {
+    padding: 10px;
+    border-radius: 8px;
+  }
+  
+  .table th {
+    padding: 0.8rem;
+    font-size: 0.8rem;
+  }
+  
+  .table td {
+    padding: 0.8rem;
+    font-size: 0.85rem;
+  }
+  
+  .headerSelect {
+    max-width: 120px;
+    font-size: 0.8rem;
+    padding: 0.3rem 0.6rem;
+  }
+  
+  .downloadButtons {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  
+  .downloadButton {
+    width: 100%;
+    justify-content: center;
+    padding: 0.8rem;
+    font-size: 0.9rem;
+  }
+  
+  .pageButton {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Added column-specific styles */
+.faculty-info {
+  color: #667eea;
+  font-weight: 500;
+}
+
+.deadline-cell {
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.type-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  background-color: #eee;
 }

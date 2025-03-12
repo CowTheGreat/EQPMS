@@ -13,6 +13,8 @@ import AdminDashboard from "./pages/AdminDashboard";
 import FacultyList from "./pages/FacultyList";
 import Admin2 from "./pages/Admin2";
 import DropdownComponent from "./pages/DropdownComponent";
+import ViewPaper from "./pages/ViewPaper";
+
 
 function App() {
   return (
@@ -40,6 +42,7 @@ function App() {
           <Route path="/faculty" element={<FacultyList />} />
           <Route path="/admin" element={<Admin2 />} />
           <Route path="/drop" element={<DropdownComponent/>} />
+          <Route path="/view" element={<ViewPaper/>} />
         </Routes>
       </Router>
     </AuthProvider>
