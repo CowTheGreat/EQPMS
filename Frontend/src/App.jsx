@@ -94,6 +94,26 @@ function App() {
               </ProtectedWithPasswordCheck>
             }
           />
+          {/* <Route
+            path="/access-qp-dropdown"
+            element={
+              <ProtectedWithPasswordCheck allowedRole="admin">
+                <AdminLayout>
+                  <AccessQP />
+                </AdminLayout>
+              </ProtectedWithPasswordCheck>
+            }
+          />
+          <Route
+            path="/access-qp-filestructure"
+            element={
+              <ProtectedWithPasswordCheck allowedRole="admin">
+                <AdminLayout>
+                  <AccessQP />
+                </AdminLayout>
+              </ProtectedWithPasswordCheck>
+            }
+          /> */}
           <Route
             path="/add-user"
             element={

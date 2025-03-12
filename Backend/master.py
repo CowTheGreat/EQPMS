@@ -6,7 +6,6 @@ import jwt
 from datetime import datetime, timedelta
 import uvicorn
 from pydantic.networks import EmailStr
-import uuid
 from datetime import datetime
 from typing import List
 

@@ -77,7 +77,7 @@ const AdminSidebar = () => {
           </NavLink>
         </li>
 
-        <li>
+        {/* <li>
           <NavLink
             to="/settings"
             className={({ isActive }) => (isActive ? styles.active : "")}
@@ -85,7 +85,7 @@ const AdminSidebar = () => {
             <FiSettings className={styles.icon} />
             Settings
           </NavLink>
-        </li>
+        </li> */}
       </ul>
 
       <button className={styles.logout} onClick={logout}>
