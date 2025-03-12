@@ -322,9 +322,16 @@ def assign_qp(data: AssignQPRequest):
         if not result:
             raise HTTPException(status_code=404, detail=f"Faculty with regno {data.assigned_faculty_regno[0]} not found")
         faculty_type = result[0]
-        # QP Type (Internal: 1, External: 2)
-        # qp_type = "1" if data.subject_type.lower() == "internal" else "1"
+
         qp_type = "1" if faculty_type == "Internal" else "2"
+
+        current_year = datetime.now().year
+        last_year = current_year - 1
+
+        if data.semester % 2 == 0:
+            session_title = f"May{str(last_year)[-2:]}"
+        else:
+            session_title = f"Dec{str(current_year)[-2:]}"
 
         # Fetch last serial number from DB
         cursor.execute(
@@ -332,7 +339,7 @@ def assign_qp(data: AssignQPRequest):
             SELECT MAX(CAST(SUBSTRING(QP_Ref_no, -3) AS UNSIGNED)) FROM QP 
             WHERE QP_Session = %s AND QP_Degree = %s
             """,
-            (data.session, data.degree)
+            (session_title, data.degree)
         )
         # cursor.execute(
         #     """
@@ -368,7 +375,7 @@ def assign_qp(data: AssignQPRequest):
                 """,
                 (
                     qp_ref_no,
-                    data.session,
+                    session_title,
                     data.degree,
                     data.regulation,
                     data.board,
