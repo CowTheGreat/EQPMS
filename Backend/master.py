@@ -620,5 +620,35 @@ def download_order(username: str):
         "Content-Disposition": f"attachment; filename={username}_order.pdf"
     })
 
+#Akeel
+#Akeel
+#Akeel
+#Akeel
+#Akeel
+#Akeel
+#Akeel
+#Akeel
+
+# Pydantic model for Faculty
+class FacultySchema(BaseModel):
+    name: str
+    department: str
+    subject: str
+
+# Endpoint to get all QPs from QP_main table
+@app.get("/api/qps")
+def get_qps():
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+    try:
+        cursor.execute("SELECT * FROM QP")  # Changed table name here
+        qps = cursor.fetchall()
+        return qps
+    except mysql.connector.Error as err:
+        raise HTTPException(status_code=500, detail=f"Database error: {err}")
+    finally:
+        cursor.close()
+        connection.close()
+
 if __name__ == "__main__":
     uvicorn.run("master:app", host="0.0.0.0", port=8080, reload=True)

@@ -1,0 +1,275 @@
+/* FacultyList.module.css */
+.container {
+  min-height: 100vh;
+  width: 100vw;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.title {
+  color: white;
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tableContainer {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow-x: auto; /* Added horizontal scrolling */
+  padding: 20px;
+  margin: 0 auto;
+  max-width: 1200px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  min-width: 1000px; /* Minimum table width */
+}
+
+.table th {
+  background-color: #667eea;
+  color: white;
+  padding: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  position: sticky;
+  top: 0;
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 1rem;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.row:hover {
+  background-color: #f8f9fa;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  gap: 0.5rem;
+}
+
+.headerContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.headerLabel {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
+.filterContainer {
+  display: flex;
+  justify-content: center;
+}
+
+
+.pageButton {
+  background: #667eea;
+  color: white;
+  padding: 0.8rem 1.2rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pageButton:hover {
+  background: #764ba2;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.pageButton.active {
+  background: #5a67d8;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.headerFilter {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.headerSelect {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  max-width: 150px;
+}
+
+.headerSelect:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.headerSelect option {
+  background-color: #667eea;
+  color: white;
+}
+
+.searchInput {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #000;
+  border-radius: 5px;
+  width: 100%;
+  max-width: 200px;
+  font-size: 0.9rem;
+  background: white;
+  color: black; /* Ensures the input text is black */
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
+
+.headerFilter {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+
+.downloadButtons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  justify-content: center;
+}
+
+.downloadButton {
+  background: #667eea;
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.downloadButton:hover {
+  background: #764ba2;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.statusBadge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  display: inline-block;
+  min-width: 80px;
+  text-align: center;
+}
+
+/* Added Assigned status style */
+.statusBadge[data-status="Pending"] {
+  background-color: #ff000020;
+  color: #ff0000;
+  border: 1px solid #ff000030;
+}
+
+.statusBadge[data-status="Completed"] {
+  background-color: #00ff0020;
+  color: #008000;
+  border: 1px solid #00ff0030;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+  
+  .title {
+    font-size: 2rem;
+  }
+  
+  .tableContainer {
+    padding: 10px;
+    border-radius: 8px;
+  }
+  
+  .table th {
+    padding: 0.8rem;
+    font-size: 0.8rem;
+  }
+  
+  .table td {
+    padding: 0.8rem;
+    font-size: 0.85rem;
+  }
+  
+  .headerSelect {
+    max-width: 120px;
+    font-size: 0.8rem;
+    padding: 0.3rem 0.6rem;
+  }
+  
+  .downloadButtons {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  
+  .downloadButton {
+    width: 100%;
+    justify-content: center;
+    padding: 0.8rem;
+    font-size: 0.9rem;
+  }
+  
+  .pageButton {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Added column-specific styles */
+.faculty-info {
+  color: #667eea;
+  font-weight: 500;
+}
+
+.deadline-cell {
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.type-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  background-color: #eee;
+}
