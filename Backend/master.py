@@ -449,7 +449,7 @@ def get_user_data(faculty_id: str):
 
     query = """
         SELECT QP_Ref_no, QP_Session, QP_Degree, QP_Regulation, QP_Board, 
-               QP_Semester, QP_Subjectcode, QP_Subject, QP_Status
+               QP_Semester, QP_Subjectcode, QP_Subject, QP_Status, QP_Deadline
         FROM QP WHERE QP_Faculty_assigned_Regno = %s 
     """
     cursor.execute(query, (faculty_id,))
@@ -552,23 +552,29 @@ def download_file(qp_ref: str):
 @app.get("/download_order/{username}")
 def download_order(username: str):
     """Generates and returns an order PDF for assigned question papers without saving it to disk."""
-    buffer = io.BytesIO()  # ✅ Create an in-memory buffer
-
-    # ✅ Create a PDF in-memory
+    buffer = io.BytesIO()
     c = canvas.Canvas(buffer)
-    c.setFont("Helvetica-Bold", 16)
-    c.drawString(200, 800, "Question Paper Assignment Order")
+
+    c.setFont("Helvetica-Bold", 14)
+    c.drawString(150, 780, "UG/PG Degree Examinations DEC 2024")
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(170, 760, "Question Paper Assignment Order")
     
     c.setFont("Helvetica", 12)
-    c.drawString(100, 750, f"Faculty Name: {username}")
-    c.drawString(100, 730, "Assigned Question Papers:")
-
+    c.drawString(100, 730, f"Faculty Name: {username}")
+    c.drawString(100, 710, "Dear Sir/Madam,")
+    c.drawString(100, 690, "Sub: UG/PG Degree Examinations, DEC 2024 Appointment of Question Paper Setter - Reg")
+    
+    c.drawString(100, 670, "We are pleased to inform you that you have been appointed as Question Paper Setter for the")
+    c.drawString(100, 655, "End Semester Examinations to be held in DEC 2024 under the Autonomous stream of our Institution.")
+    c.drawString(100, 640, "We request you to set the following Question Papers (Both Soft and Hard Copy) as per the format:")
+    c.drawString(100, 620, "Details for the Question Paper: \"ANSWER KEY NOT REQUIRED\"")
+    
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-
     cursor.execute("""
-        SELECT QP_Ref_no, QP_Subject, QP_Subjectcode, QP_Semester
-        FROM QP WHERE QP_Faculty_assigned_Regno = %s
+        SELECT QP_Ref_no, QP_Subject, QP_Subjectcode, QP_Degree
+        FROM qp WHERE QP_Faculty_assigned_Regno = %s
     """, (username,))
     
     papers = cursor.fetchall()
@@ -577,17 +583,39 @@ def download_order(username: str):
     if not papers:
         raise HTTPException(status_code=404, detail="No question papers assigned.")
     
-    y_position = 710
-    for paper in papers:
-        c.drawString(120, y_position, f"- {paper}")
-        y_position -= 20  # Move down for next item
-
-    c.drawString(100, y_position - 40, "Signature: _____________________ (COE)")
+    y_position = 600
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(100, y_position, "S.No  |  Degree  |  Subject Code  |  Title of the Subject  |  Reference Number")
+    c.line(100, y_position - 5, 500, y_position - 5)  # Table header underline
     
-    c.save()  # ✅ Save PDF to the buffer
-    buffer.seek(0)  # ✅ Move to start of the buffer
-
-    # ✅ Return the PDF directly for download
+    c.setFont("Helvetica", 11)
+    y_position -= 20
+    serial_no = 1
+    for paper in papers:
+        c.drawString(110, y_position, f"{serial_no}")
+        c.drawString(140, y_position, f"{paper['QP_Degree']}")
+        c.drawString(200, y_position, f"{paper['QP_Subjectcode']}")
+        c.drawString(300, y_position, f"{paper['QP_Subject']}")
+        c.drawString(450, y_position, f"{paper['QP_Ref_no']}")
+        y_position -= 20  # Move down for next item
+        serial_no += 1
+    
+    c.drawString(50, y_position - 40, "The Question Paper template is available on our website.")
+    c.drawString(50, y_position - 55, "The Hard copy of the Question Paper, Checklist/Declaration form & CD should be kept inside")
+    c.drawString(50, y_position - 70, "the small cover provided. The question paper should be submitted in person to the Controller of Examinations on or before:")
+    c.drawString(50, y_position - 85, "25.11.2024")
+    
+    c.drawString(50, y_position - 110, "With kind regards,")
+    c.drawString(50, y_position - 125, "Mr. V.Krishnamoorthy")
+    c.drawString(50, y_position - 140, "Asst. Prof/CSE, SVCE")
+    
+    # Placeholder signature image
+    c.rect(50, y_position - 180, 100, 50, stroke=1, fill=0)  # Placeholder rectangle for signature
+    c.drawString(50, y_position - 200, "[Signature]")
+    
+    c.save()
+    buffer.seek(0)
+    
     return Response(buffer.read(), media_type="application/pdf", headers={
         "Content-Disposition": f"attachment; filename={username}_order.pdf"
     })

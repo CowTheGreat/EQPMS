@@ -204,27 +204,64 @@ const UserConsole = () => {
         <h3>Your Assigned Question Papers</h3>
         <ul className={styles.assignmentList}>
           {assignments && assignments.length > 0 ? (
-            assignments.map((qp, index) => (
-              <li
-                key={index}
-                onClick={() => {
-                  if (qp.QP_Status !== "Locked") {
-                    if (qp.QP_Status === "Assigned") {
-                      updateStatus(qp.QP_Ref_no, "In Progress");
+            // assignments.map((qp, index) => (
+            //   <li
+            //     key={index}
+            //     onClick={() => {
+            //       if (qp.QP_Status !== "Locked") {
+            //         if (qp.QP_Status === "Assigned") {
+            //           updateStatus(qp.QP_Ref_no, "In Progress");
+            //         }
+            //         openModal(qp);
+            //       }
+            //     }}
+            //     style={{
+            //       cursor: qp.QP_Status !== "Locked" ? "pointer" : "not-allowed",
+            //       opacity: qp.QP_Status === "Locked" ? 0.6 : 1,
+            //     }}
+            //     className={styles.assignmentItem}
+            //   >
+            //     <strong>{qp.QP_Ref_no}&nbsp;</strong>
+            //     {qp.QP_Subject} ({qp.QP_Subjectcode}) - Status: {qp.QP_Status}
+            //   </li>
+            // ))
+            assignments.map((qp, index) => {
+              const deadlineDate = new Date(qp.QP_Deadline);
+              const currentTime = new Date();
+              const timeDiff = deadlineDate - currentTime;
+              const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)); // Convert ms to days
+
+              let deadlineColor = "black"; // Default color
+              if (daysLeft > 10) deadlineColor = "green"; // More than 10 days
+              else if (daysLeft > 5) deadlineColor = "orange"; // 6 to 10 days
+              else deadlineColor = "red"; // 5 or less
+
+              return (
+                <li
+                  key={index}
+                  onClick={() => {
+                    if (qp.QP_Status !== "Locked") {
+                      if (qp.QP_Status === "Assigned") {
+                        updateStatus(qp.QP_Ref_no, "In Progress");
+                      }
+                      openModal(qp);
                     }
-                    openModal(qp);
-                  }
-                }}
-                style={{
-                  cursor: qp.QP_Status !== "Locked" ? "pointer" : "not-allowed",
-                  opacity: qp.QP_Status === "Locked" ? 0.6 : 1,
-                }}
-                className={styles.assignmentItem}
-              >
-                <strong>{qp.QP_Ref_no}&nbsp;</strong>
-                {qp.QP_Subject} ({qp.QP_Subjectcode}) - Status: {qp.QP_Status}
-              </li>
-            ))
+                  }}
+                  style={{
+                    cursor:
+                      qp.QP_Status !== "Locked" ? "pointer" : "not-allowed",
+                    opacity: qp.QP_Status === "Locked" ? 0.6 : 1,
+                  }}
+                >
+                  <strong>{qp.QP_Ref_no}&nbsp;</strong>
+                  {qp.QP_Subject} ({qp.QP_Subjectcode}) - Status: {qp.QP_Status}
+                  {/* Display deadline with color coding */}
+                  <span style={{ color: deadlineColor, marginLeft: "10px" }}>
+                    {daysLeft >= 0 ? `⏳ ${daysLeft} days left` : "❌ Deadline"}
+                  </span>
+                </li>
+              );
+            })
           ) : (
             <p>No assignments available</p>
           )}
@@ -276,6 +313,31 @@ const UserConsole = () => {
                   <p>
                     <strong>Subject:</strong> {selectedQP.QP_Subject}
                   </p>
+                  {/* Deadline Calculation and Color Coding */}
+                  {(() => {
+                    const deadlineDate = new Date(selectedQP.QP_Deadline);
+                    const today = new Date();
+                    const timeDifference = deadlineDate - today;
+                    const daysLeft = Math.ceil(
+                      timeDifference / (1000 * 60 * 60 * 24)
+                    );
+
+                    let deadlineColor = "green";
+                    if (daysLeft <= 10 && daysLeft > 5)
+                      deadlineColor = "orange";
+                    else if (daysLeft <= 5) deadlineColor = "red";
+
+                    return (
+                      <p>
+                        <strong>Deadline:</strong>{" "}
+                        <span style={{ color: deadlineColor }}>
+                          {daysLeft > 0
+                            ? `${daysLeft} days left`
+                            : "Deadline Passed"}
+                        </span>
+                      </p>
+                    );
+                  })()}
                   <p>
                     <strong>Status:</strong> {selectedQP.QP_Status}
                   </p>
