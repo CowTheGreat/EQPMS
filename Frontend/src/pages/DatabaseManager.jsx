@@ -4,7 +4,7 @@ import DeleteSubject from "../components/DeleteSubject/DeleteSubject";
 import AlterDeadline from "../components/AlterDeadline/AlterDeadline";
 
 const ModifyPaper = () => <div>Modify Paper Component</div>;
-const UnlockAllPapers = () => <div>Unlock All Papers Component</div>;
+import UnlockAllPapers from "../components/UnlockAllPapers/UnlockAllPapers";
 
 const DatabaseManager = () => {
   const [selectedAction, setSelectedAction] = useState(null);

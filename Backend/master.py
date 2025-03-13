@@ -574,6 +574,30 @@ def update_deadline(data: UpdateDeadlineRequest):
         cursor.close()
         conn.close()
 
+class UnlockPapersRequest(BaseModel):
+    session: str
+
+@app.post("/unlock-all-papers")
+def unlock_all_papers(data: UnlockPapersRequest):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT COUNT(*) FROM QP WHERE QP_Session = %s", (data.session,))
+        if cursor.fetchone()[0] == 0:
+            raise HTTPException(status_code=404, detail="No QPs found for the given session")
+
+        cursor.execute("UPDATE QP SET QP_Status = 'Assigned' WHERE QP_Session = %s", (data.session,))
+        conn.commit()
+
+        return {"message": f"QP Status updated to 'Assigned' for session {data.session}"}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    finally:
+        cursor.close()
+        conn.close()
 
 # Pydantic Model for Subject
 class Subject(BaseModel):
