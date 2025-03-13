@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import AddSubjects from "../components/AddSubjects/AddSubjects";
 import DeleteSubject from "../components/DeleteSubject/DeleteSubject";
+import AlterDeadline from "../components/AlterDeadline/AlterDeadline";
 
-const AlterDeadline = () => <div>Alter Deadline Component</div>;
 const ModifyPaper = () => <div>Modify Paper Component</div>;
 const UnlockAllPapers = () => <div>Unlock All Papers Component</div>;
 

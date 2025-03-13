@@ -548,6 +548,32 @@ def assign_qp(data: AssignQPRequest, background_tasks: BackgroundTasks):
         cursor.close()
         conn.close()
 
+class UpdateDeadlineRequest(BaseModel):
+    session: str
+    new_deadline: str
+
+@app.post("/update-deadline")
+def update_deadline(data: UpdateDeadlineRequest):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT COUNT(*) FROM QP WHERE QP_Session = %s", (data.session,))
+        if cursor.fetchone()[0] == 0:
+            raise HTTPException(status_code=404, detail="No QPs found for the given session")
+
+        cursor.execute("UPDATE QP SET QP_Deadline = %s WHERE QP_Session = %s", (data.new_deadline, data.session))
+        conn.commit()
+
+        return {"message": f"QP Deadlines updated successfully for session {data.session}"}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    finally:
+        cursor.close()
+        conn.close()
+
 
 # Pydantic Model for Subject
 class Subject(BaseModel):
