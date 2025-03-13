@@ -13,11 +13,9 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AssignQP from "./pages/AssignQP";
 import AccessQP from "./pages/AccessQP";
 import AddUser from "./pages/AddUser";
-import AddSubjects from "./pages/AddSubjects";
-import DeleteSubject from "./pages/DeleteSubject";
-import Settings from "./pages/Settings";
+// import AddSubjects from "./pages/AddSubjects";
+// import DeleteSubject from "./pages/DeleteSubject";
 import AdminSidebar from "../src/components/AdminSidebar/AdminSidebar";
-import DropdownComponent from "./pages/DropdownComponent";
 import DatabaseManager from "./pages/DatabaseManager";
 
 function ProtectedWithPasswordCheck({ allowedRole, children }) {

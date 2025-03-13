@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import styles from "../page_styles/DeleteSubjects.module.css";
+import styles from "./DeleteSubjects.module.css";
 
 export default function DeleteSubjects() {
   const [formData, setFormData] = useState({

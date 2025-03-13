@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import AddSubjects from "./AddSubjects";
-import DeleteSubject from "./DeleteSubject";
+import AddSubjects from "../components/AddSubjects/AddSubjects";
+import DeleteSubject from "../components/DeleteSubject/DeleteSubject";
 
 const AlterDeadline = () => <div>Alter Deadline Component</div>;
 const ModifyPaper = () => <div>Modify Paper Component</div>;

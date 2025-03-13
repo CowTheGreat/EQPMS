@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import styles from "../page_styles/AddSubjects.module.css"; // Import CSS Module
+import styles from "./AddSubjects.module.css"; // Import CSS Module
 
 export default function AddSubjects() {
   const [subjects, setSubjects] = useState([]);
