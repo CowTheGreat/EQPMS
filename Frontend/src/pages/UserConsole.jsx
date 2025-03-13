@@ -45,7 +45,7 @@ const UserConsole = () => {
       console.log("Fetching assignments for user:", user.id);
 
       const response = await fetch(
-        `http://localhost:8080/user_data/${user.id}`
+        `${import.meta.env.VITE_API_BASE_URL}user_data/${user.id}`
       );
       const data = await response.json();
       setAssignments(data.assignments);
@@ -65,7 +65,7 @@ const UserConsole = () => {
   const fetchUploadedFile = async (qpRef) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/uploaded_files/${qpRef}`
+        `${import.meta.env.VITE_API_BASE_URL}uploaded_files/${qpRef}`
       );
       const data = await response.json();
       setUploadedFiles((prev) => ({
@@ -86,7 +86,7 @@ const UserConsole = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/user_data/${user.id}`
+        `${import.meta.env.VITE_API_BASE_URL}user_data/${user.id}`
       );
       const data = await response.json();
       const updatedQP = data.assignments.find(
@@ -122,10 +122,13 @@ const UserConsole = () => {
     formData.append("qp_ref", selectedQP.QP_Ref_no);
 
     try {
-      const response = await fetch("http://localhost:8080/upload", {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       if (response.ok) {
         setUploadMessages((prev) => ({
@@ -154,7 +157,7 @@ const UserConsole = () => {
   const handleDownloadOrder = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/download_order/${user.id}`,
+        `${import.meta.env.VITE_API_BASE_URL}download_order/${user.id}`,
         {
           method: "GET",
         }
@@ -178,7 +181,9 @@ const UserConsole = () => {
   const updateStatus = async (qpRef, newStatus) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/update_status/${qpRef}?new_status=${newStatus}`,
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }update_status/${qpRef}?new_status=${newStatus}`,
         {
           method: "PUT",
         }
