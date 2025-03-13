@@ -60,7 +60,7 @@ export default function AddSubjects() {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/add-subjects",
+        `${import.meta.env.VITE_API_BASE_URL}add-subjects`,
         subjects
       );
       setMessage(response.data.message);

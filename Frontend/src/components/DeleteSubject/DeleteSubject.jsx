@@ -47,7 +47,9 @@ export default function DeleteSubjects() {
   const fetchRegulations = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/get-regulations?degree=${formData.degree}`
+        `${import.meta.env.VITE_API_BASE_URL}get-regulations?degree=${
+          formData.degree
+        }`
       );
       setRegulations(response.data);
     } catch (error) {
@@ -58,7 +60,9 @@ export default function DeleteSubjects() {
   const fetchBoards = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/get-boards?degree=${formData.degree}&regulation=${formData.regulation}`
+        `${import.meta.env.VITE_API_BASE_URL}get-boards?degree=${
+          formData.degree
+        }&regulation=${formData.regulation}`
       );
       setBoards(response.data);
     } catch (error) {
@@ -69,7 +73,11 @@ export default function DeleteSubjects() {
   const fetchSubjects = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/get-subjects?degree=${formData.degree}&regulation=${formData.regulation}&board=${formData.board_name}&semester=${formData.semester}`
+        `${import.meta.env.VITE_API_BASE_URL}get-subjects?degree=${
+          formData.degree
+        }&regulation=${formData.regulation}&board=${
+          formData.board_name
+        }&semester=${formData.semester}`
       );
       setSubjects(response.data);
     } catch (error) {
@@ -81,7 +89,7 @@ export default function DeleteSubjects() {
     try {
       console.log(`Deleting subject: ${subject_code}`);
       const response = await axios.delete(
-        `http://localhost:8080/delete-subject/${subject_code}`
+        `${import.meta.env.VITE_API_BASE_URL}delete-subject/${subject_code}`
       );
       console.log("Response:", response.data);
 

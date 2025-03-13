@@ -13,11 +13,14 @@ const AlterDeadline = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/update-deadline", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ session, new_deadline: newDeadline }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}update-deadline`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ session, new_deadline: newDeadline }),
+        }
+      );
 
       const data = await response.json();
       if (response.ok) {

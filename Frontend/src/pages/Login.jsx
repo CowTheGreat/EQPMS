@@ -17,14 +17,17 @@ const Login = () => {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:8080/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: credentials.id,
-          password: credentials.password,
-        }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: credentials.id,
+            password: credentials.password,
+          }),
+        }
+      );
 
       const data = await response.json();
 
