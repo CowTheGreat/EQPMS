@@ -17,6 +17,8 @@ import AddSubjects from "./pages/AddSubjects";
 import DeleteSubject from "./pages/DeleteSubject";
 import Settings from "./pages/Settings";
 import AdminSidebar from "../src/components/AdminSidebar/AdminSidebar";
+import DropdownComponent from "./pages/DropdownComponent";
+import ViewPaper from "./pages/ViewPaper";
 
 function ProtectedWithPasswordCheck({ allowedRole, children }) {
   const { user } = useAuth();
@@ -99,7 +101,7 @@ function App() {
             element={
               <ProtectedWithPasswordCheck allowedRole="admin">
                 <AdminLayout>
-                  <AccessQP />
+                  <DropdownComponent />
                 </AdminLayout>
               </ProtectedWithPasswordCheck>
             }
@@ -109,7 +111,7 @@ function App() {
             element={
               <ProtectedWithPasswordCheck allowedRole="admin">
                 <AdminLayout>
-                  <AccessQP />
+                  <ViewPaper />
                 </AdminLayout>
               </ProtectedWithPasswordCheck>
             }

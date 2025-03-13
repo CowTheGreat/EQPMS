@@ -1,43 +1,41 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import styles from "../page_styles/AccessQP.module.css";
+import DropdownComponent from "./DropdownComponent";
+import ViewPaper from "./ViewPaper";
 
 const AccessQP = () => {
-  const [files, setFiles] = useState([]);
-
-  useEffect(() => {
-    fetch("http://localhost:8080/list-files") // Change port if using FastAPI
-      .then((response) => response.json())
-      .then((data) => setFiles(data.files))
-      .catch((error) => console.error("Error fetching files:", error));
-  }, []);
-
-  const downloadFile = (url, name) => {
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = name;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
+  const [selectedOption, setSelectedOption] = useState(null);
 
   return (
-    <div className="p-4 max-w-lg mx-auto">
-      <h2 className="text-xl font-semibold mb-4">Files</h2>
-      <ul className="space-y-3">
-        {files.map((file, index) => (
-          <li
-            key={index}
-            className="flex justify-between items-center p-2 border rounded-lg shadow-sm"
+    <div className={styles.qpmsContainer}>
+      <div className={styles.qpmsBox}>
+        <h2 className={styles.qpmsTitle}>Select an Option</h2>
+
+        <div className={styles.buttonsContainer}>
+          <button
+            className={`${styles.squareButton} ${
+              selectedOption === "dropdown" ? styles.selected : ""
+            }`}
+            onClick={() => setSelectedOption("dropdown")}
           >
-            <span>{file.name}</span>
-            <button
-              onClick={() => downloadFile(file.url, file.name)}
-              className="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600"
-            >
-              Download
-            </button>
-          </li>
-        ))}
-      </ul>
+            QP Dropdown
+          </button>
+          <button
+            className={`${styles.squareButton} ${
+              selectedOption === "explorer" ? styles.selected : ""
+            }`}
+            onClick={() => setSelectedOption("explorer")}
+          >
+            QP Explorer
+          </button>
+        </div>
+
+        {/* Content Section */}
+        <div className={styles.contentContainer}>
+          {selectedOption === "dropdown" && <DropdownComponent />}
+          {selectedOption === "explorer" && <ViewPaper />}
+        </div>
+      </div>
     </div>
   );
 };

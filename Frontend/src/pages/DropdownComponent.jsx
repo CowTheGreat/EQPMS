@@ -5,16 +5,18 @@ import styles from "../page_styles/DropdownComponent.module.css";
 const DropdownComponent = () => {
   const [selections, setSelections] = useState({
     session: "",
+    degree: "",
+    branch: "",
     regulation: "",
-    board: "",
     semester: "",
     subject: "",
   });
 
   const [options, setOptions] = useState({
     sessions: [],
+    degrees: [],
+    branches: [],
     regulations: [],
-    boards: [],
     semesters: [],
     subjects: [],
   });
@@ -49,49 +51,65 @@ const DropdownComponent = () => {
     fetchSessions();
   }, []);
 
-  // Fetch regulations when session changes
+  // Fetch degrees when session changes
   useEffect(() => {
     if (selections.session) {
-      setLoading("Fetching regulations...");
+      setLoading("Fetching degrees...");
       fetchData(
         `http://localhost:8080/api/${encodeURIComponent(
           selections.session
-        )}/regulations/`,
-        "regulations",
-        ["boards", "semesters", "subjects"]
+        )}/degrees/`,
+        "degrees",
+        ["branches", "regulations", "semesters", "subjects"]
       );
     }
   }, [selections.session]);
 
-  // Fetch boards when regulation changes
+  // Fetch branches when degree changes
   useEffect(() => {
-    if (selections.regulation) {
-      setLoading("Fetching boards...");
+    if (selections.degree) {
+      setLoading("Fetching branches...");
       fetchData(
         `http://localhost:8080/api/${encodeURIComponent(
           selections.session
-        )}/${encodeURIComponent(selections.regulation)}/boards/`,
-        "boards",
+        )}/${encodeURIComponent(selections.degree)}/branches/`,
+        "branches",
+        ["regulations", "semesters", "subjects"]
+      );
+    }
+  }, [selections.degree]);
+
+  // Fetch regulations when branch changes
+  useEffect(() => {
+    if (selections.branch) {
+      setLoading("Fetching regulations...");
+      fetchData(
+        `http://localhost:8080/api/${encodeURIComponent(
+          selections.session
+        )}/${encodeURIComponent(selections.degree)}/${encodeURIComponent(
+          selections.branch
+        )}/regulations/`,
+        "regulations",
         ["semesters", "subjects"]
       );
     }
-  }, [selections.regulation]);
+  }, [selections.branch]);
 
-  // Fetch semesters when board changes
+  // Fetch semesters when regulation changes
   useEffect(() => {
-    if (selections.board) {
+    if (selections.regulation) {
       setLoading("Fetching semesters...");
       fetchData(
         `http://localhost:8080/api/${encodeURIComponent(
           selections.session
-        )}/${encodeURIComponent(selections.regulation)}/${encodeURIComponent(
-          selections.board
-        )}/semesters/`,
+        )}/${encodeURIComponent(selections.degree)}/${encodeURIComponent(
+          selections.branch
+        )}/${encodeURIComponent(selections.regulation)}/semesters/`,
         "semesters",
         ["subjects"]
       );
     }
-  }, [selections.board]);
+  }, [selections.regulation]);
 
   // Fetch subjects when semester changes
   useEffect(() => {
@@ -100,9 +118,11 @@ const DropdownComponent = () => {
       fetchData(
         `http://localhost:8080/api/${encodeURIComponent(
           selections.session
+        )}/${encodeURIComponent(selections.degree)}/${encodeURIComponent(
+          selections.branch
         )}/${encodeURIComponent(selections.regulation)}/${encodeURIComponent(
-          selections.board
-        )}/${encodeURIComponent(selections.semester)}/subjects/`,
+          selections.semester
+        )}/subjects/`,
         "subjects"
       );
     }
@@ -117,11 +137,13 @@ const DropdownComponent = () => {
           const { data } = await axios.get(
             `http://localhost:8080/api/${encodeURIComponent(
               selections.session
+            )}/${encodeURIComponent(selections.degree)}/${encodeURIComponent(
+              selections.branch
             )}/${encodeURIComponent(
               selections.regulation
-            )}/${encodeURIComponent(selections.board)}/${encodeURIComponent(
-              selections.semester
-            )}/${encodeURIComponent(selections.subject)}/files/`
+            )}/${encodeURIComponent(selections.semester)}/${encodeURIComponent(
+              selections.subject
+            )}/files/`
           );
           setFiles(data);
           setError("");
@@ -140,19 +162,26 @@ const DropdownComponent = () => {
       ...prev,
       [type]: value,
       ...(type === "session" && {
+        degree: "",
+        branch: "",
         regulation: "",
-        board: "",
         semester: "",
         subject: "",
       }),
-      ...(type === "regulation" && { board: "", semester: "", subject: "" }),
-      ...(type === "board" && { semester: "", subject: "" }),
+      ...(type === "degree" && {
+        branch: "",
+        regulation: "",
+        semester: "",
+        subject: "",
+      }),
+      ...(type === "branch" && { regulation: "", semester: "", subject: "" }),
+      ...(type === "regulation" && { semester: "", subject: "" }),
       ...(type === "semester" && { subject: "" }),
     }));
   };
 
   return (
-    <div className={styles.Container}>
+    <div className={styles.qpmsContainer}>
       <div className={styles.qpmsBox}>
         <h1 className={styles.qpmsTitle}>Question Paper Management System</h1>
 
@@ -170,6 +199,32 @@ const DropdownComponent = () => {
 
           {selections.session && (
             <div className={styles.dropdownGroup}>
+              <label className={styles.dropdownLabel}>Degree</label>
+              <Dropdown
+                label="Degree"
+                options={options.degrees}
+                value={selections.degree}
+                onChange={(e) => handleChange("degree", e.target.value)}
+                className={styles.dropdownSelect}
+              />
+            </div>
+          )}
+
+          {selections.degree && (
+            <div className={styles.dropdownGroup}>
+              <label className={styles.dropdownLabel}>Branch</label>
+              <Dropdown
+                label="Branch"
+                options={options.branches}
+                value={selections.branch}
+                onChange={(e) => handleChange("branch", e.target.value)}
+                className={styles.dropdownSelect}
+              />
+            </div>
+          )}
+
+          {selections.branch && (
+            <div className={styles.dropdownGroup}>
               <label className={styles.dropdownLabel}>Regulation</label>
               <Dropdown
                 label="Regulation"
@@ -182,19 +237,6 @@ const DropdownComponent = () => {
           )}
 
           {selections.regulation && (
-            <div className={styles.dropdownGroup}>
-              <label className={styles.dropdownLabel}>Department</label>
-              <Dropdown
-                label="Board"
-                options={options.boards}
-                value={selections.board}
-                onChange={(e) => handleChange("board", e.target.value)}
-                className={styles.dropdownSelect}
-              />
-            </div>
-          )}
-
-          {selections.board && (
             <div className={styles.dropdownGroup}>
               <label className={styles.dropdownLabel}>Semester</label>
               <Dropdown
@@ -233,9 +275,19 @@ const DropdownComponent = () => {
                   <div
                     key={file.url}
                     className={styles.fileItem}
-                    onClick={() =>
-                      window.open(`http://localhost:8080${file.url}`, "_blank")
-                    }
+                    onClick={() => {
+                      // Create download URL by replacing '/content' with '/download'
+                      const downloadUrl = `http://localhost:8080/download${file.url.replace(
+                        "/content",
+                        ""
+                      )}`;
+                      const link = document.createElement("a");
+                      link.href = downloadUrl;
+                      link.download = file.name;
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                    }}
                   >
                     📄 {file.name}
                   </div>

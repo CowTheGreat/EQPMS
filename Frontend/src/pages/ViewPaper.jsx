@@ -7,6 +7,7 @@ const ViewPaper = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showDownloadAll, setShowDownloadAll] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -18,23 +19,23 @@ const ViewPaper = () => {
         if (path.length === 1) {
           url = `http://localhost:8080/api/${encodeURIComponent(
             path[0]
-          )}/regulations/`;
+          )}/degrees/`;
         } else if (path.length === 2) {
           url = `http://localhost:8080/api/${encodeURIComponent(
             path[0]
-          )}/${encodeURIComponent(path[1])}/boards/`;
+          )}/${encodeURIComponent(path[1])}/branches/`;
         } else if (path.length === 3) {
           url = `http://localhost:8080/api/${encodeURIComponent(
             path[0]
           )}/${encodeURIComponent(path[1])}/${encodeURIComponent(
             path[2]
-          )}/semesters/`;
+          )}/regulations/`;
         } else if (path.length === 4) {
           url = `http://localhost:8080/api/${encodeURIComponent(
             path[0]
           )}/${encodeURIComponent(path[1])}/${encodeURIComponent(
             path[2]
-          )}/${encodeURIComponent(path[3])}/subjects/`;
+          )}/${encodeURIComponent(path[3])}/semesters/`;
         } else if (path.length === 5) {
           url = `http://localhost:8080/api/${encodeURIComponent(
             path[0]
@@ -42,7 +43,18 @@ const ViewPaper = () => {
             path[2]
           )}/${encodeURIComponent(path[3])}/${encodeURIComponent(
             path[4]
-          )}/files/`;
+          )}/subjects/`;
+        } else if (path.length === 6) {
+          url = `http://localhost:8080/api/${encodeURIComponent(
+            path[0]
+          )}/${encodeURIComponent(path[1])}/${encodeURIComponent(
+            path[2]
+          )}/${encodeURIComponent(path[3])}/${encodeURIComponent(
+            path[4]
+          )}/${encodeURIComponent(path[5])}/files/`;
+          setShowDownloadAll(true);
+        } else {
+          setShowDownloadAll(false);
         }
 
         const response = await axios.get(url);
@@ -65,20 +77,28 @@ const ViewPaper = () => {
     setPath((prev) => prev.slice(0, index + 1));
   };
 
-  const handleFileClick = (url) => {
-    window.open(`http://localhost:8080${url}`, "_blank");
+  const handleFileClick = (url, filename) => {
+    const downloadUrl = `http://localhost:8080/download${url.replace(
+      "/content",
+      ""
+    )}`;
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const handleRevealInExplorer = async () => {
     try {
-      // Fire-and-forget request
       await axios.post(
         "http://localhost:8080/api/reveal-in-explorer/",
         {
           path: path.join("/"),
         },
         {
-          timeout: 1000, // Short timeout just to catch immediate errors
+          timeout: 1000,
         }
       );
     } catch (err) {
@@ -90,38 +110,92 @@ const ViewPaper = () => {
     }
   };
 
+  const handleDownloadAll = async () => {
+    try {
+      setError("");
+      if (path.length === 6) {
+        const encodedPath = path.map((p) => encodeURIComponent(p));
+        const [session, degree, branch, regulation, semester, subject] =
+          encodedPath;
+
+        const response = await axios.get(
+          `http://localhost:8080/download-all/${session}/${degree}/${branch}/${regulation}/${semester}/${subject}`,
+          {
+            responseType: "blob",
+            // Handle 400/500 status codes as errors
+            validateStatus: (status) => status >= 200 && status < 300,
+          }
+        );
+
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `${path[5]}_papers.zip`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      }
+    } catch (err) {
+      let errorMessage = "Failed to download files";
+
+      try {
+        // Try to read error message from blob
+        const text = await err.response.data.text();
+        const json = JSON.parse(text);
+        errorMessage = json.detail || errorMessage;
+      } catch {
+        errorMessage = err.message || errorMessage;
+      }
+
+      setError(`Download error: ${errorMessage}`);
+    }
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <h1 className={styles.title}>Question Paper Repository</h1>
-        <button
-          className={styles.revealButton}
-          onClick={handleRevealInExplorer}
-          disabled={path.length === 0}
-        >
-          Reveal in Explorer
-        </button>
       </div>
 
       <div className={styles.breadcrumbs}>
-        <button
-          className={styles.breadcrumbItem}
-          onClick={() => setPath([])}
-          disabled={path.length === 0}
-        >
-          Home
-        </button>
-        {path.map((segment, index) => (
-          <React.Fragment key={index}>
-            <span className={styles.separator}>/</span>
+        <div className={styles.breadcrumbsLeft}>
+          <button
+            className={styles.breadcrumbItem}
+            onClick={() => setPath([])}
+            disabled={path.length === 0}
+          >
+            Home
+          </button>
+          {path.map((segment, index) => (
+            <React.Fragment key={index}>
+              <span className={styles.separator}>/</span>
+              <button
+                className={styles.breadcrumbItem}
+                onClick={() => handleBreadcrumbClick(index)}
+              >
+                {segment}
+              </button>
+            </React.Fragment>
+          ))}
+        </div>
+
+        <div className={styles.buttonGroup}>
+          {showDownloadAll && (
             <button
-              className={styles.breadcrumbItem}
-              onClick={() => handleBreadcrumbClick(index)}
+              className={styles.downloadAllButton}
+              onClick={handleDownloadAll}
             >
-              {segment}
+              Download All
             </button>
-          </React.Fragment>
-        ))}
+          )}
+          <button
+            className={styles.revealButton}
+            onClick={handleRevealInExplorer}
+          >
+            Reveal in Explorer
+          </button>
+        </div>
       </div>
 
       {loading && <div className={styles.loading}>Loading...</div>}
@@ -142,7 +216,7 @@ const ViewPaper = () => {
             <div
               key={item.url}
               className={styles.card}
-              onClick={() => handleFileClick(item.url)}
+              onClick={() => handleFileClick(item.url, item.name)}
             >
               <div className={styles.fileIcon}>📄</div>
               <div className={styles.itemName}>{item.name}</div>
