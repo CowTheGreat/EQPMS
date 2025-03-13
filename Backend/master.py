@@ -13,9 +13,16 @@ from typing import List
 from fastapi.responses import Response
 from reportlab.pdfgen import canvas
 from fastapi.responses import FileResponse
+from fastapi import APIRouter, BackgroundTasks, Depends
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+import mysql.connector
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form
 import os
 import io
+
+from fastapi.staticfiles import StaticFiles
 
 # FastAPI instance
 app = FastAPI()
@@ -709,6 +716,49 @@ def download_order(username: str):
     return Response(buffer.read(), media_type="application/pdf", headers={
         "Content-Disposition": f"attachment; filename={username}_order.pdf"
     })
+SMTP_SERVER = "smtp.gmail.com"
+SMTP_PORT = 587
+SMTP_USER = "cletocite@gmail.com"  # Your email
+SMTP_PASS = "ivpewaafeehsslfn"  # Your app password
+
+
+def send_email(recipient, subject, body):
+    msg = MIMEMultipart()
+    msg['From'] = SMTP_USER
+    msg['To'] = recipient
+    msg['Subject'] = subject
+    msg.attach(MIMEText(body, 'plain'))
+    
+    with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+        server.starttls()
+        server.login(SMTP_USER, SMTP_PASS)
+        server.sendmail(SMTP_USER, recipient, msg.as_string())
+
+@app.post("/broadcast")
+def broadcast_mail(background_tasks: BackgroundTasks):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    
+    query = """
+    SELECT qp.QP_Subjectcode, qp.QP_Subject, qp.QP_Deadline, f.name, f.mail 
+    FROM qp qp 
+    JOIN users f ON qp.QP_Faculty_assigned_Regno = f.regno 
+    WHERE qp.QP_Status != 'Locked'
+    """
+    
+    cursor.execute(query)
+    pending_qps = cursor.fetchall()
+    
+    for qp in pending_qps:
+        subject = f"Reminder: Pending Question Paper Submission ({qp['QP_Subjectcode']})"
+        body = f"Hello {qp['name']},\n\nYou have not yet locked the question paper for {qp['QP_Subject']}.\nDeadline: {qp['QP_Deadline']}\nPlease complete it at the earliest.\n\nRegards,\nAdmin"
+        background_tasks.add_task(send_email, qp['mail'], subject, body)
+        print("Mail sent to", qp['mail'])
+    
+    cursor.close()
+    db.close()
+    
+    return {"message": "Broadcast emails scheduled"}
 
 #Akeel
 #Akeel
@@ -739,6 +789,17 @@ def get_qps():
     finally:
         cursor.close()
         connection.close()
+
+# Set folder path
+FILES_DIR = "C:/Users/cowar/OneDrive/Desktop/EQPMS/Backend/uploaded_papers"
+
+# Serve static files
+app.mount("/files", StaticFiles(directory=FILES_DIR), name="files")
+
+@app.get("/list-files")
+def list_files():
+    files = [{"name": f, "url": f"/files/{f}"} for f in os.listdir(FILES_DIR) if os.path.isfile(os.path.join(FILES_DIR, f))]
+    return {"files": files}
 
 if __name__ == "__main__":
     uvicorn.run("master:app", host="0.0.0.0", port=8080, reload=True)

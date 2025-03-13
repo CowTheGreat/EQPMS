@@ -3,6 +3,7 @@ import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import FacultyList from "./FacultyList";
 import styles from "../page_styles/AdminDashboard.module.css";
+import BroadcastButton from "../components/BroadcastButton/BroadcastButton";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -52,6 +53,7 @@ const AdminDashboard = () => {
 
   return (
     <div className={styles.container}>
+      <BroadcastButton />
       <h1 className={styles.title}>Question Paper Management Dashboard</h1>
 
       <div className={styles.chartSection}>
