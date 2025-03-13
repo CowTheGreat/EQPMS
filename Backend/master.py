@@ -599,6 +599,85 @@ def unlock_all_papers(data: UnlockPapersRequest):
         cursor.close()
         conn.close()
 
+@app.get("/get-paper-details")
+def get_paper_details(refNo: str):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute("SELECT * FROM QP WHERE QP_Ref_no = %s", (refNo,))
+        paper = cursor.fetchone()
+
+        if not paper:
+            raise HTTPException(status_code=404, detail="Paper not found")
+
+        return paper
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    finally:
+        cursor.close()
+        conn.close()
+
+class UpdatePaperRequest(BaseModel):
+    QP_Ref_no: str
+    QP_Session: str
+    QP_Degree: str
+    QP_Regulation: str
+    QP_Board: str
+    QP_Semester: int
+    QP_Subjectcode: str
+    QP_Subject: str
+    QP_Faculty_assigned: str
+    QP_Faculty_assigned_Regno: str
+    QP_Deadline: str
+    QP_Status: str
+    QP_Type: str
+
+@app.post("/update-paper")
+def update_paper(data: UpdatePaperRequest):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        print("Received update request:", data.dict())  # ✅ Debugging
+        
+        cursor.execute(
+            """
+            UPDATE QP 
+            SET QP_Session = %s, QP_Degree = %s, QP_Regulation = %s, 
+                QP_Board = %s, QP_Semester = %s, QP_Subjectcode = %s, 
+                QP_Subject = %s, QP_Faculty_assigned = %s, 
+                QP_Faculty_assigned_Regno = %s, QP_Deadline = %s, 
+                QP_Status = %s, QP_Type = %s
+            WHERE QP_Ref_no = %s
+            """,
+            (
+                data.QP_Session, data.QP_Degree, data.QP_Regulation, 
+                data.QP_Board, data.QP_Semester, data.QP_Subjectcode, 
+                data.QP_Subject, data.QP_Faculty_assigned, 
+                data.QP_Faculty_assigned_Regno, data.QP_Deadline, 
+                data.QP_Status, data.QP_Type, data.QP_Ref_no
+            ),
+        )
+        print("Query executed successfully!")  # ✅ Debugging
+        print("Rows affected:", cursor.rowcount)  # ✅ Debugging
+
+        if cursor.rowcount == 0:
+            raise HTTPException(status_code=404, detail="No changes were made.")
+
+        conn.commit()
+        return {"message": "Paper details updated successfully"}
+
+    except Exception as e:
+        print("Error occurred:", str(e))  # ✅ Debugging
+        raise HTTPException(status_code=500, detail=str(e))
+
+    finally:
+        cursor.close()
+        conn.close()
+
 # Pydantic Model for Subject
 class Subject(BaseModel):
     degree: str

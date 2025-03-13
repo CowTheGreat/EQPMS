@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import AddSubjects from "../components/AddSubjects/AddSubjects";
 import DeleteSubject from "../components/DeleteSubject/DeleteSubject";
 import AlterDeadline from "../components/AlterDeadline/AlterDeadline";
-
-const ModifyPaper = () => <div>Modify Paper Component</div>;
+import ModifyPaper from "../components/ModifyPaper/ModifyPaper";
 import UnlockAllPapers from "../components/UnlockAllPapers/UnlockAllPapers";
 
 const DatabaseManager = () => {
