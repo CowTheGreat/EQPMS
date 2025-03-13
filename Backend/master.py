@@ -399,8 +399,27 @@ class AssignQPRequest(BaseModel):
 #         cursor.close()
 #         conn.close()
 
+# SMTP Configuration
+SMTP_SERVER = "smtp.gmail.com"
+SMTP_PORT = 587
+SMTP_USER = "cletocite@gmail.com"  # Your email
+SMTP_PASS = "ivpewaafeehsslfn"  # Your app password
+
+
+def send_email(recipient, subject, body):
+    msg = MIMEMultipart()
+    msg['From'] = SMTP_USER
+    msg['To'] = recipient
+    msg['Subject'] = subject
+    msg.attach(MIMEText(body, 'plain'))
+    
+    with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+        server.starttls()
+        server.login(SMTP_USER, SMTP_PASS)
+        server.sendmail(SMTP_USER, recipient, msg.as_string())
+
 @app.post("/assign-qp")
-def assign_qp(data: AssignQPRequest):
+def assign_qp(data: AssignQPRequest, background_tasks: BackgroundTasks):
     print("Received Data:", data.dict())  # ✅ Debugging
 
     try:
@@ -410,16 +429,10 @@ def assign_qp(data: AssignQPRequest):
         current_year = datetime.now().year
         year_code = (current_year - 1) % 100 if data.semester % 2 == 0 else current_year % 100
 
-        # Odd (1) / Even (2) semester
         semester_type = "1" if data.semester % 2 != 0 else "2"
-
-        # Degree Type: B.E or B.Tech are considered UG (1), others are PG (2)
-        if data.degree.upper() in ["B.E", "B.TECH"]:
-            degree_type = "1"  # UG
-        else:
-            degree_type = "2"  # PG
-
-        # Fetch faculty Type
+        
+        degree_type = "1" if data.degree.upper() in ["B.E", "B.TECH"] else "2"
+        
         cursor.execute("SELECT employee_type FROM users WHERE regno = %s", (data.assigned_faculty_regno[0],))
         result = cursor.fetchone()
         if not result:
@@ -430,7 +443,6 @@ def assign_qp(data: AssignQPRequest):
 
         session_title = f"{str(data.session)}{str(current_year)[-2:]}"
 
-        # Fetch last serial number from DB
         cursor.execute(
             """
             SELECT MAX(CAST(SUBSTRING(QP_Ref_no, -3) AS UNSIGNED)) FROM QP 
@@ -440,22 +452,17 @@ def assign_qp(data: AssignQPRequest):
         )
         last_serial = cursor.fetchone()[0]
         serial_number = int(last_serial) + 1 if last_serial else 1
-
-        # Format serial number as 3-digit (001, 002, ...)
         serial_str = f"{serial_number:03}"
 
         for regno in data.assigned_faculty_regno:
-            # Generate unique QP Reference Number
             qp_ref_no = f"{year_code}{semester_type}{degree_type}{qp_type}{serial_str}"
 
-            # Fetch faculty name
-            cursor.execute("SELECT name FROM users WHERE regno = %s", (regno,))
+            cursor.execute("SELECT name, mail FROM users WHERE regno = %s", (regno,))
             result = cursor.fetchone()
             if not result:
                 raise HTTPException(status_code=404, detail=f"Faculty with regno {regno} not found")
-            faculty_name = result[0]
+            faculty_name, faculty_mail = result
 
-            # Insert into database
             cursor.execute(
                 """
                 INSERT INTO QP (QP_Ref_no, QP_Session, QP_Degree, QP_Regulation, QP_Board, 
@@ -479,8 +486,25 @@ def assign_qp(data: AssignQPRequest):
                 )
             )
 
+            subject = f"QP Assignment Notification: {data.subject_code}"
+            body = f"""
+            Hello {faculty_name},
+            
+            You have been assigned a new Question Paper task.
+            
+            Subject: {data.subject_name} ({data.subject_code})
+            Deadline: {data.deadline}
+            QP Reference Number: {qp_ref_no}
+            
+            Please complete and lock the question paper before the deadline.
+            
+            Regards,
+            Admin
+            """
+            background_tasks.add_task(send_email, faculty_mail, subject, body)
+
         conn.commit()
-        return {"message": "QP assigned successfully!", "QP_Ref_no": qp_ref_no}
+        return {"message": "QP assigned successfully and notification emails sent!", "QP_Ref_no": qp_ref_no}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error assigning QP: {str(e)}")
@@ -716,6 +740,8 @@ def download_order(username: str):
     return Response(buffer.read(), media_type="application/pdf", headers={
         "Content-Disposition": f"attachment; filename={username}_order.pdf"
     })
+
+# SMTP Configuration
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 SMTP_USER = "cletocite@gmail.com"  # Your email
