@@ -29,7 +29,11 @@ const AssignQP = () => {
 
   useEffect(() => {
     if (formData.degree) {
-      fetch(`http://localhost:8080/get-regulations?degree=${formData.degree}`)
+      fetch(
+        `${import.meta.env.VITE_API_BASE_URL}get-regulations?degree=${
+          formData.degree
+        }`
+      )
         .then((res) => res.json())
         .then((data) => setRegulations(data))
         .catch(() => setRegulations([]));
@@ -39,7 +43,9 @@ const AssignQP = () => {
   useEffect(() => {
     if (formData.degree && formData.regulation) {
       fetch(
-        `http://localhost:8080/get-boards?degree=${formData.degree}&regulation=${formData.regulation}`
+        `${import.meta.env.VITE_API_BASE_URL}get-boards?degree=${
+          formData.degree
+        }&regulation=${formData.regulation}`
       )
         .then((res) => res.json())
         .then((data) => setBoards(data))
@@ -55,7 +61,11 @@ const AssignQP = () => {
       formData.semester
     ) {
       fetch(
-        `http://localhost:8080/get-subjects?degree=${formData.degree}&regulation=${formData.regulation}&board=${formData.board}&semester=${formData.semester}`
+        `${import.meta.env.VITE_API_BASE_URL}get-subjects?degree=${
+          formData.degree
+        }&regulation=${formData.regulation}&board=${formData.board}&semester=${
+          formData.semester
+        }`
       )
         .then((res) => res.json())
         .then((data) => {
@@ -74,7 +84,11 @@ const AssignQP = () => {
   // Fetch faculty when board is selected
   useEffect(() => {
     if (formData.board) {
-      fetch(`http://localhost:8080/get-faculty?board=${formData.board}`)
+      fetch(
+        `${import.meta.env.VITE_API_BASE_URL}get-faculty?board=${
+          formData.board
+        }`
+      )
         .then((res) => res.json())
         .then((data) => setFacultyList(data))
         .catch(() => setFacultyList([]));
@@ -142,11 +156,14 @@ const AssignQP = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:8080/assign-qp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(qpData),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}assign-qp`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(qpData),
+        }
+      );
 
       const result = await response.json();
       if (response.ok) {

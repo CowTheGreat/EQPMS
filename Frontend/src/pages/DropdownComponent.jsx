@@ -46,7 +46,10 @@ const DropdownComponent = () => {
   useEffect(() => {
     const fetchSessions = async () => {
       setLoading("Fetching sessions...");
-      await fetchData("http://localhost:8080/api/sessions/", "sessions");
+      await fetchData(
+        `${import.meta.env.VITE_API_BASE_URL}api/sessions/`,
+        "sessions"
+      );
     };
     fetchSessions();
   }, []);
@@ -56,7 +59,7 @@ const DropdownComponent = () => {
     if (selections.session) {
       setLoading("Fetching degrees...");
       fetchData(
-        `http://localhost:8080/api/${encodeURIComponent(
+        `${import.meta.env.VITE_API_BASE_URL}api/${encodeURIComponent(
           selections.session
         )}/degrees/`,
         "degrees",
@@ -70,7 +73,7 @@ const DropdownComponent = () => {
     if (selections.degree) {
       setLoading("Fetching branches...");
       fetchData(
-        `http://localhost:8080/api/${encodeURIComponent(
+        `${import.meta.env.VITE_API_BASE_URL}api/${encodeURIComponent(
           selections.session
         )}/${encodeURIComponent(selections.degree)}/branches/`,
         "branches",
@@ -84,7 +87,7 @@ const DropdownComponent = () => {
     if (selections.branch) {
       setLoading("Fetching regulations...");
       fetchData(
-        `http://localhost:8080/api/${encodeURIComponent(
+        `${import.meta.env.VITE_API_BASE_URL}api/${encodeURIComponent(
           selections.session
         )}/${encodeURIComponent(selections.degree)}/${encodeURIComponent(
           selections.branch
@@ -100,7 +103,7 @@ const DropdownComponent = () => {
     if (selections.regulation) {
       setLoading("Fetching semesters...");
       fetchData(
-        `http://localhost:8080/api/${encodeURIComponent(
+        `${import.meta.env.VITE_API_BASE_URL}api/${encodeURIComponent(
           selections.session
         )}/${encodeURIComponent(selections.degree)}/${encodeURIComponent(
           selections.branch
@@ -116,7 +119,7 @@ const DropdownComponent = () => {
     if (selections.semester) {
       setLoading("Fetching subjects...");
       fetchData(
-        `http://localhost:8080/api/${encodeURIComponent(
+        `${import.meta.env.VITE_API_BASE_URL}api/${encodeURIComponent(
           selections.session
         )}/${encodeURIComponent(selections.degree)}/${encodeURIComponent(
           selections.branch
@@ -135,7 +138,7 @@ const DropdownComponent = () => {
         try {
           setLoading("Fetching files...");
           const { data } = await axios.get(
-            `http://localhost:8080/api/${encodeURIComponent(
+            `${import.meta.env.VITE_API_BASE_URL}api/${encodeURIComponent(
               selections.session
             )}/${encodeURIComponent(selections.degree)}/${encodeURIComponent(
               selections.branch
@@ -277,10 +280,9 @@ const DropdownComponent = () => {
                     className={styles.fileItem}
                     onClick={() => {
                       // Create download URL by replacing '/content' with '/download'
-                      const downloadUrl = `http://localhost:8080/download${file.url.replace(
-                        "/content",
-                        ""
-                      )}`;
+                      const downloadUrl = `${
+                        import.meta.env.VITE_API_BASE_URL
+                      }download${file.url.replace("/content", "")}`;
                       const link = document.createElement("a");
                       link.href = downloadUrl;
                       link.download = file.name;

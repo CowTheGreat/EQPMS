@@ -34,14 +34,17 @@ const ChangePassword = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/update-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: userId,
-          new_password: passwords.newPassword,
-        }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}update-password`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: userId,
+            new_password: passwords.newPassword,
+          }),
+        }
+      );
 
       const data = await response.json();
 

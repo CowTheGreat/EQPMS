@@ -15,7 +15,9 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/qps");
+        const response = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}api/qps`
+        );
         if (!response.ok) throw new Error("Failed to fetch data");
         const data = await response.json();
         setQps(data);

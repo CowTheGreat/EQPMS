@@ -28,7 +28,9 @@ const AddUser = () => {
   // Fetch users when board is selected
   useEffect(() => {
     if (selectedBoard) {
-      fetch(`http://localhost:8080/get-faculty?board=${selectedBoard}`)
+      fetch(
+        `${import.meta.env.VITE_API_BASE_URL}get-faculty?board=${selectedBoard}`
+      )
         .then((res) => res.json())
         .then((data) => setUsers(data))
         .catch(() => setError("Failed to fetch users"));
@@ -77,11 +79,14 @@ const AddUser = () => {
     try {
       console.log(userData);
 
-      const response = await fetch(`http://localhost:8080/add-user`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(userData),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}add-user`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(userData),
+        }
+      );
 
       const result = await response.json();
 
@@ -112,7 +117,7 @@ const AddUser = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/delete-user/${selectedUser}`,
+        `${import.meta.env.VITE_API_BASE_URL}delete-user/${selectedUser}`,
         {
           method: "DELETE",
         }
