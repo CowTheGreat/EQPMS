@@ -455,6 +455,26 @@ def assign_qp(data: AssignQPRequest, background_tasks: BackgroundTasks):
         serial_str = f"{serial_number:03}"
 
         for regno in data.assigned_faculty_regno:
+            cursor.execute("SELECT employee_type FROM users WHERE regno = %s", (data.assigned_faculty_regno[0],))
+            result = cursor.fetchone()
+            if not result:
+                raise HTTPException(status_code=404, detail=f"Faculty with regno {data.assigned_faculty_regno[0]} not found")
+            faculty_type = result[0]
+
+            qp_type = "1" if faculty_type == "Internal" else "2"
+
+            session_title = f"{str(data.session)}{str(current_year)[-2:]}"
+
+            cursor.execute(
+                """
+                SELECT MAX(CAST(SUBSTRING(QP_Ref_no, -3) AS UNSIGNED)) FROM QP 
+                WHERE QP_Session = %s
+                """,
+                (session_title,)
+            )
+            last_serial = cursor.fetchone()[0]
+            serial_number = int(last_serial) + 1 if last_serial else 1
+            serial_str = f"{serial_number:03}"
             qp_ref_no = f"{year_code}{semester_type}{degree_type}{qp_type}{serial_str}"
 
             cursor.execute("SELECT name, mail FROM users WHERE regno = %s", (regno,))
