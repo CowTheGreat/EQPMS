@@ -57,7 +57,7 @@ const AdminSidebar = () => {
           </NavLink>
         </li>
 
-        <li>
+        {/* <li>
           <NavLink
             to="/add-subject"
             className={({ isActive }) => (isActive ? styles.active : "")}
@@ -75,17 +75,17 @@ const AdminSidebar = () => {
             <FiClipboard className={styles.icon} />
             Delete Subject
           </NavLink>
-        </li>
+        </li> */}
 
-        {/* <li>
+        <li>
           <NavLink
-            to="/settings"
+            to="/edit-database"
             className={({ isActive }) => (isActive ? styles.active : "")}
           >
             <FiSettings className={styles.icon} />
-            Settings
+            Database Manager
           </NavLink>
-        </li> */}
+        </li>
       </ul>
 
       <button className={styles.logout} onClick={logout}>

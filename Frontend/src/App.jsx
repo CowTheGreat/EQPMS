@@ -18,7 +18,7 @@ import DeleteSubject from "./pages/DeleteSubject";
 import Settings from "./pages/Settings";
 import AdminSidebar from "../src/components/AdminSidebar/AdminSidebar";
 import DropdownComponent from "./pages/DropdownComponent";
-import ViewPaper from "./pages/ViewPaper";
+import DatabaseManager from "./pages/DatabaseManager";
 
 function ProtectedWithPasswordCheck({ allowedRole, children }) {
   const { user } = useAuth();
@@ -96,26 +96,16 @@ function App() {
               </ProtectedWithPasswordCheck>
             }
           />
-          {/* <Route
-            path="/access-qp-dropdown"
+          <Route
+            path="/edit-database"
             element={
               <ProtectedWithPasswordCheck allowedRole="admin">
                 <AdminLayout>
-                  <DropdownComponent />
+                  <DatabaseManager />
                 </AdminLayout>
               </ProtectedWithPasswordCheck>
             }
           />
-          <Route
-            path="/access-qp-filestructure"
-            element={
-              <ProtectedWithPasswordCheck allowedRole="admin">
-                <AdminLayout>
-                  <ViewPaper />
-                </AdminLayout>
-              </ProtectedWithPasswordCheck>
-            }
-          /> */}
           <Route
             path="/add-user"
             element={
@@ -126,7 +116,7 @@ function App() {
               </ProtectedWithPasswordCheck>
             }
           />
-          <Route
+          {/* <Route
             path="/add-subject"
             element={
               <ProtectedWithPasswordCheck allowedRole="admin">
@@ -145,18 +135,7 @@ function App() {
                 </AdminLayout>
               </ProtectedWithPasswordCheck>
             }
-          />
-          <Route
-            path="/settings"
-            element={
-              <ProtectedWithPasswordCheck allowedRole="admin">
-                <AdminLayout>
-                  <Settings />
-                </AdminLayout>
-              </ProtectedWithPasswordCheck>
-            }
-          />
-
+          /> */}
           <Route path="/" element={<Navigate to="/login" replace />} />
         </Routes>
       </Router>
