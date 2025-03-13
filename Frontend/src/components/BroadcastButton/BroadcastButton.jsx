@@ -9,9 +9,12 @@ const BroadcastButton = () => {
     setMessage("");
 
     try {
-      const response = await fetch("http://localhost:8080/broadcast", {
-        method: "POST",
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}broadcast`,
+        {
+          method: "POST",
+        }
+      );
 
       const data = await response.json();
       setMessage(data.message);

@@ -12,11 +12,14 @@ const UnlockAllPapers = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/unlock-all-papers", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ session }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}unlock-all-papers`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ session }),
+        }
+      );
 
       const data = await response.json();
       if (response.ok) {
