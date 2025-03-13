@@ -419,6 +419,8 @@ const UserConsole = () => {
                         onClick={() => {
                           updateStatus(selectedQP.QP_Ref_no, "In Progress");
                           setIsEditing(true);
+                          setShowCheckboxes(false);
+                          setCheckboxes({ cb1: false, cb2: false, cb3: false }); // Reset checkboxes
                         }}
                       >
                         Edit
