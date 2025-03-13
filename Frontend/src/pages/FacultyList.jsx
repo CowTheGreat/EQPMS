@@ -27,7 +27,9 @@ const QPList = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/qps");
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_BASE_URL}api/qps`
+        );
         const sortedData = response.data.sort((a, b) => {
           // Enhanced sorting logic
           if (a.QP_Session < b.QP_Session) return -1;

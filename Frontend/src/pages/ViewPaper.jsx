@@ -15,29 +15,29 @@ const ViewPaper = () => {
         setLoading(true);
         setError("");
 
-        let url = "http://localhost:8080/api/sessions/";
+        let url = `${import.meta.env.VITE_API_BASE_URL}api/sessions/`;
         if (path.length === 1) {
-          url = `http://localhost:8080/api/${encodeURIComponent(
+          url = `${import.meta.env.VITE_API_BASE_URL}api/${encodeURIComponent(
             path[0]
           )}/degrees/`;
         } else if (path.length === 2) {
-          url = `http://localhost:8080/api/${encodeURIComponent(
+          url = `${import.meta.env.VITE_API_BASE_URL}api/${encodeURIComponent(
             path[0]
           )}/${encodeURIComponent(path[1])}/branches/`;
         } else if (path.length === 3) {
-          url = `http://localhost:8080/api/${encodeURIComponent(
+          url = `${import.meta.env.VITE_API_BASE_URL}api/${encodeURIComponent(
             path[0]
           )}/${encodeURIComponent(path[1])}/${encodeURIComponent(
             path[2]
           )}/regulations/`;
         } else if (path.length === 4) {
-          url = `http://localhost:8080/api/${encodeURIComponent(
+          url = `${import.meta.env.VITE_API_BASE_URL}api/${encodeURIComponent(
             path[0]
           )}/${encodeURIComponent(path[1])}/${encodeURIComponent(
             path[2]
           )}/${encodeURIComponent(path[3])}/semesters/`;
         } else if (path.length === 5) {
-          url = `http://localhost:8080/api/${encodeURIComponent(
+          url = `${import.meta.env.VITE_API_BASE_URL}api/${encodeURIComponent(
             path[0]
           )}/${encodeURIComponent(path[1])}/${encodeURIComponent(
             path[2]
@@ -45,7 +45,7 @@ const ViewPaper = () => {
             path[4]
           )}/subjects/`;
         } else if (path.length === 6) {
-          url = `http://localhost:8080/api/${encodeURIComponent(
+          url = `${import.meta.env.VITE_API_BASE_URL}api/${encodeURIComponent(
             path[0]
           )}/${encodeURIComponent(path[1])}/${encodeURIComponent(
             path[2]
@@ -78,10 +78,9 @@ const ViewPaper = () => {
   };
 
   const handleFileClick = (url, filename) => {
-    const downloadUrl = `http://localhost:8080/download${url.replace(
-      "/content",
-      ""
-    )}`;
+    const downloadUrl = `${
+      import.meta.env.VITE_API_BASE_URL
+    }download${url.replace("/content", "")}`;
     const link = document.createElement("a");
     link.href = downloadUrl;
     link.download = filename;
@@ -93,7 +92,7 @@ const ViewPaper = () => {
   const handleRevealInExplorer = async () => {
     try {
       await axios.post(
-        "http://localhost:8080/api/reveal-in-explorer/",
+        `${import.meta.env.VITE_API_BASE_URL}api/reveal-in-explorer/`,
         {
           path: path.join("/"),
         },
@@ -119,7 +118,9 @@ const ViewPaper = () => {
           encodedPath;
 
         const response = await axios.get(
-          `http://localhost:8080/download-all/${session}/${degree}/${branch}/${regulation}/${semester}/${subject}`,
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }download-all/${session}/${degree}/${branch}/${regulation}/${semester}/${subject}`,
           {
             responseType: "blob",
             // Handle 400/500 status codes as errors
