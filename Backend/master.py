@@ -51,6 +51,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+#URL
+BASE_URL = "http://localhost:8080"
+
 # JWT secret key
 SECRET_KEY = "CowTheGreat"
 ALGORITHM = "HS256"
@@ -816,7 +819,7 @@ def get_uploaded_file(qp_ref: str):
         for file in files:
             if file.startswith(qp_ref):
                 file_path = os.path.join(root, file)
-                file_url = f"http://localhost:8080/download/{qp_ref}"
+                file_url = f"{BASE_URL}/download/{qp_ref}"
                 return {"file_url": file_url}
 
     raise HTTPException(status_code=404, detail="File not found.")
