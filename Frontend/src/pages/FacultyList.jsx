@@ -111,6 +111,7 @@ const QPList = () => {
   const handleDownloadPDF = () => {
     const doc = new jsPDF("landscape");
     const title = "Question Paper Report";
+
     const headers = [
       [
         "Ref No.",
@@ -145,15 +146,12 @@ const QPList = () => {
       qp.QP_Type,
     ]);
 
+    doc.text(title, 14, 15);
     doc.autoTable({
       head: headers,
       body: data,
       theme: "grid",
-      margin: { top: 20 },
-      didDrawPage: (data) => {
-        doc.setFontSize(16);
-        doc.text(title, 14, 15);
-      },
+      startY: 20,
     });
 
     doc.save("qp-report.pdf");
