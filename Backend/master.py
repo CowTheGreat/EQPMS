@@ -24,6 +24,16 @@ import io
 
 from fastapi.staticfiles import StaticFiles
 
+import socket
+import shutil
+from fastapi import FastAPI, HTTPException, UploadFile, File, Form
+from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from fastapi.responses import Response
+from reportlab.pdfgen import canvas
+from pydantic import BaseModel
+
 #Akeel
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -771,13 +781,12 @@ def update_status(qp_ref: str, new_status: str):
     return {"message": f"Question Paper {qp_ref} status updated to {new_status.replace('+', ' ')}"}
 
 # ✅ File Upload Function (Organized in Proper Hierarchy)
+BUFFER_DIR = "buffer_papers"
 UPLOAD_DIR = "uploaded_papers"
 
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...), username: str = Form(...), qp_ref: str = Form(...)):
-    """Uploads a file and saves it in a structured folder hierarchy."""
-
-    # 📌 Get QP details from database
+    """Uploads a file and saves it in the buffer folder."""
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     cursor.execute("""
@@ -790,7 +799,6 @@ async def upload_file(file: UploadFile = File(...), username: str = Form(...), q
     if not qp_data:
         raise HTTPException(status_code=404, detail="Question Paper not found.")
 
-    # 📌 Create folder hierarchy
     session = qp_data["QP_Session"].replace(" ", "")
     degree = qp_data["QP_Degree"].replace(" ", "")
     regulation = qp_data["QP_Regulation"].replace(" ", "")
@@ -799,27 +807,87 @@ async def upload_file(file: UploadFile = File(...), username: str = Form(...), q
     subject_code = qp_data["QP_Subjectcode"].replace(" ", "")
     subject_name = qp_data["QP_Subject"].replace(" ", "").replace("/", "_")
 
-    folder_path = os.path.join(UPLOAD_DIR, session, degree, board, regulation, semester, subject_code)
+    folder_path = os.path.join(BUFFER_DIR, session, degree, board, regulation, semester, subject_code)
     os.makedirs(folder_path, exist_ok=True)
 
-    # 📌 Save file with proper naming
     file_name = f"{qp_ref}_{subject_code}_{subject_name}_{username}.docx"
     file_path = os.path.join(folder_path, file_name)
 
     with open(file_path, "wb") as buffer:
         buffer.write(await file.read())
 
-    return {"message": f"File uploaded successfully: {file_name}", "file_path": file_path}
+    return {"message": f"File saved to buffer successfully: {file_name}", "file_path": file_path}
+
+@app.post("/lock_and_upload/{qp_ref}")
+async def lock_and_upload(qp_ref: str):
+    """Moves the file from buffer to main upload directory and updates status."""
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("""
+        SELECT QP_Session, QP_Degree, QP_Regulation, QP_Board, QP_Semester, QP_Subjectcode, QP_Subject, QP_Faculty_assigned_Regno
+        FROM qp WHERE QP_Ref_no = %s
+    """, (qp_ref,))
+    qp_data = cursor.fetchone()
+    conn.close()
+
+    if not qp_data:
+        raise HTTPException(status_code=404, detail="Question Paper not found.")
+
+    session = qp_data["QP_Session"].replace(" ", "")
+    degree = qp_data["QP_Degree"].replace(" ", "")
+    regulation = qp_data["QP_Regulation"].replace(" ", "")
+    board = qp_data["QP_Board"].replace(" ", "")
+    semester = f"Sem{qp_data['QP_Semester']}"
+    subject_code = qp_data["QP_Subjectcode"].replace(" ", "")
+    subject_name = qp_data["QP_Subject"].replace(" ", "").replace("/", "_")
+    username = qp_data["QP_Faculty_assigned_Regno"]
+
+    buffer_folder_path = os.path.join(BUFFER_DIR, session, degree, board, regulation, semester, subject_code)
+    upload_folder_path = os.path.join(UPLOAD_DIR, session, degree, board, regulation, semester, subject_code)
+    os.makedirs(upload_folder_path, exist_ok=True)
+
+    buffer_file_name = f"{qp_ref}_{subject_code}_{subject_name}_{username}.docx"
+    buffer_file_path = os.path.join(buffer_folder_path, buffer_file_name)
+    upload_file_path = os.path.join(upload_folder_path, buffer_file_name)
+
+    if not os.path.exists(buffer_file_path):
+        raise HTTPException(status_code=404, detail="Buffer file not found.")
+
+    # Check if the file already exists in the upload directory
+    if os.path.exists(upload_file_path):
+        # Delete the existing file in the upload directory
+        os.remove(upload_file_path)
+
+    # Move the file from buffer to upload directory
+    shutil.move(buffer_file_path, upload_file_path)
+
+    return {"message": f"File moved to upload directory successfully: {buffer_file_name}", "file_path": upload_file_path}
 
 # ✅ API to Fetch Uploaded Files
 @app.get("/uploaded_files/{qp_ref}")
 def get_uploaded_file(qp_ref: str):
     """Returns the uploaded file path for a given QP reference number."""
-    for root, dirs, files in os.walk(UPLOAD_DIR):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT QP_Status FROM qp WHERE QP_Ref_no = %s", (qp_ref,))
+    status = cursor.fetchone()
+    conn.close()
+    print("Status:",status)
+
+    if not status:
+        raise HTTPException(status_code=404, detail="Question Paper not found.")
+
+    # Determine the directory based on status
+    if status["QP_Status"] == "Locked":
+        directory = UPLOAD_DIR
+    else:
+        directory = BUFFER_DIR
+        
+    for root, dirs, files in os.walk(directory):
         for file in files:
             if file.startswith(qp_ref):
                 file_path = os.path.join(root, file)
-                file_url = f"{BASE_URL}/download/{qp_ref}"
+                file_url = f"http://localhost:8080/download/{qp_ref}"
                 return {"file_url": file_url}
 
     raise HTTPException(status_code=404, detail="File not found.")
@@ -828,7 +896,22 @@ def get_uploaded_file(qp_ref: str):
 @app.get("/download/{qp_ref}")
 def download_file(qp_ref: str):
     """Serves the uploaded file for download."""
-    for root, dirs, files in os.walk(UPLOAD_DIR):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT QP_Status FROM qp WHERE QP_Ref_no = %s", (qp_ref,))
+    status = cursor.fetchone()
+    conn.close()
+    print("Status:",status)
+
+    if not status:
+        raise HTTPException(status_code=404, detail="Question Paper not found.")
+
+    # Determine the directory based on status
+    if status["QP_Status"] == "Locked":
+        directory = UPLOAD_DIR
+    else:
+        directory = BUFFER_DIR
+    for root, dirs, files in os.walk(directory):
         for file in files:
             if file.startswith(qp_ref):
                 file_path = os.path.join(root, file)
