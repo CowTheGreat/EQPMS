@@ -1,47 +1,17 @@
-create database eqpms;
-use eqpms;
-show tables;
-
-select * from users;
-DESC users;
-
-User tabe Schema
 CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    regno VARCHAR(50) UNIQUE NOT NULL,
-    mail VARCHAR(100) UNIQUE NOT NULL,
+    regno VARCHAR(50) NOT NULL UNIQUE,
+    mail VARCHAR(100) NOT NULL UNIQUE,
     pwd VARCHAR(255) NOT NULL,
     board VARCHAR(100),
     password_changed INT DEFAULT 0,
-    role VARCHAR(50) NOT NULL DEFAULT 'user'
+    role VARCHAR(50) NOT NULL DEFAULT 'user',
+    employee_type VARCHAR(50) NOT NULL DEFAULT 'Internal'
 );
 
-INSERT INTO users (name, regno, mail, pwd, board, password_changed, role) VALUES
-('Alice Johnson', '0432', 'alice@example.com', '1234', 'Science', 0, 'admin'),
-('Bob Smith', '18', 'bob@example.com', '1234', 'Commerce', 1, 'user');
-
-update users set password_changed = 1;
-select * from users;
-
-Boards table Schema
-CREATE TABLE boards (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    board_name VARCHAR(50) NOT NULL,
-    subject_code VARCHAR(50) NOT NULL UNIQUE,
-    subject_name VARCHAR(255) NOT NULL
-);
-
-INSERT INTO boards (board_name, subject_code, subject_name) VALUES
-('CSE', 'CS22601', 'Cryptography and Network Security'),
-('CSE', 'CS22602', 'Software Project Management'),
-('CSE', 'AD22501', 'Internet of Things and Applications'),
-('CSE', 'CS22603', 'Cloud Computing'),
-('CSE', 'CS22604', 'Compiler Design');
-
-QP Schema
-CREATE TABLE QP (
-    QP_Ref_no VARCHAR(50) NOT NULL,
+CREATE TABLE qp (
+    QP_Ref_no VARCHAR(50) NOT NULL PRIMARY KEY,
     QP_Session VARCHAR(50) NOT NULL,
     QP_Degree VARCHAR(50) NOT NULL,
     QP_Regulation VARCHAR(50) NOT NULL,
@@ -51,9 +21,18 @@ CREATE TABLE QP (
     QP_Subject VARCHAR(255) NOT NULL,
     QP_Faculty_assigned VARCHAR(100) NOT NULL,
     QP_Faculty_assigned_Regno VARCHAR(100) NOT NULL,
+    QP_Deadline DATETIME,
     QP_Status VARCHAR(50) DEFAULT 'Assigned',
-    QP_Type VARCHAR(50) DEFAULT NULL,
-    PRIMARY KEY (QP_Ref_no) -- Assuming QP_Ref_no is the unique identifier
+    QP_Type VARCHAR(50)
 );
 
-select * from QP;
+CREATE TABLE boards (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    degree VARCHAR(50) NOT NULL,
+    regulation VARCHAR(50) NOT NULL,
+    board_name VARCHAR(50) NOT NULL,
+    subject_code VARCHAR(50) NOT NULL,
+    subject_name VARCHAR(255) NOT NULL,
+    semester INT NOT NULL DEFAULT 5,
+    QP_Type VARCHAR(50) DEFAULT 'T'
+);
