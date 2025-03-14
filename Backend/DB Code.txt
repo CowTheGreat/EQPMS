@@ -36,3 +36,166 @@ CREATE TABLE boards (
     semester INT NOT NULL DEFAULT 5,
     QP_Type VARCHAR(50) DEFAULT 'T'
 );
+
+"degree"	"board_name"	"regulation"	"Semester"	"subject_code"	"subject_name"	"QP_Type"
+
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '1', 'IP22151', 'Induction Programme ', 'GN');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '1', 'HS22151', 'Tamil language and Heritage of Ancient Tamil Society ', 'HS');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '1', 'HS22152', 'Communicative English ', 'HS');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '1', 'MA22151', 'Applied Mathematics I', 'BS');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '1', 'PH22151', 'Applied Physics ', 'BS');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '1', 'CY22151', 'Applied Chemistry', 'BS');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '1', 'EE22151', 'Basic Electrical and Electronics Engineering ', 'ES');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '1', 'IT22101', 'Programming for Problem Solving', 'ES');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '1', 'PH22161', 'Physics Laboratory ', 'BS');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '1', 'EE22111', 'Basic Electrical and Electronics Engineering ', 'ES');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '1', 'IT22111', 'Programming for Problem Solving Laboratory ', 'ES');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '2', 'HS22251', 'Science and Technology in Ancient Tamil Society ', 'HS');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '2', 'HS22252', 'Technical English ', 'HS');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '2', 'MA22251', 'Applied Mathematics II ', 'BS');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '2', 'ME22251', 'Technical Drawing ', 'BS');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '2', 'CS22201', 'Python For Data Science', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '2', 'CS22202', 'Digital Principles and System Design ', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '2', 'CS22203', 'Object Oriented Programming', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '2', 'CS22211', 'Digital Principles and System Design Laboratory', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '2', 'CS22212', 'Object Oriented Programming Laboratory', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '3', 'MA22353', 'Discrete Mathematics', 'BS');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '3', 'AD22301', 'Artificial Intelligence', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '3', 'CS22301', 'Database Management Systems', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '3', 'CS22302', 'Datamining and Data warehousing ', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '3', 'CS22303', 'Data Structures', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '3', 'CS22304', 'Microprocessor and Computer Architecture', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '3', 'CS22311', 'Database Management Systems Laboratory ', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '3', 'CS22312', 'Data Structures Laboratory', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '3', 'CS22313', 'Microprocessor Laboratory', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '4', 'MA22454', 'Probability and Queuing Theory', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '4', 'CS22401', 'Operating Systems ', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '4', 'CS22402', 'Machine Learning Techniques ', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '4', 'CS22403', 'Design and Analysis of Algorithms', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '4', 'CS22409', 'Java Programming: Theory and Practices', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '4', 'GE22451', 'Environmental Sciences and Sustainability ', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '4', 'CS22411', 'Operating Systems Laboratory ', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '4', 'CS22412', 'Artificial Intelligence and Machine Learning Laboratory', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '5', 'CS22501', 'Computer Networks ', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '5', 'CS22502', 'Software Engineering ', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '5', 'CS22503', 'User Interface Tools and Techniques ', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '5', 'CS22504', 'Theory of Computation', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '5', 'CS22511', 'Computer Networks Laboratory ', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '5', 'CS22512', 'User Interface Tools and Techniques Laboratory', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '5', 'HS22511', 'Interview and Career Skills Laboratory ', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '6', 'CS22601', 'Cryptography and Network Security ', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '6', 'CS22602', 'Software Project Management', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '6', 'AD22501', 'Internet of Things and Applications ', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '6', 'CS22603', 'Cloud Computing', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '6', 'CS22604', 'Compiler Design', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '6', 'CS22611', 'Cryptography and Network Security Laboratory ', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '6', 'CS22612', 'Cloud Computing Laboratory', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '7', 'CS22701', 'Ethics for Computer Professionals ', 'PC');
+INSERT INTO Boards (degree, board_name, regulation, Semester, subject_code, subject_name, QP_Type) VALUES ('B.E', 'CSE', 'R22', '8', 'CS22811', 'Project Work', 'PC');
+
+"NAME"	"Mail ID"	"ID"	"Type"	"Board"
+"Dr.R.ANITHA"	"ranitha@svce.ac.in "	"CSE4302014"	"Internal"	"CSE"
+"Dr.P.JANARTHANAN"	"janap@svce.ac.in "	"MCA5332000"	"Internal"	"CSE"
+"Dr.N.RAJGANESH"	"rajganeshn@svce.ac.in "	"CSE15392021"	"Internal"	"CSE"
+"Dr.P.VINOTHIYALAKSHMI"	"vlakshmi@svce.ac.in "	"CSE9052007"	"Internal"	"CSE"
+"Dr.N.REVATHI"	"revathi@svce.ac.in "	"IT7042003"	"Internal"	"CSE"
+"Dr.T.RAJASEKARAN"	"rajasekaran@svce.ac.in "	"CSE6312016"	"Internal"	"CSE"
+"Dr.V.RAJALAKSHMI"	"vraji@svce.ac.in"	"CSE7972005"	"Internal"	"CSE"
+"Dr.S.RAJALAKSHMI"	"sraji@svce.ac.in"	"CSE6962007"	"Internal"	"CSE"
+"Dr.M.SURESH KUMAR"	"sureshm@svce.ac.in "	"CSE6422010"	"Internal"	"CSE"
+"Dr.G.JANAKASUDHA"	"jsudha@svce.ac.in "	"CSE8002005"	"Internal"	"CSE"
+"Dr.S.KALAVATHI"	"kalavathi@svce.ac.in "	"CSE8522005"	"Internal"	"CSE"
+"Dr.S.SENTHAMIZHSELVI"	"senthamizhselvi@svce.ac.in"	"CSE0182010"	"Internal"	"CSE"
+"K.SRINIVASAN"	"ksrinivasan@svce.ac.in "	"MCA7452004"	"Internal"	"CSE"
+"R.GAYATHRI"	"gayathri@svce.ac.in "	"CSE8372005"	"Internal"	"CSE"
+"J.BUVANA"	"buvana@svce.ac.in "	"CSE5612007"	"Internal"	"CSE"
+"Dr. S.POORANI"	"spoorani@svce.ac.in "	"ECE5342010"	"Internal"	"CSE"
+"R.IYSWARYA"	"iyswarya@svce.ac.in "	"CSE3812014"	"Internal"	"CSE"
+"R.SENTHIL KUMAR"	"senthilkumar_r@svce.ac.in "	"CSE7752015"	"Internal"	"CSE"
+"P.SELVAMANI"	"pselvamani@svce.ac.in "	"CSE8362017"	"Internal"	"CSE"
+"V.RADHA"	"radhav@svce.ac.in "	"CSE15282021"	"Internal"	"CSE"
+"G.R.KHANAGHAVALLE"	"khanaghavalle@svce.ac.in "	"CSE15272021"	"Internal"	"CSE"
+"RUPA KESAVAN"	"rupakesavan@svce.ac.in "	"CSE15292021"	"Internal"	"CSE"
+"R.K.KAPILAVANI"	"rkkapilavani@svce.ac.in "	"CSE15502021"	"Internal"	"CSE"
+"T.PADMAVATHI"	"padmavathy@svce.ac.in "	"CSE15702022"	"Internal"	"CSE"
+"S.JANANI"	"sjanani@svce.ac.in "	"CSE15782022"	"Internal"	"CSE"
+"S.YUVAPRABHA"	"yuvaprabhas@svce.ac.in "	"CSE15922022"	"Internal"	"CSE"
+"E.KIRUTHIGA"	"kiruthigae@svce.ac.in "	"CSE15932022"	"Internal"	"CSE"
+"Dr.S.D.NANDAKUMAR"	"nandakumar@svce.ac.in "	"CSE15992022"	"Internal"	"CSE"
+"P.UMA"	"umap@svce.ac.in "	"CSE15982022"	"Internal"	"CSE"
+"SHOBHANJALY P. NAIR"	"shobhanjaly@svce.ac.in "	"CSE16002022"	"Internal"	"CSE"
+"R.POORNI"	"poornir@svce.ac.in "	"CSE16032022"	"Internal"	"CSE"
+"A.AJOE SWEETLIN JEENA"	"ajoesweetlinjeena@svce.ac.in "	"CSE16052022"	"Internal"	"CSE"
+"P.KAVIYA"	"kaviyap@svce.ac.in "	"CSE16062022"	"Internal"	"CSE"
+"R.GNANAVEL"	"gnanavelr@svce.ac.in "	"CSE16082022"	"Internal"	"CSE"
+"M.SHANTHALAKSHMI"	"shanthalakshmim@svce.ac.in "	"CSE16312022"	"Internal"	"CSE"
+"P.ILAMURUGAN"	"ilamurugang@svce.ac.in "	"CSE16502023"	"Internal"	"CSE"
+"S.DHIVYA"	"dhivyas@svce.ac.in "	"CSE16532023"	"Internal"	"CSE"
+"V.KRISHNAMOORTHY"	"krishnamoorthyv@svce.ac.in "	"CSE16572023"	"Internal"	"CSE"
+"P.S.APIRAJITHA"	"apirajithaps@svce.ac.in "	"CSE16622023"	"Internal"	"CSE"
+"S.KEERTHANA"	"keerthanas@svce.ac.in "	"CSE16632023"	"Internal"	"CSE"
+"N.DEEPIKA"	"deepikan@svce.ac.in "	"CSE16702023"	"Internal"	"CSE"
+"S.DEEPARANI"	"deeparanis@svce.ac.in "	"CSE16822023"	"Internal"	"CSE"
+"S.ASHOK KUMAR"	"ashokkumars@svce.ac.in "	"CSE17012024"	"Internal"	"CSE"
+"P.ARCHANA"	"archanap@svce.ac.in "	"CSE17062024"	"Internal"	"CSE"
+"S.JAYALAKSHMI"	"jayalakshmis@svce.ac.in "	"CSE17052024"	"Internal"	"CSE"
+"Ms. S. SHAMILI@SHNMUGAPRIYA"	"shamilis@svce.ac.in"	"CSE17072024"	"Internal"	"CSE"
+"E.RAGHUVARAN"	"raghuvarane@svce.ac.in "	"CSE17112024"	"Internal"	"CSE"
+"T.RAMALINGAM"	"ramalingamt@svce.ac.in "	"CSE17102024"	"Internal"	"CSE"
+"H.RAJYASHREE"	"rajyashreeh@svce.ac.in "	"CSE17092024"	"Internal"	"CSE"
+"J.LAVANYA"	"lavanyaj@svce.ac.in "	"CSE17132024"	"Internal"	"CSE"
+"K.FRANCIS DAVID"	"francisdavidk@svce.ac.in "	"CSE17232024"	"Internal"	"CSE"
+"P.PREMA"	"premap@svce.ac.in "	"CSE17242024"	"Internal"	"CSE"
+
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('Dr.R.ANITHA', 'ranitha@svce.ac.in ', 'CSE4302014', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('Dr.P.JANARTHANAN', 'janap@svce.ac.in ', 'MCA5332000', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('Dr.N.RAJGANESH', 'rajganeshn@svce.ac.in ', 'CSE15392021', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('Dr.P.VINOTHIYALAKSHMI', 'vlakshmi@svce.ac.in ', 'CSE9052007', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('Dr.N.REVATHI', 'revathi@svce.ac.in ', 'IT7042003', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('Dr.T.RAJASEKARAN', 'rajasekaran@svce.ac.in ', 'CSE6312016', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('Dr.V.RAJALAKSHMI', 'vraji@svce.ac.in', 'CSE7972005', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('Dr.S.RAJALAKSHMI', 'sraji@svce.ac.in', 'CSE6962007', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('Dr.M.SURESH KUMAR', 'sureshm@svce.ac.in ', 'CSE6422010', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('Dr.G.JANAKASUDHA', 'jsudha@svce.ac.in ', 'CSE8002005', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('Dr.S.KALAVATHI', 'kalavathi@svce.ac.in ', 'CSE8522005', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('Dr.S.SENTHAMIZHSELVI', 'senthamizhselvi@svce.ac.in', 'CSE0182010', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('K.SRINIVASAN', 'ksrinivasan@svce.ac.in ', 'MCA7452004', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('R.GAYATHRI', 'gayathri@svce.ac.in ', 'CSE8372005', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('J.BUVANA', 'buvana@svce.ac.in ', 'CSE5612007', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('Dr. S.POORANI', 'spoorani@svce.ac.in ', 'ECE5342010', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('R.IYSWARYA', 'iyswarya@svce.ac.in ', 'CSE3812014', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('R.SENTHIL KUMAR', 'senthilkumar_r@svce.ac.in ', 'CSE7752015', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('P.SELVAMANI', 'pselvamani@svce.ac.in ', 'CSE8362017', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('V.RADHA', 'radhav@svce.ac.in ', 'CSE15282021', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('G.R.KHANAGHAVALLE', 'khanaghavalle@svce.ac.in ', 'CSE15272021', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('RUPA KESAVAN', 'rupakesavan@svce.ac.in ', 'CSE15292021', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('R.K.KAPILAVANI', 'rkkapilavani@svce.ac.in ', 'CSE15502021', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('T.PADMAVATHI', 'padmavathy@svce.ac.in ', 'CSE15702022', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('S.JANANI', 'sjanani@svce.ac.in ', 'CSE15782022', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('S.YUVAPRABHA', 'yuvaprabhas@svce.ac.in ', 'CSE15922022', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('E.KIRUTHIGA', 'kiruthigae@svce.ac.in ', 'CSE15932022', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('Dr.S.D.NANDAKUMAR', 'nandakumar@svce.ac.in ', 'CSE15992022', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('P.UMA', 'umap@svce.ac.in ', 'CSE15982022', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('SHOBHANJALY P. NAIR', 'shobhanjaly@svce.ac.in ', 'CSE16002022', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('R.POORNI', 'poornir@svce.ac.in ', 'CSE16032022', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('A.AJOE SWEETLIN JEENA', 'ajoesweetlinjeena@svce.ac.in ', 'CSE16052022', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('P.KAVIYA', 'kaviyap@svce.ac.in ', 'CSE16062022', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('R.GNANAVEL', 'gnanavelr@svce.ac.in ', 'CSE16082022', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('M.SHANTHALAKSHMI', 'shanthalakshmim@svce.ac.in ', 'CSE16312022', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('P.ILAMURUGAN', 'ilamurugang@svce.ac.in ', 'CSE16502023', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('S.DHIVYA', 'dhivyas@svce.ac.in ', 'CSE16532023', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('V.KRISHNAMOORTHY', 'krishnamoorthyv@svce.ac.in ', 'CSE16572023', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('P.S.APIRAJITHA', 'apirajithaps@svce.ac.in ', 'CSE16622023', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('S.KEERTHANA', 'keerthanas@svce.ac.in ', 'CSE16632023', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('N.DEEPIKA', 'deepikan@svce.ac.in ', 'CSE16702023', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('S.DEEPARANI', 'deeparanis@svce.ac.in ', 'CSE16822023', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('S.ASHOK KUMAR', 'ashokkumars@svce.ac.in ', 'CSE17012024', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('P.ARCHANA', 'archanap@svce.ac.in ', 'CSE17062024', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('S.JAYALAKSHMI', 'jayalakshmis@svce.ac.in ', 'CSE17052024', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('Ms. S. SHAMILI@SHNMUGAPRIYA', 'shamilis@svce.ac.in', 'CSE17072024', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('E.RAGHUVARAN', 'raghuvarane@svce.ac.in ', 'CSE17112024', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('T.RAMALINGAM', 'ramalingamt@svce.ac.in ', 'CSE17102024', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('H.RAJYASHREE', 'rajyashreeh@svce.ac.in ', 'CSE17092024', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('J.LAVANYA', 'lavanyaj@svce.ac.in ', 'CSE17132024', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('K.FRANCIS DAVID', 'francisdavidk@svce.ac.in ', 'CSE17232024', 'Internal', 'CSE');
+INSERT INTO users (NAME, Mail, regno, employee_type, Board) VALUES ('P.PREMA', 'premap@svce.ac.in ', 'CSE17242024', 'Internal', 'CSE');
