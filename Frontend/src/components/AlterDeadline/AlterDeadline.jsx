@@ -3,15 +3,10 @@ import React, { useState } from "react";
 const AlterDeadline = () => {
   const [session, setSession] = useState("");
   const [newDeadline, setNewDeadline] = useState("");
-  const [confirmationText, setConfirmationText] = useState("");
   const [message, setMessage] = useState("");
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const handleSubmit = async () => {
-    if (confirmationText.toLowerCase() !== "confirm") {
-      setMessage("Please type 'confirm' to proceed.");
-      return;
-    }
-
     try {
       const response = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}update-deadline`,
@@ -31,6 +26,7 @@ const AlterDeadline = () => {
     } catch (error) {
       setMessage("Server error. Please try again.");
     }
+    setShowConfirm(false);
   };
 
   return (
@@ -52,23 +48,37 @@ const AlterDeadline = () => {
         className="border p-2 rounded w-full mb-2"
       />
 
-      <input
-        type="text"
-        placeholder="Type 'confirm' to proceed"
-        value={confirmationText}
-        onChange={(e) => setConfirmationText(e.target.value)}
-        className="border p-2 rounded w-full mb-2"
-      />
-
       <button
-        onClick={handleSubmit}
+        onClick={() => setShowConfirm(true)}
         className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
-        disabled={!session || !newDeadline || !confirmationText}
+        disabled={!session || !newDeadline}
       >
         Submit
       </button>
 
       {message && <p className="mt-2 text-sm text-red-500">{message}</p>}
+
+      {showConfirm && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
+          <div className="bg-white p-4 rounded shadow-lg">
+            <p className="mb-4">Are you sure you want to alter the deadline?</p>
+            <div className="flex justify-end">
+              <button
+                onClick={() => setShowConfirm(false)}
+                className="px-4 py-2 bg-gray-300 text-black rounded mr-2"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSubmit}
+                className="px-4 py-2 bg-red-500 text-white rounded"
+              >
+                Yes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
