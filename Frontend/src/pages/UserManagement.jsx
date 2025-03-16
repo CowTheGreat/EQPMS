@@ -1,5 +1,6 @@
 import { useState } from "react";
 import AddUser from "../components/AddUser/AddUser";
+import DeleteUser from "../components/DeleteUser/DeleteUser";
 
 const Button = ({ onClick, children, className }) => (
   <button
@@ -14,7 +15,6 @@ const Card = ({ children }) => (
   <div className="border rounded-lg shadow-md p-4">{children}</div>
 );
 
-const DeleteUser = () => <div>Delete User Component</div>;
 const ModifyUser = () => <div>Modify User Component</div>;
 
 const UserManagement = () => {
