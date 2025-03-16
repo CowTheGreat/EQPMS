@@ -340,6 +340,94 @@ def get_subjects(degree: str, regulation: str, board: str, semester: int):
         cursor.close()
         conn.close()
 
+@app.get("/get-subjects-pc")
+def get_subjects_pc(degree: str, regulation: str, board: str, semester: int):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute(
+            "SELECT subject_code, subject_name, QP_Type FROM subjects WHERE degree = %s AND regulation = %s AND board_name = %s AND semester = %s AND elective_type = 'PC'",
+            (degree, regulation, board, semester),
+        )
+        subjects = cursor.fetchall()
+
+        return subjects
+
+    except Exception as e:
+        print(f"Error in get-subjects-pc: {e}")
+        raise HTTPException(status_code=500, detail="Error fetching PC subjects")
+
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.get("/get-subjects-oe")
+def get_subjects_oe(degree: str, regulation: str, board: str, semester: int):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute(
+            "SELECT subject_code, subject_name, QP_Type FROM subjects WHERE degree = %s AND regulation = %s AND board_name = %s AND elective_type = 'OE'",
+            (degree, regulation, board),
+        )
+        subjects = cursor.fetchall()
+
+        return subjects
+
+    except Exception as e:
+        print(f"Error in get-subjects-oe: {e}")
+        raise HTTPException(status_code=500, detail="Error fetching OE subjects")
+
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.get("/get-subjects-se")
+def get_subjects_se(degree: str, regulation: str, board: str, semester: int):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute(
+            "SELECT subject_code, subject_name, QP_Type FROM subjects WHERE degree = %s AND regulation = %s AND board_name = %s AND elective_type = 'SE'",
+            (degree, regulation, board),
+        )
+        subjects = cursor.fetchall()
+
+        return subjects
+
+    except Exception as e:
+        print(f"Error in get-subjects-se: {e}")
+        raise HTTPException(status_code=500, detail="Error fetching SE subjects")
+
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.get("/get-subjects-pe")
+def get_subjects_pe(degree: str, regulation: str, board: str, semester: int):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute(
+            "SELECT subject_code, subject_name, QP_Type FROM subjects WHERE degree = %s AND regulation = %s AND board_name = %s  AND elective_type = 'PE'",
+            (degree, regulation, board),
+        )
+        subjects = cursor.fetchall()
+
+        return subjects
+
+    except Exception as e:
+        print(f"Error in get-subjects-pe: {e}")
+        raise HTTPException(status_code=500, detail="Error fetching PE subjects")
+
+    finally:
+        cursor.close()
+        conn.close()
+
 @app.delete("/delete-subject/{subject_code}")
 def delete_subject(subject_code: str):
     try:

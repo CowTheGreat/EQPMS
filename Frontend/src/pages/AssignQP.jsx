@@ -11,6 +11,7 @@ const AssignQP = () => {
     subjectType: "",
   });
 
+  const [electiveType, setElectiveType] = useState("PC"); // Default to PC
   const [deadline, setDeadline] = useState("");
   const [regulations, setRegulations] = useState([]);
   const [boards, setBoards] = useState([]);
@@ -60,8 +61,26 @@ const AssignQP = () => {
       formData.board &&
       formData.semester
     ) {
+      let endpoint = "";
+      switch (electiveType) {
+        case "PC":
+          endpoint = "get-subjects-pc";
+          break;
+        case "OE":
+          endpoint = "get-subjects-oe";
+          break;
+        case "SE":
+          endpoint = "get-subjects-se";
+          break;
+        case "PE":
+          endpoint = "get-subjects-pe";
+          break;
+        default:
+          endpoint = "get-subjects-pc";
+      }
+
       fetch(
-        `${import.meta.env.VITE_API_BASE_URL}get-subjects?degree=${
+        `${import.meta.env.VITE_API_BASE_URL}${endpoint}?degree=${
           formData.degree
         }&regulation=${formData.regulation}&board=${formData.board}&semester=${
           formData.semester
@@ -70,16 +89,22 @@ const AssignQP = () => {
         .then((res) => res.json())
         .then((data) => {
           console.log("Subjects API Response:", data);
-          setSubjects(Array.isArray(data) ? data : []); // Ensure it's an array
+          setSubjects(Array.isArray(data) ? data : []);
         })
         .catch((error) => {
           console.error("Error fetching subjects:", error);
-          setSubjects([]); // Handle errors without breaking UI
+          setSubjects([]);
         });
     } else {
-      setSubjects([]); // Reset subjects when filters are incomplete
+      setSubjects([]);
     }
-  }, [formData.degree, formData.regulation, formData.board, formData.semester]);
+  }, [
+    formData.degree,
+    formData.regulation,
+    formData.board,
+    formData.semester,
+    electiveType,
+  ]);
 
   // Fetch faculty when board is selected
   useEffect(() => {
@@ -92,7 +117,16 @@ const AssignQP = () => {
         .then((res) => res.json())
         .then((data) => setFacultyList(data))
         .catch(() => setFacultyList([]));
+    } else {
+      setFacultyList([]); // Reset faculty list when board is deselected
+      setSelectedFaculty([]); // Reset selected faculty
     }
+
+    // Cleanup function
+    return () => {
+      setFacultyList([]);
+      setSelectedFaculty([]);
+    };
   }, [formData.board]);
 
   // Update subject name and type when subject code is selected
@@ -176,7 +210,8 @@ const AssignQP = () => {
           semester: "",
           subjectCode: "",
         });
-        setSelectedFaculty([]);
+        setSelectedFaculty([]); // Reset selected faculty
+        setFacultyList([]); // Reset faculty list
       } else {
         setMessage(result.detail || "Assignment failed.");
       }
@@ -193,16 +228,6 @@ const AssignQP = () => {
 
       <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.inputGroupRow}>
-          {/* <div className={styles.inputGroup}>
-            <label>Session</label>
-            <input
-              type="text"
-              name="session"
-              value={formData.session}
-              onChange={handleChange}
-              required
-            />
-          </div> */}
           <div className={styles.inputGroup}>
             <label>Session</label>
             <select
@@ -270,6 +295,52 @@ const AssignQP = () => {
           </div>
 
           <div className={styles.inputGroup}>
+            <label>Elective Type</label>
+            <div className={styles.electiveCheckboxes}>
+              <label>
+                <input
+                  type="checkbox"
+                  name="electiveType"
+                  value="PC"
+                  checked={electiveType === "PC"}
+                  onChange={() => setElectiveType("PC")}
+                />
+                PC
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  name="electiveType"
+                  value="OE"
+                  checked={electiveType === "OE"}
+                  onChange={() => setElectiveType("OE")}
+                />
+                OE
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  name="electiveType"
+                  value="SE"
+                  checked={electiveType === "SE"}
+                  onChange={() => setElectiveType("SE")}
+                />
+                SE
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  name="electiveType"
+                  value="PE"
+                  checked={electiveType === "PE"}
+                  onChange={() => setElectiveType("PE")}
+                />
+                PE
+              </label>
+            </div>
+          </div>
+
+          <div className={styles.inputGroup}>
             <label>Semester</label>
             <input
               type="number"
@@ -282,27 +353,24 @@ const AssignQP = () => {
             />
           </div>
 
-          <div className={styles.inputGroup}>
-            <label>Subject Code</label>
-            <select
-              name="subjectCode"
-              value={formData.subjectCode}
-              onChange={handleChange}
-              required
-              disabled={subjects.length === 0} // Disable if no subjects are available
-            >
-              <option value="">
-                {subjects.length === 0
-                  ? "No subjects available"
-                  : "Select Subject Code"}
+          <select
+            name="subjectCode"
+            value={formData.subjectCode}
+            onChange={handleChange}
+            required
+            disabled={subjects.length === 0}
+          >
+            <option value="">
+              {subjects.length === 0
+                ? "No subjects available"
+                : "Select Subject Code"}
+            </option>
+            {subjects.map((sub) => (
+              <option key={sub.subject_code} value={sub.subject_code}>
+                {sub.subject_code}
               </option>
-              {subjects.map((sub) => (
-                <option key={sub.subject_code} value={sub.subject_code}>
-                  {sub.subject_code}
-                </option>
-              ))}
-            </select>
-          </div>
+            ))}
+          </select>
         </div>
 
         <div className={styles.inputGroupRow}>
