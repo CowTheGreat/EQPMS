@@ -212,6 +212,7 @@ const AssignQP = () => {
         });
         setSelectedFaculty([]); // Reset selected faculty
         setFacultyList([]); // Reset faculty list
+        setElectiveType("PC");
       } else {
         setMessage(result.detail || "Assignment failed.");
       }
