@@ -49,7 +49,7 @@ const AdminSidebar = () => {
 
         <li>
           <NavLink
-            to="/add-user"
+            to="/user-management"
             className={({ isActive }) => (isActive ? styles.active : "")}
           >
             <FiUserPlus className={styles.icon} />
