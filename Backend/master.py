@@ -455,7 +455,8 @@ def assign_qp(data: AssignQPRequest, background_tasks: BackgroundTasks):
         cursor = conn.cursor()
 
         current_year = datetime.now().year
-        year_code = (current_year - 1) % 100 if data.semester % 2 == 0 else current_year % 100
+        # year_code = (current_year - 1) % 100 if data.semester % 2 == 0 else current_year % 100
+        year_code = current_year % 100
 
         semester_type = "1" if data.semester % 2 != 0 else "2"
         
