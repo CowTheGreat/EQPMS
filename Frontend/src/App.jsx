@@ -12,7 +12,6 @@ import UserConsole from "./pages/UserConsole";
 import AdminDashboard from "./pages/AdminDashboard";
 import AssignQP from "./pages/AssignQP";
 import AccessQP from "./pages/AccessQP";
-import AddUser from "./pages/AddUser";
 import AdminSidebar from "../src/components/AdminSidebar/AdminSidebar";
 import DatabaseManager from "./pages/DatabaseManager";
 import UserManagement from "./pages/UserManagement";

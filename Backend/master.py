@@ -219,6 +219,63 @@ def delete_user(regno: str):
         cursor.close()
         conn.close()
 
+# Backend Endpoint (FastAPI)
+@app.put("/update-user/{regno}")
+def update_user(regno: str, user_data: dict):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Validate existing user
+        cursor.execute("SELECT * FROM users WHERE regno = %s", (regno,))
+        user = cursor.fetchone()
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        # Validate input fields
+        valid_boards = {"CSE", "ECE", "EEE"}
+        valid_roles = {"user", "admin"}
+        valid_employee_types = {"Internal", "External"}
+
+        if 'board' in user_data and user_data['board'] not in valid_boards:
+            raise HTTPException(status_code=400, detail="Invalid board selection")
+        if 'role' in user_data and user_data['role'] not in valid_roles:
+            raise HTTPException(status_code=400, detail="Invalid role selection")
+        if 'employee_type' in user_data and user_data['employee_type'] not in valid_employee_types:
+            raise HTTPException(status_code=400, detail="Invalid employee type selection")
+
+        # Build update query dynamically
+        update_fields = []
+        params = []
+        
+        for field in ['name', 'mail', 'board', 'role', 'employee_type']:
+            if field in user_data:
+                update_fields.append(f"{field} = %s")
+                params.append(user_data[field])
+        
+        # Handle password update separately
+        if 'password' in user_data:
+            update_fields.append("pwd = %s")
+            params.append(user_data['password'])
+            update_fields.append("password_changed = 0")
+        
+        if not update_fields:
+            raise HTTPException(status_code=400, detail="No fields to update")
+
+        # Add regno for WHERE clause
+        params.append(regno)
+        
+        query = f"UPDATE users SET {', '.join(update_fields)} WHERE regno = %s"
+        cursor.execute(query, tuple(params))
+        conn.commit()
+
+        return {"message": "User updated successfully"}
+    
+    except mysql.connector.Error as db_err:
+        raise HTTPException(status_code=500, detail=f"Database error: {db_err}")
+    finally:
+        cursor.close()
+        conn.close()
 
 @app.get("/get-regulations")
 def get_regulations(degree: str):
