@@ -12,6 +12,7 @@ export default function AddSubjects() {
     subject_name: "",
     semester: "",
     qp_type: "T", // Default value for QP Type
+    elective_type: "PC", // Default value for Elective Type
   });
 
   const [message, setMessage] = useState("");
@@ -28,7 +29,8 @@ export default function AddSubjects() {
       !formData.subject_code ||
       !formData.subject_name ||
       !formData.semester ||
-      !formData.qp_type
+      !formData.qp_type ||
+      !formData.elective_type
     ) {
       setMessage("Please fill all fields!");
       return;
@@ -43,6 +45,7 @@ export default function AddSubjects() {
       subject_name: "",
       semester: "",
       qp_type: "T",
+      elective_type: "PC",
     });
     setMessage("");
   };
@@ -132,6 +135,17 @@ export default function AddSubjects() {
           <option value="T">T</option>
           <option value="TNP">TNP</option>
         </select>
+        <select
+          name="elective_type"
+          value={formData.elective_type}
+          onChange={handleChange}
+          className={styles.input}
+        >
+          <option value="PC">PC</option>
+          <option value="OE">OE</option>
+          <option value="SE">SE</option>
+          <option value="PE">PE</option>
+        </select>
       </div>
 
       <button onClick={addSubject} className={styles.addButton}>
@@ -149,6 +163,7 @@ export default function AddSubjects() {
               <th>Name</th>
               <th>Semester</th>
               <th>QP Type</th>
+              <th>Elective Type</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -162,6 +177,7 @@ export default function AddSubjects() {
                 <td>{sub.subject_name}</td>
                 <td>{sub.semester}</td>
                 <td>{sub.qp_type}</td>
+                <td>{sub.elective_type}</td>
                 <td>
                   <button
                     onClick={() => deleteSubject(index)}
