@@ -571,7 +571,10 @@ def update_deadline(data: UpdateDeadlineRequest):
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        cursor.execute("SELECT COUNT(*) FROM QP WHERE QP_Session = %s", (data.session,))
+        current_year = datetime.now().year % 100  # Get last two digits of the year
+        formatted_session = f"{data.session.upper()}{current_year}"
+
+        cursor.execute("SELECT COUNT(*) FROM QP WHERE QP_Session = %s", (formatted_session,))
         if cursor.fetchone()[0] == 0:
             raise HTTPException(status_code=404, detail="No QPs found for the given session")
 

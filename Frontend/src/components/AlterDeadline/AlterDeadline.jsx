@@ -33,13 +33,19 @@ const AlterDeadline = () => {
     <div className="p-4 border rounded">
       <h2 className="text-lg font-bold mb-2">Alter QP Deadline</h2>
 
-      <input
-        type="text"
-        placeholder="Enter Session (e.g., 202401)"
+      <select
         value={session}
-        onChange={(e) => setSession(e.target.value)}
+        onChange={(e) =>
+          setSession(
+            `${e.target.value}${new Date().getFullYear().toString().slice(-2)}`
+          )
+        }
         className="border p-2 rounded w-full mb-2"
-      />
+      >
+        <option value="">Select Session</option>
+        <option value="MAY">MAY</option>
+        <option value="DEC">DEC</option>
+      </select>
 
       <input
         type="date"
