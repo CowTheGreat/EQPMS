@@ -226,7 +226,7 @@ def get_regulations(degree: str):
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
 
-        cursor.execute("SELECT DISTINCT regulation FROM boards WHERE degree = %s", (degree,))
+        cursor.execute("SELECT DISTINCT regulation FROM subjects WHERE degree = %s", (degree,))
         regulations = cursor.fetchall()
 
         return regulations
@@ -246,7 +246,7 @@ def get_boards(degree: str, regulation: str):
         cursor = conn.cursor(dictionary=True)
 
         cursor.execute(
-            "SELECT DISTINCT board_name FROM boards WHERE degree = %s AND regulation = %s",
+            "SELECT DISTINCT board_name FROM subjects WHERE degree = %s AND regulation = %s",
             (degree, regulation),
         )
         boards = cursor.fetchall()
@@ -268,7 +268,7 @@ def get_subjects(degree: str, regulation: str, board: str, semester: int):
         cursor = conn.cursor(dictionary=True)
 
         cursor.execute(
-            "SELECT subject_code, subject_name, QP_Type FROM boards WHERE degree = %s AND regulation = %s AND board_name = %s AND semester = %s",
+            "SELECT subject_code, subject_name, QP_Type FROM subjects WHERE degree = %s AND regulation = %s AND board_name = %s AND semester = %s",
             (degree, regulation, board, semester),
         )
         subjects = cursor.fetchall()
@@ -288,7 +288,7 @@ def delete_subject(subject_code: str):
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute("DELETE FROM boards WHERE subject_code = %s", (subject_code,))
+        cursor.execute("DELETE FROM subjects WHERE subject_code = %s", (subject_code,))
         conn.commit()
         if cursor.rowcount == 0:
             raise HTTPException(status_code=404, detail="Subject not found")
@@ -719,7 +719,7 @@ def add_subjects(subjects: List[Subject]):
             try:
                 cursor.execute(
                     """
-                    INSERT INTO boards (degree, regulation, board_name, subject_code, subject_name, semester, qp_type)
+                    INSERT INTO subjects (degree, regulation, board_name, subject_code, subject_name, semester, qp_type)
                     VALUES (%s, %s, %s, %s, %s, %s, %s)
                     """,
                     (subject.degree, subject.regulation, subject.board_name, subject.subject_code, subject.subject_name, subject.semester, subject.qp_type)
