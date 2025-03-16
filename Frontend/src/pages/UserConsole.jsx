@@ -107,6 +107,7 @@ const UserConsole = () => {
   };
 
   const handleFileUpload = async () => {
+    handleSave();
     if (!file || !selectedQP) {
       return;
     }
@@ -300,7 +301,9 @@ const UserConsole = () => {
                 />
                 <AiOutlineClose
                   className={styles.closeBtn}
-                  onClick={() => setSelectedQP(null)}
+                  onClick={() => (
+                    setSelectedQP(null), setShowCheckboxes(false)
+                  )}
                 />
               </div>
 
@@ -392,7 +395,7 @@ const UserConsole = () => {
                         accept=".docx"
                         onChange={handleFileChange}
                       />
-                      <button onClick={(handleFileUpload, handleSave)}>
+                      <button onClick={handleFileUpload}>
                         Save and Upload
                       </button>
 
