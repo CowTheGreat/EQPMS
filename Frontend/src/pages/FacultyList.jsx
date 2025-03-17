@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import jsPDF from "jspdf";
-import "jspdf-autotable";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable"; // Ensure autoTable is included
 import * as XLSX from "xlsx";
 import styles from "../page_styles/FacultyList.module.css";
 
@@ -19,6 +19,7 @@ const QPList = () => {
     QP_Faculty_assigned_Regno: "",
     QP_Status: "all",
     QP_Type: "all",
+    QP_Ref_no: "", // Added Ref No. search filter
   });
   const [columnOptions, setColumnOptions] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
@@ -31,7 +32,6 @@ const QPList = () => {
           `${import.meta.env.VITE_API_BASE_URL}api/qps`
         );
         const sortedData = response.data.sort((a, b) => {
-          // Enhanced sorting logic
           if (a.QP_Session < b.QP_Session) return -1;
           if (a.QP_Session > b.QP_Session) return 1;
 
@@ -90,9 +90,13 @@ const QPList = () => {
       if (filterValue === "all" || filterValue === "") return true;
       const qpValue = qp[column];
 
-      // Handle text search for specific columns
       if (
-        ["QP_Subject", "QP_Faculty_assigned", "QP_Subjectcode"].includes(column)
+        [
+          "QP_Ref_no", // Added Ref No. to text search
+          "QP_Subject",
+          "QP_Faculty_assigned",
+          "QP_Subjectcode",
+        ].includes(column)
       ) {
         return qpValue
           .toString()
@@ -111,9 +115,11 @@ const QPList = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const handleDownloadPDF = () => {
-    const doc = new jsPDF("landscape");
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF("landscape"); // Set landscape orientation
     const title = "Question Paper Report";
 
+    // Define headers for the table
     const headers = [
       [
         "Ref No.",
@@ -132,6 +138,7 @@ const QPList = () => {
       ],
     ];
 
+    // Prepare data for the table
     const data = filteredQPs.map((qp) => [
       qp.QP_Ref_no,
       qp.QP_Session,
@@ -143,19 +150,27 @@ const QPList = () => {
       qp.QP_Subject,
       qp.QP_Faculty_assigned,
       qp.QP_Faculty_assigned_Regno,
-      new Date(qp.QP_Deadline).toLocaleDateString(),
-      qp.QP_Status,
+      qp.QP_Deadline ? new Date(qp.QP_Deadline).toLocaleDateString() : "N/A",
+      qp.QP_Status === "Locked" ? "Completed" : "Pending",
       qp.QP_Type,
     ]);
 
-    doc.text(title, 14, 15);
+    // Add Title
+    doc.setFontSize(16);
+    doc.text(title, 14, 10); // Adjusted position
+
+    // Add Table
     doc.autoTable({
       head: headers,
       body: data,
       theme: "grid",
-      startY: 20,
+      startY: 20, // Ensure table does not overlap with title
+      styles: { fontSize: 8 },
+      headStyles: { fillColor: [44, 62, 80] }, // Dark blue header
+      alternateRowStyles: { fillColor: [240, 240, 240] }, // Light gray for alternating rows
     });
 
+    // Save the PDF
     doc.save("qp-report.pdf");
   };
 
@@ -173,7 +188,7 @@ const QPList = () => {
         Faculty: qp.QP_Faculty_assigned,
         "Faculty RegNo": qp.QP_Faculty_assigned_Regno,
         Deadline: new Date(qp.QP_Deadline).toLocaleDateString(),
-        Status: qp.QP_Status,
+        Status: qp.QP_Status === "Locked" ? "Completed" : "Pending", // Updated status mapping
         Type: qp.QP_Type,
       }))
     );
@@ -184,7 +199,6 @@ const QPList = () => {
   };
 
   const renderFilter = (column, label) => {
-    // Faculty RegNo column without filter
     if (column === "QP_Faculty_assigned_Regno") {
       return (
         <div className={styles.headerContainer}>
@@ -193,9 +207,13 @@ const QPList = () => {
       );
     }
 
-    // Text search for Subject, Faculty, and Subject Code columns
     if (
-      ["QP_Subject", "QP_Faculty_assigned", "QP_Subjectcode"].includes(column)
+      [
+        "QP_Ref_no", // Added Ref No. to text search
+        "QP_Subject",
+        "QP_Faculty_assigned",
+        "QP_Subjectcode",
+      ].includes(column)
     ) {
       return (
         <div className={styles.headerContainer}>
@@ -213,7 +231,33 @@ const QPList = () => {
       );
     }
 
-    // Dropdown filters for other columns
+    const totalPages = Math.ceil(filteredQPs.length / itemsPerPage);
+
+    const generatePageNumbers = () => {
+      const current = currentPage;
+      const total = totalPages;
+      const pages = [];
+
+      if (total <= 5) {
+        // Show all pages if total pages is 5 or less
+        for (let i = 1; i <= total; i++) pages.push(i);
+        return pages;
+      }
+
+      if (current <= 3) {
+        // First 3 pages + ellipsis + last page
+        pages.push(1, 2, 3, "...", total);
+      } else if (current >= total - 2) {
+        // First page + ellipsis + last 3 pages
+        pages.push(1, "...", total - 2, total - 1, total);
+      } else {
+        // First page + ellipsis + current-1, current, current+1 + ellipsis + last
+        pages.push(1, "...", current - 1, current, current + 1, "...", total);
+      }
+
+      return pages;
+    };
+
     return (
       <div className={styles.headerContainer}>
         <div className={styles.headerLabel}>{label}</div>
@@ -272,7 +316,7 @@ const QPList = () => {
               </th>
               <th>Deadline</th>
               <th>{renderFilter("QP_Type", "Type")}</th>
-              <th>{renderFilter("QP_status", "Status")}</th>
+              <th>{renderFilter("QP_Status", "Status")}</th>
             </tr>
           </thead>
           <tbody>
@@ -293,9 +337,11 @@ const QPList = () => {
                 <td>
                   <span
                     className={styles.statusBadge}
-                    data-status={qp.QP_Status}
+                    data-status={
+                      qp.QP_Status === "Locked" ? "Completed" : "Pending"
+                    }
                   >
-                    {qp.QP_Status}
+                    {qp.QP_Status === "Locked" ? "Completed" : "Pending"}
                   </span>
                 </td>
               </tr>

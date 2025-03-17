@@ -4,7 +4,7 @@
   width: 100vw;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: 2rem;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .title {
@@ -82,7 +82,6 @@
   justify-content: center;
 }
 
-
 .pageButton {
   background: #667eea;
   color: white;
@@ -157,7 +156,6 @@
   align-items: center;
 }
 
-
 .downloadButtons {
   display: flex;
   gap: 1rem;
@@ -211,44 +209,44 @@
   .container {
     padding: 1rem;
   }
-  
+
   .title {
     font-size: 2rem;
   }
-  
+
   .tableContainer {
     padding: 10px;
     border-radius: 8px;
   }
-  
+
   .table th {
     padding: 0.8rem;
     font-size: 0.8rem;
   }
-  
+
   .table td {
     padding: 0.8rem;
     font-size: 0.85rem;
   }
-  
+
   .headerSelect {
     max-width: 120px;
     font-size: 0.8rem;
     padding: 0.3rem 0.6rem;
   }
-  
+
   .downloadButtons {
     flex-direction: column;
     gap: 0.8rem;
   }
-  
+
   .downloadButton {
     width: 100%;
     justify-content: center;
     padding: 0.8rem;
     font-size: 0.9rem;
   }
-  
+
   .pageButton {
     padding: 0.6rem 1rem;
     font-size: 0.9rem;
