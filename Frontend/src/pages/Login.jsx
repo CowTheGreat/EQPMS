@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 // import { generateToken } from "../utils/auth";
 import styles from "../page_styles/Login.module.css";
+import Logo from "../assets/svce-logo.png";
 
 const Login = () => {
   const [isUser, setIsUser] = useState(true);
@@ -65,7 +66,15 @@ const Login = () => {
 
   return (
     <div className={styles.loginContainer}>
-      <div className={styles.loginBox}>
+            {/* Add logo */}
+      <img 
+        src={Logo} 
+        alt="SVCE Logo" 
+        className={styles.logo} 
+      />
+
+
+    <div className={styles.loginBox}>
         <h1 className={styles.title}>Welcome Back</h1>
 
         <div className={styles.tabs}>
@@ -119,6 +128,10 @@ const Login = () => {
           {error && <p className={styles.error}>{error}</p>}
         </form>
       </div>
+      <div className={styles.footer}>
+        Developed by The Department Of Computer Science and Engineering , SVCE
+      </div>
+
     </div>
   );
 };
