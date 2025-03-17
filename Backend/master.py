@@ -1165,31 +1165,31 @@ def send_email(recipient, subject, body):
         server.login(SMTP_USER, SMTP_PASS)
         server.sendmail(SMTP_USER, recipient, msg.as_string())
 
-@app.post("/broadcast")
-def broadcast_mail(background_tasks: BackgroundTasks):
-    db = get_db_connection()
-    cursor = db.cursor(dictionary=True)
+# @app.post("/broadcast")
+# def broadcast_mail(background_tasks: BackgroundTasks):
+#     db = get_db_connection()
+#     cursor = db.cursor(dictionary=True)
     
-    query = """
-    SELECT qp.QP_Subjectcode, qp.QP_Subject, qp.QP_Deadline, f.name, f.mail 
-    FROM qp qp 
-    JOIN users f ON qp.QP_Faculty_assigned_Regno = f.regno 
-    WHERE qp.QP_Status != 'Locked'
-    """
+#     query = """
+#     SELECT qp.QP_Subjectcode, qp.QP_Subject, qp.QP_Deadline, f.name, f.mail 
+#     FROM qp qp 
+#     JOIN users f ON qp.QP_Faculty_assigned_Regno = f.regno 
+#     WHERE qp.QP_Status != 'Locked'
+#     """
     
-    cursor.execute(query)
-    pending_qps = cursor.fetchall()
+#     cursor.execute(query)
+#     pending_qps = cursor.fetchall()
     
-    for qp in pending_qps:
-        subject = f"Reminder: Pending Question Paper Submission ({qp['QP_Subjectcode']})"
-        body = f"Hello {qp['name']},\n\nYou have not yet locked the question paper for {qp['QP_Subject']}.\nDeadline: {qp['QP_Deadline']}\nPlease complete it at the earliest.\n\nRegards,\nAdmin"
-        background_tasks.add_task(send_email, qp['mail'], subject, body)
-        print("Mail sent to", qp['mail'])
+#     for qp in pending_qps:
+#         subject = f"Reminder: Pending Question Paper Submission ({qp['QP_Subjectcode']})"
+#         body = f"Hello {qp['name']},\n\nYou have not yet locked the question paper for {qp['QP_Subject']}.\nDeadline: {qp['QP_Deadline']}\nPlease complete it at the earliest.\n\nRegards,\nAdmin"
+#         background_tasks.add_task(send_email, qp['mail'], subject, body)
+#         print("Mail sent to", qp['mail'])
     
-    cursor.close()
-    db.close()
+#     cursor.close()
+#     db.close()
     
-    return {"message": "Broadcast emails scheduled"}
+#     return {"message": "Broadcast emails scheduled"}
 
 #Akeel
 #Akeel
