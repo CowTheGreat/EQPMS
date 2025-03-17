@@ -1,0 +1,81 @@
+.userManagementContainer {
+    min-height: 100vh;
+    width: 100vw;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    box-sizing: border-box;
+    background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+    font-family: 'Inter', sans-serif;
+}
+
+.managementHeading {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: #1a202c;
+    margin-bottom: 2.5rem;
+    text-align: center;
+    width: 100%;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    line-height: 1.2;
+}
+
+.actionButtons {
+    display: flex;
+    gap: 1.25rem;
+    margin-bottom: 3rem;
+    justify-content: center;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.cardContainer {
+    width: 100%;
+    max-width: 1200px;
+    flex-grow: 1;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    padding: 2rem;
+    margin: 0 auto;
+    border: 1px solid rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+}
+
+.cardContainer:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+}
+
+.actionButton {
+    padding: 0.8rem 2rem;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.actionButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+}
+
+.addButton {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+}
+
+.deleteButton {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+}
+
+.modifyButton {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    color: white;
+}
+

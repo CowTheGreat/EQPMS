@@ -2,18 +2,19 @@ import { useState } from "react";
 import AddUser from "../components/AddUser/AddUser";
 import DeleteUser from "../components/DeleteUser/DeleteUser";
 import ModifyUser from "../components/ModifyUser/ModifyUser";
+import styles from "../page_styles/UserManagement.module.css";
 
 const Button = ({ onClick, children, className }) => (
   <button
     onClick={onClick}
-    className={`px-4 py-2 text-white rounded ${className}`}
+    className={`${styles.actionButton} ${className}`}
   >
     {children}
   </button>
 );
 
 const Card = ({ children }) => (
-  <div className="border rounded-lg shadow-md p-4">{children}</div>
+  <div className={styles.cardContainer}>{children}</div>
 );
 
 const UserManagement = () => {
@@ -33,27 +34,30 @@ const UserManagement = () => {
   };
 
   return (
-    <div className="p-4">
-      <div className="flex space-x-2 mb-4">
+    <div className={styles.userManagementContainer}>
+      <h1 className={styles.managementHeading}>User Management</h1>
+
+      <div className={styles.actionButtons}>
         <Button
           onClick={() => setSelectedAction("add")}
-          className="bg-blue-500"
+          className={styles.addButton}
         >
           Add User
         </Button>
         <Button
           onClick={() => setSelectedAction("delete")}
-          className="bg-red-500"
+          className={styles.deleteButton}
         >
           Delete User
         </Button>
         <Button
           onClick={() => setSelectedAction("modify")}
-          className="bg-green-500"
+          className={styles.modifyButton}
         >
           Modify User
         </Button>
       </div>
+
       <Card>{renderComponent()}</Card>
     </div>
   );

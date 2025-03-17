@@ -6,6 +6,25 @@
   min-height: 100vh;
   width: 100vw;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative; /* Add this for logo positioning */
+}
+
+.logo {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  height: 50px; /* Adjust based on your logo size */
+  width: auto;
+}
+.footer {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 0.9rem;
+  text-align: center;
+  opacity: 0.8;
 }
 
 .loginBox {
