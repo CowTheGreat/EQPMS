@@ -27,9 +27,14 @@ h2 {
 
 .inputGroupRow {
   display: flex;
-  flex-wrap: wrap; /* Prevents oversized elements in a row */
+  flex-wrap: wrap;
   gap: 15px;
   justify-content: space-between;
+}
+
+.inputGroupRow > * {
+  flex: 1; /* Ensures equal width distribution */
+  min-width: 0; /* Prevents overflowing issues */
 }
 
 .inputGroup {
@@ -110,14 +115,31 @@ h2 {
   font-size: 14px; /* Ensures uniform font size */
 }
 
+.inputGroupRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: space-between;
+}
+
+.inputGroup {
+  flex: 1;
+  min-width: 250px; /* Ensures responsiveness */
+  max-width: 250px; /* Maintains a fixed size */
+}
+
 .inputGroup input,
 .inputGroup select {
-  max-width: 250px;
-  min-width: 250px;
+  width: 100%; /* Fills the parent container */
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 14px;
+}
+
+.inputGroup select {
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .facultyCheckBox {
@@ -157,44 +179,8 @@ h2 {
   max-width: 100%;
 }
 
-/* Responsive adjustments */
-@media (max-width: 968px) {
-  .facultyChecklist {
-    grid-template-columns: repeat(2, 1fr); /* Two columns for medium screens */
-  }
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .facultyChecklist {
-    grid-template-columns: repeat(1, 1fr); /* Two columns for medium screens */
-  }
-}
-
-@media (max-width: 480px) {
-  .facultyChecklist {
-    grid-template-columns: repeat(1, 1fr); /* Single column for small screens */
-  }
-
-  .facultyItem {
-    flex-direction: row;
-    justify-content: flex-start;
-  }
-}
-
-.electiveCheckboxes {
-  display: flex; /* Use Flexbox to align items in a row */
-  align-items: center; /* Vertically center the checkboxes and labels */
-}
-
-.electiveCheckboxes label {
-  display: flex; /* Use Flexbox for the label to align checkbox and text */
-  align-items: center; /* Vertically center the checkbox and text */
-  gap: 8px; /* Add spacing between the checkbox and its label text */
-  cursor: pointer; /* Change cursor to pointer for better UX */
-}
-
-.electiveCheckboxes input[type="checkbox"] {
-  margin: 0; /* Remove default margin */
-  cursor: pointer; /* Change cursor to pointer for better UX */
+.electiveCheckboxes input {
+  width: 20px !important; /* Adjust checkbox width */
+  max-width: 20px !important;
+  min-width: 20px !important;
 }

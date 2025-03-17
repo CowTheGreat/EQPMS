@@ -278,27 +278,69 @@ const AssignQP = () => {
         </div>
 
         <div className={styles.inputGroupRow}>
-          <div className={styles.inputGroup}>
-            <label>Board</label>
-            <select
-              name="board"
-              value={formData.board}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select Board</option>
-              {boards.map((brd) => (
-                <option key={brd.board_name} value={brd.board_name}>
-                  {brd.board_name}
-                </option>
-              ))}
-            </select>
-          </div>
+          <div>
+            <div className={styles.inputGroup}>
+              <label>Board</label>
+              <select
+                name="board"
+                value={formData.board}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Select Board</option>
+                {boards.map((brd) => (
+                  <option key={brd.board_name} value={brd.board_name}>
+                    {brd.board_name}
+                  </option>
+                ))}
+              </select>
+            </div>
 
+            <div className={styles.inputGroup}>
+              <label>Subject Code</label>
+              <select
+                name="subjectCode"
+                value={formData.subjectCode}
+                onChange={handleChange}
+                required
+                disabled={subjects.length === 0}
+              >
+                <option value="">
+                  {subjects.length === 0
+                    ? "No subjects available"
+                    : "Select Subject Code"}
+                </option>
+                {subjects.map((sub) => (
+                  <option key={sub.subject_code} value={sub.subject_code}>
+                    {sub.subject_code}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div>
+            <div className={styles.inputGroup}>
+              <label>Semester</label>
+              <input
+                type="number"
+                name="semester"
+                value={formData.semester}
+                onChange={handleChange}
+                min="1"
+                max="10"
+                required
+              />
+            </div>
+            <div className={styles.inputGroup}>
+              <label>Subject Name</label>
+              <input type="text" value={subjectName} readOnly />
+            </div>
+          </div>
           <div className={styles.inputGroup}>
             <label>Elective Type</label>
             <div className={styles.electiveCheckboxes}>
               <label>
+                PC
                 <input
                   type="checkbox"
                   name="electiveType"
@@ -306,9 +348,9 @@ const AssignQP = () => {
                   checked={electiveType === "PC"}
                   onChange={() => setElectiveType("PC")}
                 />
-                PC
               </label>
               <label>
+                OE
                 <input
                   type="checkbox"
                   name="electiveType"
@@ -316,9 +358,9 @@ const AssignQP = () => {
                   checked={electiveType === "OE"}
                   onChange={() => setElectiveType("OE")}
                 />
-                OE
               </label>
               <label>
+                SE
                 <input
                   type="checkbox"
                   name="electiveType"
@@ -326,9 +368,9 @@ const AssignQP = () => {
                   checked={electiveType === "SE"}
                   onChange={() => setElectiveType("SE")}
                 />
-                SE
               </label>
               <label>
+                PE
                 <input
                   type="checkbox"
                   name="electiveType"
@@ -336,49 +378,12 @@ const AssignQP = () => {
                   checked={electiveType === "PE"}
                   onChange={() => setElectiveType("PE")}
                 />
-                PE
               </label>
             </div>
           </div>
-
-          <div className={styles.inputGroup}>
-            <label>Semester</label>
-            <input
-              type="number"
-              name="semester"
-              value={formData.semester}
-              onChange={handleChange}
-              min="1"
-              max="10"
-              required
-            />
-          </div>
-
-          <select
-            name="subjectCode"
-            value={formData.subjectCode}
-            onChange={handleChange}
-            required
-            disabled={subjects.length === 0}
-          >
-            <option value="">
-              {subjects.length === 0
-                ? "No subjects available"
-                : "Select Subject Code"}
-            </option>
-            {subjects.map((sub) => (
-              <option key={sub.subject_code} value={sub.subject_code}>
-                {sub.subject_code}
-              </option>
-            ))}
-          </select>
         </div>
 
         <div className={styles.inputGroupRow}>
-          <div className={styles.inputGroup}>
-            <label>Subject Name</label>
-            <input type="text" value={subjectName} readOnly />
-          </div>
           <div className={styles.inputGroup}>
             <label>Subject Type</label>
             <input type="text" value={subjectType} readOnly />
@@ -394,9 +399,6 @@ const AssignQP = () => {
               required
             />
           </div>
-        </div>
-
-        <div className={styles.inputGroupRow}>
           <div className={styles.inputGroup}>
             <label>Deadline</label>
             <input
@@ -429,6 +431,18 @@ const AssignQP = () => {
                 </div>
               ))}
             </div>
+          </div>
+
+          <div className={styles.selectedFaculty}>
+            <p>Selected Faculty:</p>
+            {selectedFaculty.map((regno) => (
+              <div key={regno} className={styles.facultyTag}>
+                {facultyList.find((fac) => fac.regno === regno)?.name} ({regno})
+                <button type="button" onClick={() => removeFaculty(regno)}>
+                  X
+                </button>
+              </div>
+            ))}
           </div>
         </div>
 
