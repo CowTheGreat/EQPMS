@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import styles from '../page_styles/DatabaseManager.module.css';
 import AddSubjects from "../components/AddSubjects/AddSubjects";
 import DeleteSubject from "../components/DeleteSubject/DeleteSubject";
 import AlterDeadline from "../components/AlterDeadline/AlterDeadline";
@@ -21,45 +22,50 @@ const DatabaseManager = () => {
       case "unlock":
         return <UnlockAllPapers />;
       default:
-        return <div>Select an action</div>;
+        return <div className="text-center text-gray-500 mt-4">Select an action to begin</div>;
     }
   };
 
   return (
-    <div className="p-4">
-      <div className="flex space-x-2 mb-4">
+    <div className={styles.userManagementContainer}>
+      <h1 className={styles.managementHeading}>Database Management System</h1>
+      
+      <div className={styles.actionButtons}>
         <button
           onClick={() => setSelectedAction("add")}
-          className="px-4 py-2 bg-blue-500 text-white rounded"
+          className={`${styles.actionButton} ${styles.addButton}`}
         >
           Add Subject
         </button>
         <button
           onClick={() => setSelectedAction("delete")}
-          className="px-4 py-2 bg-red-500 text-white rounded"
+          className={`${styles.actionButton} ${styles.deleteButton}`}
         >
           Delete Subject
         </button>
         <button
           onClick={() => setSelectedAction("deadline")}
-          className="px-4 py-2 bg-yellow-500 text-white rounded"
+          className={`${styles.actionButton} ${styles.deadlineButton}`}
         >
           Alter Deadline
         </button>
         <button
           onClick={() => setSelectedAction("modify")}
-          className="px-4 py-2 bg-green-500 text-white rounded"
+          className={`${styles.actionButton} ${styles.modifyButton}`}
         >
           Modify Paper
         </button>
         <button
           onClick={() => setSelectedAction("unlock")}
-          className="px-4 py-2 bg-purple-500 text-white rounded"
+          className={`${styles.actionButton} ${styles.unlockButton}`}
         >
           Unlock All Papers
         </button>
       </div>
-      <div className="border p-4 rounded">{renderComponent()}</div>
+
+      <div className={styles.cardContainer}>
+        {renderComponent()}
+      </div>
     </div>
   );
 };
