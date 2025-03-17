@@ -1,112 +1,298 @@
-.container {
-  padding: 20px;
-}
-
-.logoutBtn {
-  background-color: red;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-  margin-right: 10px;
-}
-
-.refresh,
-.download {
-  background-color: #007bff;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-  margin-right: 10px;
-}
-
-.assignmentListItem {
-  list-style-type: none;
+html,
+body {
+  margin: 0;
   padding: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
 }
 
-.assignmentItemItem {
-  padding: 10px;
-  border: 1px solid #ddd;
-  margin: 5px 0;
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100vw;
+  padding: 0;
+  background-color: #f5f7fa;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 1rem 2rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.controls {
+  display: flex;
+  gap: 1rem;
+}
+
+.mainContent {
+  flex: 1;
+  padding: 2rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.assignmentsSection {
+  margin-bottom: 2rem;
+}
+
+.assignmentsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  width: 100%;
+}
+
+.assignmentCard {
+  padding: 1.5rem;
+  background-color: white;
+  border: 1px solid #e3e8ee;
+  border-radius: 8px;
   cursor: pointer;
-  transition: 0.3s;
+  transition: transform 0.2s, box-shadow 0.2s;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-.assignmentItemItem:hover {
-  background-color: #f0f0f0;
+.assignmentCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
-.modal {
-  /* background: white; */
-  padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
-  width: 80vw;
+.assignmentCard.locked {
+  background-color: #f8f9fa;
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
-.modal {
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.statusBadge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.statusBadge[data-status="Assigned"] {
+  background-color: #e2e8f0;
+  color: #475569;
+}
+.statusBadge[data-status="In Progress"] {
+  background-color: #bfdbfe;
+  color: #1e3a8a;
+}
+.statusBadge[data-status="Saved"] {
+  background-color: #bae6fd;
+  color: #075985;
+}
+.statusBadge[data-status="Locked"] {
+  background-color: #fecaca;
+  color: #b91c1c;
+}
+
+.subject {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.subjectCode {
+  color: #64748b;
+  margin-bottom: 0.75rem;
+}
+
+.deadline {
+  font-size: 0.9rem;
+  color: #475569;
+}
+
+.modalOverlay {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow-y: auto; /* Enable vertical scrolling */
-  padding: 20px; /* Add padding to prevent content from sticking to edges */
+  z-index: 1000;
+  backdrop-filter: blur(2px);
 }
 
-.modalContent {
-  display: flex;
-  flex-direction: column;
-}
-
-.modalContent {
-  background: white !important;
-  padding: 20px;
-  border-radius: 8px;
-  width: 50%;
-  position: relative;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+.modal {
+  background-color: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
 .modalHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e3e8ee;
 }
 
-.refreshIcon {
-  cursor: pointer;
-  font-size: 20px;
+.modalContent {
+  padding: 1.5rem;
 }
 
-.closeBtn {
-  cursor: pointer;
-  font-size: 20px;
-  color: red;
-}
-
-.file-upload-container {
+.modalFooter {
+  padding: 1.5rem;
+  border-top: 1px solid #e3e8ee;
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  gap: 1rem;
+  justify-content: flex-end;
 }
 
-.upload-message {
-  color: green;
-  font-size: 14px;
+/* Button Styles */
+.button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.locked-message {
-  color: red;
-  font-weight: bold;
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.logoutBtn {
+  background-color: #ef4444;
+  color: white;
+}
+
+.refresh {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.download {
+  background-color: #8b5cf6;
+  color: white;
+}
+
+/* File Upload Styles */
+.fileUploadContainer {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background-color: #f8fafc;
+  border-radius: 8px;
+}
+
+.fileInput {
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  width: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1rem;
+  }
+
+  .assignmentsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .modal {
+    width: 95%;
+  }
+  .container {
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .mainContent {
+    padding: 1rem;
+  }
+
+  .button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .controls {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .userInfo {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}
+/* Add these transitions for smoother interactions */
+.assignmentCard,
+.button,
+.modal {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Ensure form elements fill their containers */
+.fileInput {
+  width: 100%;
+}
+
+/* Full-width table-like layout for modal content */
+.modalContent {
+  width: 100%;
+}
+
+.qpRow {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
 }
 
 .qpDetails {
@@ -138,192 +324,25 @@ input {
   border-radius: 5px;
 }
 
-/* Buttons */
-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  font-size: 16px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-/* Error Messages */
-.error {
-  color: red;
-  font-weight: bold;
-}
-
-.deadline-red {
-  color: red;
-  font-weight: bold;
-}
-
-.deadline-info {
-  font-style: italic;
-  font-size: 0.9em;
-}
-
-ul li:hover {
-  background: #e0e0e0;
-}
-
-.upload-message {
-  margin-top: 10px;
-  font-weight: bold;
-  color: green;
-}
-
-input[type="file"] {
-  margin: 10px 0;
-  padding: 5px;
-}
-
-button {
-  margin-top: 10px;
-}
-
-/* Logout Button */
-.logout-btn {
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  font-size: 16px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: 0.3s;
-  margin-bottom: 20px;
-}
-
-.logout-btn:hover {
-  background-color: #c82333;
-}
-
-/* Refresh Button */
-.refresh-btn {
-  background-color: #28a745;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  font-size: 16px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: 0.3s;
-  margin-left: 10px;
-}
-
-.refresh-btn:hover {
-  background-color: #218838;
-}
-
-/* Locked Message */
-.locked-message {
-  color: red;
-  font-weight: bold;
-}
-
-/* Disabled Cursor */
-ul li[style*="not-allowed"] {
-  cursor: not-allowed !important;
-}
-
-/* Close Button */
-.close-btn {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  font-size: 24px;
-  cursor: pointer;
-  color: red;
-}
-
-a {
-  display: block;
-  margin-top: 10px;
-  color: blue;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-/* ✅ Button Group - Adds spacing between Save, Edit, and Lock buttons */
-.button-group {
+/* Checkbox Styles */
+.checkboxGroup {
   display: flex;
-  gap: 10px; /* Space between buttons */
-  margin-top: 15px;
-  justify-content: center;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 1.5rem 0;
 }
 
-/* Save, Edit, Lock Button Styling */
-.save-btn {
-  background-color: #28a745;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  font-size: 16px;
-  border-radius: 5px;
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   cursor: pointer;
-  transition: 0.3s;
-}
-
-.save-btn:hover {
-  background-color: #218838;
-}
-
-.edit-btn {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  font-size: 16px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.edit-btn:hover {
-  background-color: #0056b3;
-}
-
-.lock-btn {
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  font-size: 16px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.lock-btn:hover {
-  background-color: #c82333;
-}
-
-.download {
-  background-color: #6f42c1;
-  color: white;
-  padding: 10px 15px;
-  font-size: 16px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-left: 10px;
-  transition: 0.3s;
-}
-
-.download:hover {
-  background-color: #5a33a5;
-}
-
-.checklistCheckBox {
   width: 20px !important; /* Adjust checkbox width */
   max-width: 20px !important;
   min-width: 20px !important;
+}
+
+.checkboxContent {
+  max-width: 200px !important;
+  min-width: 200px !important;
 }
