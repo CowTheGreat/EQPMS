@@ -1,5 +1,5 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
+import React, { useState } from "react";
+import { NavLink, useLocation } from "react-router-dom";
 import styles from "./AdminSidebar.module.css";
 import {
   FiHome,
@@ -7,92 +7,117 @@ import {
   FiSettings,
   FiClipboard,
   FiLogOut,
+  FiMenu,
 } from "react-icons/fi";
 import { useAuth } from "../../context/AuthContext";
+import logoImage from "../../assets/svce-logo.png";
 
 const AdminSidebar = () => {
   const { logout } = useAuth();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const location = useLocation();
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
   return (
-    <div className={styles.sidebar}>
-      <h2 className={styles.logo}>Admin Panel</h2>
-      <ul className={styles.navList}>
-        <li>
-          <NavLink
-            to="/admin-dashboard"
-            className={({ isActive }) => (isActive ? styles.active : "")}
-          >
-            <FiHome className={styles.icon} />
-            Dashboard
-          </NavLink>
-        </li>
-
-        <li>
-          <NavLink
-            to="/assign-qp"
-            className={({ isActive }) => (isActive ? styles.active : "")}
-          >
-            <FiClipboard className={styles.icon} />
-            Assign QP
-          </NavLink>
-        </li>
-
-        <li>
-          <NavLink
-            to="/access-qp"
-            className={({ isActive }) => (isActive ? styles.active : "")}
-          >
-            <FiClipboard className={styles.icon} />
-            Access QP
-          </NavLink>
-        </li>
-
-        <li>
-          <NavLink
-            to="/user-management"
-            className={({ isActive }) => (isActive ? styles.active : "")}
-          >
-            <FiUserPlus className={styles.icon} />
-            User Management
-          </NavLink>
-        </li>
-
-        {/* <li>
-          <NavLink
-            to="/add-subject"
-            className={({ isActive }) => (isActive ? styles.active : "")}
-          >
-            <FiClipboard className={styles.icon} />
-            Add Subject
-          </NavLink>
-        </li>
-
-        <li>
-          <NavLink
-            to="/delete-subject"
-            className={({ isActive }) => (isActive ? styles.active : "")}
-          >
-            <FiClipboard className={styles.icon} />
-            Delete Subject
-          </NavLink>
-        </li> */}
-
-        <li>
-          <NavLink
-            to="/edit-database"
-            className={({ isActive }) => (isActive ? styles.active : "")}
-          >
-            <FiSettings className={styles.icon} />
-            Database Manager
-          </NavLink>
-        </li>
-      </ul>
-
-      <button className={styles.logout} onClick={logout}>
-        <FiLogOut className={styles.icon} />
-        Logout
+    <>
+      {/* Hamburger Button */}
+      <button className={styles.hamburger} onClick={toggleSidebar}>
+        <FiMenu size={24} />
       </button>
-    </div>
+
+      {/* Sidebar */}
+      <div className={`${styles.sidebar} ${isSidebarOpen ? styles.open : ""}`}>
+        {/* Backdrop */}
+        {isSidebarOpen && (
+          <div className={styles.backdrop} onClick={toggleSidebar} />
+        )}
+
+        <div className={styles.logoContainer}>
+          <img src={logoImage} alt="Logo" className={styles.logoImage} />
+          <h2 className={styles.logoText}>Admin Panel</h2>
+        </div>
+
+        <ul className={styles.navList}>
+          <li>
+            <NavLink
+              to="/admin-dashboard"
+              className={({ isActive }) =>
+                [styles.navLink, isActive && styles.active]
+                  .filter(Boolean)
+                  .join(" ")
+              }
+            >
+              <FiHome className={styles.icon} />
+              <span className={styles.linkText}>Dashboard</span>
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink
+              to="/assign-qp"
+              className={({ isActive }) =>
+                [styles.navLink, isActive && styles.active]
+                  .filter(Boolean)
+                  .join(" ")
+              }
+            >
+              <FiClipboard className={styles.icon} />
+              <span className={styles.linkText}>Assign QP</span>
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink
+              to="/access-qp"
+              className={({ isActive }) =>
+                [styles.navLink, isActive && styles.active]
+                  .filter(Boolean)
+                  .join(" ")
+              }
+            >
+              <FiClipboard className={styles.icon} />
+              <span className={styles.linkText}>Access QP</span>
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink
+              to="/user-management"
+              className={({ isActive }) =>
+                [styles.navLink, isActive && styles.active]
+                  .filter(Boolean)
+                  .join(" ")
+              }
+            >
+              <FiUserPlus className={styles.icon} />
+              <span className={styles.linkText}>User Management</span>
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink
+              to="/edit-database"
+              className={({ isActive }) =>
+                [styles.navLink, isActive && styles.active]
+                  .filter(Boolean)
+                  .join(" ")
+              }
+            >
+              <FiSettings className={styles.icon} />
+              <span className={styles.linkText}>Database Manager</span>
+            </NavLink>
+          </li>
+        </ul>
+
+        <button className={styles.logout} onClick={logout}>
+          <FiLogOut className={styles.icon} />
+          <span className={styles.linkText}>Logout</span>
+        </button>
+      </div>
+    </>
   );
 };
 
