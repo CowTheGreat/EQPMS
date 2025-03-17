@@ -31,7 +31,7 @@ const AdminDashboard = () => {
   }, []);
 
   const statusCounts = qps.reduce((acc, qp) => {
-    const status = qp.QP_status === "Completed" ? "Completed" : "Pending";
+    const status = qp.QP_Status === "Locked" ? "Completed" : "Pending";
     acc[status] = (acc[status] || 0) + 1;
     return acc;
   }, {});
@@ -55,38 +55,168 @@ const AdminDashboard = () => {
 
   return (
     <div className={styles.container}>
-      <BroadcastButton />
-      <h1 className={styles.title}>Question Paper Management Dashboard</h1>
+      <div className={styles.header}>
+        <h1 className={styles.title}>Question Paper Management Dashboard</h1>
+        <BroadcastButton />
+      </div>
+      <div className={styles.topSection}>
+        <div className={styles.boardsSection}>
+          <h2>Status Table</h2>
+          <StatusTable qps={qps} />
+        </div>
 
-      <div className={styles.chartSection}>
-        <h2>Status Overview</h2>
-        <div className={styles.chartContainer}>
-          <Doughnut
-            data={chartData}
-            options={{
-              responsive: true,
-              maintainAspectRatio: false,
-              plugins: {
-                legend: {
-                  position: "top",
-                  labels: {
-                    color: "#1a237e",
-                    font: { size: 14 },
+        <div className={styles.chartSection}>
+          <h2>Status Overview</h2>
+          <div className={styles.chartContainer}>
+            <Doughnut
+              data={chartData}
+              options={{
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: {
+                    position: "top",
+                    labels: {
+                      color: "#1a237e",
+                      font: { size: 14 },
+                    },
+                  },
+                  tooltip: {
+                    backgroundColor: "rgba(0,0,0,0.8)",
+                    bodyFont: { size: 14 },
                   },
                 },
-                tooltip: {
-                  backgroundColor: "rgba(0,0,0,0.8)",
-                  bodyFont: { size: 14 },
-                },
-              },
-            }}
-          />
+              }}
+            />
+          </div>
         </div>
       </div>
 
       <section className={styles.facultySection}>
         <FacultyList />
       </section>
+    </div>
+  );
+};
+
+const StatusTable = ({ qps }) => {
+  const [filterStatus, setFilterStatus] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
+  const entriesPerPage = 5;
+
+  const uniqueStatuses = [
+    ...new Set(qps.map((qp) => qp.QP_Status).filter(Boolean)),
+  ];
+
+  const filteredQps =
+    filterStatus === "All"
+      ? qps
+      : qps.filter((qp) => qp.QP_Status === filterStatus);
+
+  const totalPages = Math.ceil(filteredQps.length / entriesPerPage);
+  const currentData = filteredQps.slice(
+    (currentPage - 1) * entriesPerPage,
+    currentPage * entriesPerPage
+  );
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filterStatus]);
+
+  const generatePageNumbers = () => {
+    const pages = [];
+    const rangeStart = Math.max(1, currentPage - 2);
+    const rangeEnd = Math.min(totalPages, currentPage + 2);
+
+    if (rangeStart > 1) {
+      pages.push(1);
+      if (rangeStart > 2) pages.push("ellipsis");
+    }
+
+    for (let i = rangeStart; i <= rangeEnd; i++) {
+      pages.push(i);
+    }
+
+    if (rangeEnd < totalPages) {
+      if (rangeEnd < totalPages - 1) pages.push("ellipsis");
+      pages.push(totalPages);
+    }
+
+    return pages;
+  };
+
+  return (
+    <div className={styles.tableContainer}>
+      <table className={styles.table}>
+        <thead>
+          <tr>
+            <th>Faculty</th>
+            <th>Subject Code</th>
+            <th>Subject</th>
+            <th>
+              <div className={styles.filterHeader}>
+                Status
+                <select
+                  value={filterStatus}
+                  onChange={(e) => setFilterStatus(e.target.value)}
+                  className={styles.filterDropdown}
+                >
+                  <option value="All">All</option>
+                  {uniqueStatuses.map((status, index) => (
+                    <option key={index} value={status}>
+                      {status}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {currentData.map((qp, index) => (
+            <tr key={index}>
+              <td>{qp.QP_Faculty_assigned}</td>
+              <td>{qp.QP_Subjectcode}</td>
+              <td>{qp.QP_Subject}</td>
+              <td>{qp.QP_Status}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <div className={styles.pagination}>
+        <button
+          onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+          disabled={currentPage === 1}
+        >
+          &laquo; Previous
+        </button>
+
+        {generatePageNumbers().map((page, index) =>
+          typeof page === "number" ? (
+            <button
+              key={index}
+              onClick={() => setCurrentPage(page)}
+              className={currentPage === page ? styles.activePage : ""}
+            >
+              {page}
+            </button>
+          ) : (
+            <span key={index} className={styles.ellipsis}>
+              ...
+            </span>
+          )
+        )}
+
+        <button
+          onClick={() =>
+            setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+          }
+          disabled={currentPage === totalPages}
+        >
+          Next &raquo;
+        </button>
+      </div>
     </div>
   );
 };

@@ -1,0 +1,191 @@
+.qpmsContainer {
+  width: 1490px;
+  /* background: linear-gradient(135deg, #f8f9fd 0%, #f1f3ff 50%, #f8f9fd 100%); */
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  position: relative;
+  /* border: 1px solid rgba(255, 255, 255, 0.4); */
+}
+
+/* Glassmorphism Effect for Main Box */
+.qpmsBox {
+  /* background: rgba(255, 255, 255, 0.95); */
+  padding: 1.8rem;
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  width: calc(100% - 40px);
+  height: calc(100% - 40px);
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+  /* border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06),
+    inset 0 0 12px rgba(255, 255, 255, 0.4); */
+}
+
+/* Enhanced Buttons Container */
+.buttonsContainer {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Modern Button Design */
+.squareButton {
+  padding: 16px 24px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  height: 68px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+}
+
+.squareButton::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: 0.6s;
+}
+
+.squareButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.3);
+}
+
+.squareButton:hover::before {
+  left: 100%;
+}
+
+.squareButton.selected {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.08),
+    0 3px 8px rgba(79, 70, 229, 0.2);
+}
+
+/* Enhanced Content Area */
+.contentContainer {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  padding: 1.2rem;
+  background: rgba(248, 249, 252, 0.6);
+  border-radius: 14px;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.2),
+    0 4px 12px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Modern Scrollbar (if needed) */
+.contentContainer::-webkit-scrollbar {
+  width: 8px;
+}
+
+.contentContainer::-webkit-scrollbar-track {
+  background: rgba(241, 243, 255, 0.4);
+  border-radius: 4px;
+}
+
+.contentContainer::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #6366f1 0%, #8b5cf6 100%);
+  border-radius: 4px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1490px) {
+  .qpmsContainer {
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+  }
+
+  .buttonsContainer {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .contentContainer {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 1200px) {
+  .qpmsContainer {
+    transform: scale(0.9);
+  }
+
+  .buttonsContainer {
+    grid-template-columns: 1fr;
+  }
+
+  .contentContainer {
+    grid-template-columns: 1fr;
+  }
+
+  .qpmsTitle {
+    font-size: 1.8rem;
+  }
+
+  .squareButton {
+    height: 60px;
+    font-size: 1rem;
+  }
+}
+
+/* Hover Effects Enhancements */
+.squareButton:hover .buttonIcon {
+  transform: translateX(3px);
+}
+
+.buttonIcon {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 24px;
+  height: 24px;
+}
+
+/* Loading Animation */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.loading-shimmer {
+  animation: shimmer 2s infinite linear;
+  background: linear-gradient(
+    to right,
+    rgba(241, 243, 255, 0.1) 25%,
+    rgba(241, 243, 255, 0.3) 50%,
+    rgba(241, 243, 255, 0.1) 75%
+  );
+  background-size: 200% 100%;
+}
