@@ -1,35 +1,35 @@
 .container {
   position: relative;
   padding: 2rem;
-  margin: 0;
-  width: 100vw;
-  height: 100vh;
+  margin: 0 auto; /* Center container */
+  width: 1242px; /* 1552px * 0.8 = 1241.6px (rounded) */
+  max-width: 100%; /* Prevent overflow on small screens */
+  height: 729px; /* Optional: Maintain aspect ratio (911*0.8) */
   box-sizing: border-box;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
   overflow: auto;
 }
 
 .title {
   text-align: center;
-  color: #ffffff;
+  color: #2d3748;
   margin-bottom: 2rem;
   font-size: 2rem;
   font-weight: 600;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .breadcrumbs {
   display: flex;
-  justify-content: space-between; /* Add this */
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
   padding: 1rem;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.95);
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-/* Add this new class for the breadcrumb items container */
 .breadcrumbs-left {
   display: flex;
   align-items: center;
@@ -39,7 +39,7 @@
 .breadcrumbItem {
   border: none;
   background: none;
-  color: #667eea;
+  color: #4a5568;
   cursor: pointer;
   padding: 0.25rem 0.5rem;
   font-size: 0.9rem;
@@ -48,7 +48,7 @@
 }
 
 .breadcrumbItem:hover {
-  color: #764ba2;
+  color: #2d3748;
   transform: translateY(-1px);
 }
 
@@ -69,7 +69,6 @@
   margin-top: 1rem;
 }
 
-/* Add these new styles */
 .header {
   display: flex;
   justify-content: space-between;
@@ -93,12 +92,12 @@
   cursor: pointer;
   font-weight: 500;
   transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .downloadAllButton:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .downloadAllButton:disabled {
@@ -106,6 +105,7 @@
   cursor: not-allowed;
   background: linear-gradient(135deg, #9ae6b4 0%, #68d391 100%);
 }
+
 .revealButton {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
@@ -115,13 +115,12 @@
   cursor: pointer;
   font-weight: 500;
   transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  /* Remove margin-left: auto */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .revealButton:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .revealButton:disabled {
@@ -140,12 +139,12 @@
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 .card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 12px -1px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 12px -1px rgba(0, 0, 0, 0.1);
   background-color: white;
 }
 
@@ -172,13 +171,13 @@
 
 .loading {
   text-align: center;
-  color: #ffffff;
+  color: #2d3748;
   padding: 2rem;
   font-size: 1.2rem;
 }
 
 .error {
-  color: #ffffff;
+  color: #2d3748;
   background-color: #fc8181;
   padding: 1rem;
   border-radius: 8px;
@@ -188,12 +187,11 @@
 
 .empty {
   text-align: center;
-  color: #ffffff;
+  color: #2d3748;
   padding: 2rem;
   font-size: 1.1rem;
 }
 
-/* Added animation for loading text */
 @keyframes pulse {
   0%,
   100% {
