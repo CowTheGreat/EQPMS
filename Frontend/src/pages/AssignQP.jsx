@@ -434,7 +434,7 @@ const AssignQP = () => {
           </div>
 
           <div className={styles.selectedFaculty}>
-            <p>Selected Faculty:</p>
+            {/* <p>Selected Faculty:</p> */}
             {selectedFaculty.map((regno) => (
               <div key={regno} className={styles.facultyTag}>
                 {facultyList.find((fac) => fac.regno === regno)?.name} ({regno})
@@ -446,7 +446,7 @@ const AssignQP = () => {
           </div>
         </div>
 
-        <div className={styles.selectedFaculty}>
+        {/* <div className={styles.selectedFaculty}>
           <p>Selected Faculty:</p>
           {selectedFaculty.map((regno) => (
             <div key={regno} className={styles.facultyTag}>
@@ -456,7 +456,7 @@ const AssignQP = () => {
               </button>
             </div>
           ))}
-        </div>
+        </div> */}
 
         <button type="submit" className={styles.submitButton}>
           Assign QP
