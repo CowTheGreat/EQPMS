@@ -2,13 +2,11 @@ import { useState } from "react";
 import AddUser from "../components/AddUser/AddUser";
 import DeleteUser from "../components/DeleteUser/DeleteUser";
 import ModifyUser from "../components/ModifyUser/ModifyUser";
+import BlacklistManagement from "../components/BlacklistManagement/BlacklistManagement";
 import styles from "../page_styles/UserManagement.module.css";
 
 const Button = ({ onClick, children, className }) => (
-  <button
-    onClick={onClick}
-    className={`${styles.actionButton} ${className}`}
-  >
+  <button onClick={onClick} className={`${styles.actionButton} ${className}`}>
     {children}
   </button>
 );
@@ -28,6 +26,8 @@ const UserManagement = () => {
         return <DeleteUser />;
       case "modify":
         return <ModifyUser />;
+      case "blacklist":
+        return <BlacklistManagement />;
       default:
         return <div>Select an action</div>;
     }
@@ -55,6 +55,12 @@ const UserManagement = () => {
           className={styles.modifyButton}
         >
           Modify User
+        </Button>
+        <Button
+          onClick={() => setSelectedAction("blacklist")}
+          className={styles.blacklistButton}
+        >
+          Blacklist Management
         </Button>
       </div>
 

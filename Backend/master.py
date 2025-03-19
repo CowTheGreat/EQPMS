@@ -483,6 +483,66 @@ def get_faculty_noblack(board: str):
         cursor.close()
         conn.close()
 
+@app.patch("/blacklist-user/{regno}")
+def blacklist_user(regno: str):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("UPDATE users SET black_listed = 1 WHERE regno = %s", (regno,))
+        conn.commit()
+
+        if cursor.rowcount == 0:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        return {"message": "User blacklisted successfully"}
+
+    except Exception:
+        raise HTTPException(status_code=500, detail="Error blacklisting user")
+
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.get("/get-blacklisted-faculty")
+def get_blacklisted_faculty():
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        
+        cursor.execute("SELECT regno, name, board FROM users WHERE black_listed = 1 ORDER BY name ASC")
+        faculty = cursor.fetchall()
+        
+        return faculty
+
+    except Exception:
+        raise HTTPException(status_code=500, detail="Error fetching blacklisted faculty members")
+    
+    finally:
+        cursor.close()
+        conn.close()
+
+
+@app.patch("/unblacklist-user/{regno}")
+def unblacklist_user(regno: str):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("UPDATE users SET black_listed = 0 WHERE regno = %s", (regno,))
+        conn.commit()
+
+        if cursor.rowcount == 0:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        return {"message": "User unblacklisted successfully"}
+
+    except Exception:
+        raise HTTPException(status_code=500, detail="Error unblacklisting user")
+
+    finally:
+        cursor.close()
+        conn.close()
 
 class AssignQPRequest(BaseModel):
     session: str
@@ -495,102 +555,6 @@ class AssignQPRequest(BaseModel):
     subject_type: str  # ✅ Include QP_Type
     assigned_faculty_regno: list[str]
     deadline: datetime
-
-# @app.post("/assign-qp")
-# def assign_qp(data: AssignQPRequest):
-#     print("Received Data:", data.dict())  # ✅ Debugging
-
-#     try:
-#         conn = get_db_connection()
-#         cursor = conn.cursor()
-
-#         current_year = datetime.now().year
-#         year_code = (current_year - 1) % 100 if data.semester % 2 == 0 else current_year % 100
-
-#         # Odd (1) / Even (2) semester
-#         semester_type = "1" if data.semester % 2 != 0 else "2"
-
-#         # Degree Type: B.E or B.Tech are considered UG (1), others are PG (2)
-#         if data.degree.upper() in ["B.E", "B.TECH"]:
-#             degree_type = "1"  # UG
-#         else:
-#             degree_type = "2"  # PG
-
-#         # Fetch faculty Type
-#         cursor.execute("SELECT employee_type FROM users WHERE regno = %s", (data.assigned_faculty_regno[0],))
-#         result = cursor.fetchone()
-#         if not result:
-#             raise HTTPException(status_code=404, detail=f"Faculty with regno {data.assigned_faculty_regno[0]} not found")
-#         faculty_type = result[0]
-
-#         qp_type = "1" if faculty_type == "Internal" else "2"
-
-#         current_year = datetime.now().year
-#         last_year = current_year - 1
-
-#         if data.semester % 2 == 0:
-#             session_title = f"May{str(last_year)[-2:]}"
-#         else:
-#             session_title = f"Dec{str(current_year)[-2:]}"
-
-#         # Fetch last serial number from DB
-#         cursor.execute(
-#             """
-#             SELECT MAX(CAST(SUBSTRING(QP_Ref_no, -3) AS UNSIGNED)) FROM QP 
-#             WHERE QP_Session = %s AND QP_Degree = %s
-#             """,
-#             (session_title, data.degree)
-#         )
-#         last_serial = cursor.fetchone()[0]
-#         serial_number = int(last_serial) + 1 if last_serial else 1
-
-#         # Format serial number as 3-digit (001, 002, ...)
-#         serial_str = f"{serial_number:03}"
-
-#         for regno in data.assigned_faculty_regno:
-#             # Generate unique QP Reference Number
-#             qp_ref_no = f"{year_code}{semester_type}{degree_type}{qp_type}{serial_str}"
-
-#             # Fetch faculty name
-#             cursor.execute("SELECT name FROM users WHERE regno = %s", (regno,))
-#             result = cursor.fetchone()
-#             if not result:
-#                 raise HTTPException(status_code=404, detail=f"Faculty with regno {regno} not found")
-#             faculty_name = result[0]
-
-#             # Insert into database
-#             cursor.execute(
-#                 """
-#                 INSERT INTO QP (QP_Ref_no, QP_Session, QP_Degree, QP_Regulation, QP_Board, 
-#                                 QP_Semester, QP_Subjectcode, QP_Subject, QP_Type,
-#                                 QP_Faculty_assigned, QP_Faculty_assigned_Regno, QP_Deadline)
-#                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-#                 """,
-#                 (
-#                     qp_ref_no,
-#                     session_title,
-#                     data.degree,
-#                     data.regulation,
-#                     data.board,
-#                     data.semester,
-#                     data.subject_code,
-#                     data.subject_name,
-#                     data.subject_type,  
-#                     faculty_name,
-#                     regno,
-#                     data.deadline
-#                 )
-#             )
-
-#         conn.commit()
-#         return {"message": "QP assigned successfully!", "QP_Ref_no": qp_ref_no}
-
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=f"Error assigning QP: {str(e)}")
-
-#     finally:
-#         cursor.close()
-#         conn.close()
 
 # SMTP Configuration
 SMTP_SERVER = "smtp.gmail.com"
@@ -715,8 +679,8 @@ def assign_qp(data: AssignQPRequest, background_tasks: BackgroundTasks):
             Regards,
             Admin
             """
-            # background_tasks.add_task(send_email, faculty_mail, subject, body)
-            background_tasks.add_task(send_email, "cowara987@gmail.com", subject, body)
+            background_tasks.add_task(send_email, faculty_mail, subject, body)
+            # background_tasks.add_task(send_email, "cowara987@gmail.com", subject, body)
 
         conn.commit()
         return {"message": "QP assigned successfully and notification emails sent!", "QP_Ref_no": qp_ref_no}
