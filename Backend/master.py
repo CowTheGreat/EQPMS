@@ -679,8 +679,8 @@ def assign_qp(data: AssignQPRequest, background_tasks: BackgroundTasks):
             Regards,
             Admin
             """
-            background_tasks.add_task(send_email, faculty_mail, subject, body)
-            # background_tasks.add_task(send_email, "cowara987@gmail.com", subject, body)
+            # background_tasks.add_task(send_email, faculty_mail, subject, body)
+            background_tasks.add_task(send_email, "cowara987@gmail.com", subject, body)
 
         conn.commit()
         return {"message": "QP assigned successfully and notification emails sent!", "QP_Ref_no": qp_ref_no}
