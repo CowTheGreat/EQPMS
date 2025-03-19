@@ -110,7 +110,7 @@ const AssignQP = () => {
   useEffect(() => {
     if (formData.board) {
       fetch(
-        `${import.meta.env.VITE_API_BASE_URL}get-faculty?board=${
+        `${import.meta.env.VITE_API_BASE_URL}get-faculty-noblack?board=${
           formData.board
         }`
       )

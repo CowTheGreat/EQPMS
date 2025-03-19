@@ -464,6 +464,26 @@ def get_faculty(board: str):
         cursor.close()
         conn.close()
 
+@app.get("/get-faculty-noblack")
+def get_faculty_noblack(board: str):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        
+        # Fetch faculty sorted by name in ascending order, excluding blacklisted ones
+        cursor.execute("SELECT regno, name FROM users WHERE board = %s AND black_listed = 0 ORDER BY name ASC", (board,))
+        faculty = cursor.fetchall()
+        
+        return faculty
+    
+    except Exception:
+        raise HTTPException(status_code=500, detail="Error fetching faculty members")
+    
+    finally:
+        cursor.close()
+        conn.close()
+
+
 class AssignQPRequest(BaseModel):
     session: str
     degree: str
