@@ -215,7 +215,7 @@ const ModifyUser = () => {
             </div>
           </div>
 
-          <div className={styles.row}>
+          {/* <div className={styles.row}>
             <div className={styles.inputGroup}>
               <label>New Password</label>
               <input
@@ -239,7 +239,7 @@ const ModifyUser = () => {
                 placeholder="Confirm new password"
               />
             </div>
-          </div>
+          </div> */}
 
           <button
             onClick={() => setShowConfirm(true)}
