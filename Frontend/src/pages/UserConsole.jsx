@@ -5,6 +5,8 @@ import styles from "../page_styles/UserConsole.module.css";
 import { AiOutlineClose } from "react-icons/ai";
 import { FiRefreshCw } from "react-icons/fi";
 import axios from "axios";
+import logo from "../assets/svce-logo-dark.png";
+import watermarkImage from "../assets/svce-logo-2.png";
 
 const UserConsole = () => {
   const { user, logout } = useAuth();
@@ -206,22 +208,42 @@ const UserConsole = () => {
 
   return (
     <div className={styles.container}>
+  {/* Watermark Background - Updated with more visible settings */}
+  <div className={styles.watermarkContainer}>
+    <img 
+      src={watermarkImage} 
+      alt="SVCE Watermark" 
+      className={styles.watermarkImage}
+      onError={(e) => {
+        console.error("Failed to load watermark image");
+        e.target.style.display = 'none';
+      }}
+    />
+  </div>
+
+      
       <header className={styles.header}>
-        <div className={styles.userInfo}>
-          <h2>Welcome, {user.id}</h2>
-          <button className={styles.download} onClick={handleDownloadOrder}>
-            📥 Download Order
-          </button>
-        </div>
-        <div className={styles.controls}>
-          <button className={styles.refresh} onClick={refreshData}>
-            <FiRefreshCw /> Refresh
-          </button>
-          <button className={styles.logoutBtn} onClick={handleLogout}>
-            Logout
-          </button>
-        </div>
-      </header>
+  <div className={styles.userInfo}>
+    {/* Add logo here */}
+    <img 
+      src={logo} 
+      alt="Institution Logo" 
+      className={styles.logo}
+    />
+    <h2>Welcome, {user.id}</h2>
+    <button className={styles.download} onClick={handleDownloadOrder}>
+      📥 Download Order
+    </button>
+  </div>
+  <div className={styles.controls}>
+    <button className={styles.refresh} onClick={refreshData}>
+      <FiRefreshCw /> Refresh
+    </button>
+    <button className={styles.logoutBtn} onClick={handleLogout}>
+      Logout
+    </button>
+  </div>
+</header>
 
       <main className={styles.mainContent}>
         <section className={styles.assignmentsSection}>
