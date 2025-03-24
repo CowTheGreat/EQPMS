@@ -71,7 +71,7 @@ ALGORITHM = "HS256"
 # MySQL Connection
 db_config = {
     "user": "root",
-    "password": "tiger",
+    "password": "CowTheGreat",
     "host": "localhost",
     "database": "eqpms",
 }
