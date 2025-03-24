@@ -30,6 +30,7 @@
   z-index: -1;
   transition: opacity 0.3s ease;
 }
+
 .hamburger {
   position: fixed;
   right: 20px;
@@ -47,37 +48,37 @@
 
 .hamburger:hover {
   background: #444;
+  transform: scale(1.05);
 }
 
-/* Logo container adjustment */
 .logoContainer {
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Changed from center to left alignment */
+  align-items: flex-start;
   margin-bottom: 30px;
-  padding: 20px 0 20px 16px; /* Added left padding */
+  padding: 20px 0 20px 16px;
 }
 
-/* Logo image adjustment */
 .logoImage {
   width: 100%;
-  max-width: 180px; /* Reduced from 200px */
+  max-width: 180px;
   height: auto;
   object-fit: contain;
   border-radius: 8px;
   margin-bottom: 10px;
-  margin-left: -8px; /* Optional: Fine-tune positioning */
+  margin-left: -8px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
-/* Logo text adjustment */
 .logoText {
   font-size: 1.1rem;
   font-weight: 600;
   color: #e0e0e0;
-  text-align: left; /* Align text to match image position */
+  text-align: left;
   line-height: 1.2;
-  padding: 0 15px 0 16px; /* Adjusted left padding */
+  padding: 0 15px 0 16px;
   white-space: normal;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .navList {
@@ -105,18 +106,25 @@
 .navList a:hover {
   background: rgba(255, 255, 255, 0.1);
   color: white;
+  transform: translateX(4px);
 }
 
 .active {
   background: linear-gradient(90deg, #6366f1 0%, #7c3aed 100%);
   color: white;
   box-shadow: 0 2px 10px rgba(99, 102, 241, 0.3);
+  font-weight: 500;
 }
 
 .icon {
   margin-right: 16px;
   font-size: 20px;
   flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.navLink:hover .icon {
+  transform: scale(1.1);
 }
 
 .navLink {
@@ -129,10 +137,11 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: all 0.2s ease;
 }
 
 .logout {
-  background: #ef4444;
+  background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
   color: white;
   padding: 14px 16px;
   border: none;
@@ -140,9 +149,16 @@
   font-size: 14px;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-top: auto;
+  margin-top: 20px; /* Reduced from auto to bring it up */
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
 }
 
 .logout:hover {
-  background: #dc2626;
+  background: linear-gradient(90deg, #dc2626 0%, #b91c1c 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
 }

@@ -21,6 +21,10 @@ const AdminSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  const handleNavClick = () => {
+    setIsSidebarOpen(false);
+  };
+
   return (
     <>
       {/* Hamburger Button */}
@@ -49,6 +53,7 @@ const AdminSidebar = () => {
                   .filter(Boolean)
                   .join(" ")
               }
+              onClick={handleNavClick}
             >
               <FiHome className={styles.icon} />
               <span className={styles.linkText}>Dashboard</span>
@@ -63,6 +68,7 @@ const AdminSidebar = () => {
                   .filter(Boolean)
                   .join(" ")
               }
+              onClick={handleNavClick}
             >
               <FiClipboard className={styles.icon} />
               <span className={styles.linkText}>Assign QP</span>
@@ -77,6 +83,7 @@ const AdminSidebar = () => {
                   .filter(Boolean)
                   .join(" ")
               }
+              onClick={handleNavClick}
             >
               <FiClipboard className={styles.icon} />
               <span className={styles.linkText}>Access QP</span>
@@ -91,6 +98,7 @@ const AdminSidebar = () => {
                   .filter(Boolean)
                   .join(" ")
               }
+              onClick={handleNavClick}
             >
               <FiUserPlus className={styles.icon} />
               <span className={styles.linkText}>User Management</span>
@@ -105,6 +113,7 @@ const AdminSidebar = () => {
                   .filter(Boolean)
                   .join(" ")
               }
+              onClick={handleNavClick}
             >
               <FiSettings className={styles.icon} />
               <span className={styles.linkText}>Database Manager</span>

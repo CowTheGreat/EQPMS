@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { jsPDF } from "jspdf";
-import "jspdf-autotable"; // Ensure autoTable is included
+import "jspdf-autotable";
 import * as XLSX from "xlsx";
 import styles from "../page_styles/FacultyList.module.css";
 
@@ -19,7 +19,7 @@ const QPList = () => {
     QP_Faculty_assigned_Regno: "",
     QP_Status: "all",
     QP_Type: "all",
-    QP_Ref_no: "", // Added Ref No. search filter
+    QP_Ref_no: "",
   });
   const [columnOptions, setColumnOptions] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
@@ -66,7 +66,6 @@ const QPList = () => {
             "all",
             ...new Set(sortedData.map((qp) => qp.QP_Semester.toString())),
           ],
-          QP_Status: ["all", ...new Set(sortedData.map((qp) => qp.QP_Status))],
           QP_Type: ["all", ...new Set(sortedData.map((qp) => qp.QP_Type))],
         };
         setColumnOptions(options);
@@ -88,14 +87,25 @@ const QPList = () => {
   const filteredQPs = qps.filter((qp) => {
     return Object.entries(filters).every(([column, filterValue]) => {
       if (filterValue === "all" || filterValue === "") return true;
-      const qpValue = qp[column];
+      
+      // Special handling for Status filter
+      if (column === "QP_Status") {
+        if (filterValue === "Completed") {
+          return qp.QP_Status === "Locked";
+        } else if (filterValue === "Pending") {
+          return qp.QP_Status !== "Locked";
+        }
+        return true;
+      }
 
+      const qpValue = qp[column];
       if (
         [
-          "QP_Ref_no", // Added Ref No. to text search
+          "QP_Ref_no",
           "QP_Subject",
           "QP_Faculty_assigned",
           "QP_Subjectcode",
+          "QP_Faculty_assigned_Regno",
         ].includes(column)
       ) {
         return qpValue
@@ -116,10 +126,9 @@ const QPList = () => {
 
   const handleDownloadPDF = () => {
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF("landscape"); // Set landscape orientation
+    const doc = new jsPDF("landscape");
     const title = "Question Paper Report";
 
-    // Define headers for the table
     const headers = [
       [
         "Ref No.",
@@ -138,7 +147,6 @@ const QPList = () => {
       ],
     ];
 
-    // Prepare data for the table
     const data = filteredQPs.map((qp) => [
       qp.QP_Ref_no,
       qp.QP_Session,
@@ -155,22 +163,19 @@ const QPList = () => {
       qp.QP_Type,
     ]);
 
-    // Add Title
     doc.setFontSize(16);
-    doc.text(title, 14, 10); // Adjusted position
+    doc.text(title, 14, 10);
 
-    // Add Table
     doc.autoTable({
       head: headers,
       body: data,
       theme: "grid",
-      startY: 20, // Ensure table does not overlap with title
+      startY: 20,
       styles: { fontSize: 8 },
-      headStyles: { fillColor: [44, 62, 80] }, // Dark blue header
-      alternateRowStyles: { fillColor: [240, 240, 240] }, // Light gray for alternating rows
+      headStyles: { fillColor: [44, 62, 80] },
+      alternateRowStyles: { fillColor: [240, 240, 240] },
     });
 
-    // Save the PDF
     doc.save("qp-report.pdf");
   };
 
@@ -188,7 +193,7 @@ const QPList = () => {
         Faculty: qp.QP_Faculty_assigned,
         "Faculty RegNo": qp.QP_Faculty_assigned_Regno,
         Deadline: new Date(qp.QP_Deadline).toLocaleDateString(),
-        Status: qp.QP_Status === "Locked" ? "Completed" : "Pending", // Updated status mapping
+        Status: qp.QP_Status === "Locked" ? "Completed" : "Pending",
         Type: qp.QP_Type,
       }))
     );
@@ -199,20 +204,32 @@ const QPList = () => {
   };
 
   const renderFilter = (column, label) => {
-    if (column === "QP_Faculty_assigned_Regno") {
+    if (column === "QP_Status") {
       return (
         <div className={styles.headerContainer}>
           <div className={styles.headerLabel}>{label}</div>
+          <div className={styles.filterContainer}>
+            <select
+              value={filters[column]}
+              onChange={(e) => handleFilterChange(column, e.target.value)}
+              className={styles.headerSelect}
+            >
+              <option value="all">All</option>
+              <option value="Completed">Completed</option>
+              <option value="Pending">Pending</option>
+            </select>
+          </div>
         </div>
       );
     }
 
     if (
       [
-        "QP_Ref_no", // Added Ref No. to text search
+        "QP_Ref_no",
         "QP_Subject",
         "QP_Faculty_assigned",
         "QP_Subjectcode",
+        "QP_Faculty_assigned_Regno",
       ].includes(column)
     ) {
       return (
@@ -230,33 +247,6 @@ const QPList = () => {
         </div>
       );
     }
-
-    const totalPages = Math.ceil(filteredQPs.length / itemsPerPage);
-
-    const generatePageNumbers = () => {
-      const current = currentPage;
-      const total = totalPages;
-      const pages = [];
-
-      if (total <= 5) {
-        // Show all pages if total pages is 5 or less
-        for (let i = 1; i <= total; i++) pages.push(i);
-        return pages;
-      }
-
-      if (current <= 3) {
-        // First 3 pages + ellipsis + last page
-        pages.push(1, 2, 3, "...", total);
-      } else if (current >= total - 2) {
-        // First page + ellipsis + last 3 pages
-        pages.push(1, "...", total - 2, total - 1, total);
-      } else {
-        // First page + ellipsis + current-1, current, current+1 + ellipsis + last
-        pages.push(1, "...", current - 1, current, current + 1, "...", total);
-      }
-
-      return pages;
-    };
 
     return (
       <div className={styles.headerContainer}>
@@ -337,9 +327,7 @@ const QPList = () => {
                 <td>
                   <span
                     className={styles.statusBadge}
-                    data-status={
-                      qp.QP_Status === "Locked" ? "Completed" : "Pending"
-                    }
+                    data-status={qp.QP_Status === "Locked" ? "Completed" : "Pending"}
                   >
                     {qp.QP_Status === "Locked" ? "Completed" : "Pending"}
                   </span>
