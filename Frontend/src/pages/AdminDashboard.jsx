@@ -4,6 +4,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import FacultyList from "./FacultyList";
 import styles from "../page_styles/AdminDashboard.module.css";
 import BroadcastButton from "../components/BroadcastButton/BroadcastButton";
+import AssignedQpList from "../components/AssignedQpList/AssignedQpList";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -94,6 +95,7 @@ const AdminDashboard = () => {
 
       <section className={styles.facultySection}>
         <FacultyList />
+        <AssignedQpList />
       </section>
     </div>
   );
