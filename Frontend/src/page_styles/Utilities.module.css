@@ -52,6 +52,9 @@
   background-color: #dc2626;
   color: white;
 }
+.broadcastButton {
+  background-color: "linear-gradient(to bottom right, #667EEA, #4C51BF)";
+}
 
 .deleteButton:hover {
   background-color: #b91c1c;

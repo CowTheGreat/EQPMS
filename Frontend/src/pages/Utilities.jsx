@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styles from "../page_styles/Utilities.module.css";
 import BackupManager from "../components/BackupManager/BackupManager";
 import LogsViewer from "../components/LogsViewer/LogsViewer";
+import BroadcastButton from "../components/BroadcastButton/BroadcastButton";
 
 const Utilities = () => {
   const [selectedAction, setSelectedAction] = useState(null);
@@ -39,6 +40,9 @@ const Utilities = () => {
           className={`${styles.actionButton} ${styles.deleteButton}`}
         >
           Logs Viewer
+        </button>
+        <button className={`${styles.actionButton} ${styles.broadcastButton}`}>
+          <BroadcastButton />
         </button>
       </div>
 
