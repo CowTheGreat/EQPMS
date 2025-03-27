@@ -49,6 +49,7 @@ import io
 from urllib.parse import unquote
 from fastapi.responses import StreamingResponse
 
+
 # FastAPI instance
 app = FastAPI()
 
@@ -137,7 +138,6 @@ def login(user: LoginRequest):
         log_text(
             message=f"User {user.id} logged in"
         )
-        print("CowTheGreat")
 
         return {"token": token, "role": db_user["role"], "force_password_change": False}
 
@@ -976,6 +976,9 @@ async def upload_file(file: UploadFile = File(...), username: str = Form(...), q
 
     with open(file_path, "wb") as buffer:
         buffer.write(await file.read())
+    
+    # Upload log
+    log_text(message=f"QP uploaded with Ref no. {qp_ref} and name {file_name}")
 
     return {"message": f"File saved to buffer successfully: {file_name}", "file_path": file_path}
 
