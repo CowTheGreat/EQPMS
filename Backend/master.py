@@ -71,7 +71,7 @@ ALGORITHM = "HS256"
 # MySQL Connection
 db_config = {
     "user": "root",
-    "password": "tiger",
+    "password": "CowTheGreat",
     "host": "localhost",
     "database": "eqpms",
 }
@@ -95,6 +95,26 @@ def create_access_token(data: dict, expires_delta: timedelta = timedelta(hours=1
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
+from fastapi import Request
+from datetime import datetime  # Import the actual class
+import os
+
+# Configure logging
+LOG_DIR = "../Frontend/public"
+LOG_FILE = os.path.join(LOG_DIR, "logs.txt")
+os.makedirs(LOG_DIR, exist_ok=True)
+
+def log_text(message: str = ""):
+    """Logs endpoint access with custom message"""
+    try:
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        log_entry = f"{timestamp} | Message: {message} \n"
+
+        with open(LOG_FILE, "a") as f:
+            f.write(log_entry)
+    except Exception as e:
+        print(f"Logging failed: {str(e)}")
+
 @app.post("/login")
 def login(user: LoginRequest):
     try:
@@ -116,6 +136,12 @@ def login(user: LoginRequest):
 
         # Generate JWT Token
         token = create_access_token({"id": db_user["regno"], "role": db_user["role"]})
+
+        # Log successful login
+        log_text(
+            message=f"User {user.id} logged in"
+        )
+        print("CowTheGreat")
 
         return {"token": token, "role": db_user["role"], "force_password_change": False}
 
@@ -1385,6 +1411,187 @@ async def download_all(
         print(f"ZIP Creation Error: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to create ZIP archive")
 
+  
+# Define backup directory
+BACKUP_DIR = Path("backups")
+BACKUP_DIR.mkdir(exist_ok=True)  # Create the directory if it doesn't exist
+
+# Define the folder to be backed up
+SOURCE_FOLDER = Path("uploaded_papers")  # Replace with your folder path
+
+@app.get("/api/backups")
+def list_backups():
+    """List all backup files sorted by creation time (newest first)."""
+    backups = [f for f in os.listdir(BACKUP_DIR) if os.path.isfile(BACKUP_DIR / f)]
+    
+    # Sort backups by timestamp in descending order (newest first)
+    backups.sort(key=lambda x: datetime.strptime(x.split("_backup")[0], "%Y-%m-%d_%H-%M-%S"), reverse=True)
+    
+    return backups
+
+@app.post("/api/backups/create")
+def create_backup():
+    """Create a backup by compressing a folder and saving it with a timestamp."""
+    try:
+        if not SOURCE_FOLDER.exists():
+            raise HTTPException(status_code=404, detail="Source folder not found")
+
+        # Create a backup filename with the current date and time
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        backup_filename = f"{timestamp}_backup.zip"
+        backup_path = BACKUP_DIR / backup_filename
+
+        # Compress the folder into a .zip file
+        shutil.make_archive(str(backup_path.with_suffix('')), 'zip', SOURCE_FOLDER)
+
+        return {"message": "Backup created successfully", "backup_filename": backup_filename}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.delete("/api/backups/delete/{backup_name}")
+def delete_backup(backup_name: str):
+    """Delete a backup file."""
+    backup_path = BACKUP_DIR / backup_name
+    if not backup_path.exists():
+        raise HTTPException(status_code=404, detail="Backup not found")
+
+    try:
+        os.remove(backup_path)
+        return {"message": "Backup deleted successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/backups/download/{backup_name}")
+def download_backup(backup_name: str):
+    """Download a backup file."""
+    backup_path = BACKUP_DIR / backup_name
+    if not backup_path.exists():
+        raise HTTPException(status_code=404, detail="Backup not found")
+
+    return FileResponse(backup_path, filename=backup_name)
+
+from fastapi import BackgroundTasks
+import time
+import random
+otp_cache = {}
+
+# Function to clean up expired OTPs
+def cleanup_expired_otps():
+    current_time = time.time()
+    expired_keys = [email for email, (otp, expiry) in otp_cache.items() if expiry < current_time]
+    for email in expired_keys:
+        del otp_cache[email]
+        
+def generate_otp():
+    return str(random.randint(100000, 999999))
+
+class ForgotPasswordRequest(BaseModel):
+    user_id: str
+    email: EmailStr
+
+@app.post("/forgot-password")
+def forgot_password(request: ForgotPasswordRequest, background_tasks: BackgroundTasks):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        # Check if the user ID and email match in the database
+        cursor.execute("SELECT regno, mail FROM users WHERE regno = %s AND mail = %s", (request.user_id, request.email))
+        user = cursor.fetchone()
+
+        if not user:
+            raise HTTPException(status_code=404, detail="User ID and email do not match")
+
+        # Generate OTP
+        otp = generate_otp()
+
+        # Store OTP in local cache with a 5-minute expiration
+        expiry_time = time.time() + 300  # 300 seconds = 5 minutes
+        otp_cache[request.email] = (otp, expiry_time)
+
+        # Clean up expired OTPs in the background
+        background_tasks.add_task(cleanup_expired_otps)
+
+        # Send OTP to the user's email
+        subject = "Your OTP for Password Reset"
+        body = f"Your OTP is: {otp}. It will expire in 5 minutes."
+        send_email(request.email, subject, body)
+
+        return {"message": "OTP sent successfully"}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        cursor.close()
+        conn.close()
+        
+class VerifyOTPRequest(BaseModel):
+    email: EmailStr
+    otp: str
+
+@app.post("/verify-otp")
+def verify_otp(request: VerifyOTPRequest):
+    try:
+        # Fetch the OTP from the local cache
+        stored_otp, expiry_time = otp_cache.get(request.email, (None, None))
+
+        if not stored_otp or stored_otp != request.otp or expiry_time < time.time():
+            raise HTTPException(status_code=400, detail="Invalid or expired OTP")
+
+        # OTP is valid
+        return {"message": "OTP verified successfully"}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+    
+class ResetPasswordRequest(BaseModel):
+    email: EmailStr
+    new_password: str
+    confirm_password: str
+
+@app.post("/reset-password")
+def reset_password(request: ResetPasswordRequest):
+    try:
+        # Check if passwords match
+        if request.new_password != request.confirm_password:
+            raise HTTPException(status_code=400, detail="Passwords do not match")
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Update the user's password in the database
+        cursor.execute("UPDATE users SET pwd = %s WHERE mail = %s", (request.new_password, request.email))
+        conn.commit()
+
+        # Delete the OTP from the local cache
+        if request.email in otp_cache:
+            del otp_cache[request.email]
+
+        return {"message": "Password reset successfully"}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        cursor.close()
+        conn.close()       
+        
+SMTP_SERVER = "smtp.gmail.com"
+SMTP_PORT = 587
+SMTP_USER = "cletocite@gmail.com"  # Your email
+SMTP_PASS = "ivpewaafeehsslfn"  # Your app password
+
+def send_email(recipient, subject, body):
+    msg = MIMEMultipart()
+    msg['From'] = SMTP_USER
+    msg['To'] = recipient
+    msg['Subject'] = subject
+    msg.attach(MIMEText(body, 'plain'))
+
+    with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+        server.starttls()
+        server.login(SMTP_USER, SMTP_PASS)
+        server.sendmail(SMTP_USER, recipient, msg.as_string())
 
 if __name__ == "__main__":
     uvicorn.run("master:app", host="0.0.0.0", port=8080, reload=True)
