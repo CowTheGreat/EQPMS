@@ -95,10 +95,6 @@ def create_access_token(data: dict, expires_delta: timedelta = timedelta(hours=1
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-from fastapi import Request
-from datetime import datetime  # Import the actual class
-import os
-
 # Configure logging
 LOG_DIR = "../Frontend/public"
 LOG_FILE = os.path.join(LOG_DIR, "logs.txt")
@@ -107,7 +103,7 @@ os.makedirs(LOG_DIR, exist_ok=True)
 def log_text(message: str = ""):
     """Logs endpoint access with custom message"""
     try:
-        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         log_entry = f"{timestamp} | Message: {message} \n"
 
         with open(LOG_FILE, "a") as f:
