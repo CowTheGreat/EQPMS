@@ -971,7 +971,7 @@ async def upload_file(file: UploadFile = File(...), username: str = Form(...), q
     folder_path = os.path.join(BUFFER_DIR, session, degree, board, regulation, semester, subject_code)
     os.makedirs(folder_path, exist_ok=True)
 
-    file_name = f"{qp_ref}_{subject_code}_{subject_name}_{username}.docx"
+    file_name = f"{qp_ref}_{subject_code}_{username}.docx"
     file_path = os.path.join(folder_path, file_name)
 
     with open(file_path, "wb") as buffer:
@@ -1010,7 +1010,7 @@ async def lock_and_upload(qp_ref: str):
     upload_folder_path = os.path.join(UPLOAD_DIR, session, degree, board, regulation, semester, subject_code)
     os.makedirs(upload_folder_path, exist_ok=True)
 
-    buffer_file_name = f"{qp_ref}_{subject_code}_{subject_name}_{username}.docx"
+    buffer_file_name = f"{qp_ref}_{subject_code}_{username}.docx"
     buffer_file_path = os.path.join(buffer_folder_path, buffer_file_name)
     upload_file_path = os.path.join(upload_folder_path, buffer_file_name)
 
