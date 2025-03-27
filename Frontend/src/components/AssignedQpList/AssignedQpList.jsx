@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { jsPDF } from "jspdf";
-import "jspdf-autotable";
+import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
 import styles from "./AssignedQpList.module.css";
 
@@ -12,6 +12,7 @@ const AssignedQpList = () => {
     QP_Faculty_assigned: "",
     QP_Faculty_assigned_Regno: "",
     QP_Status: "all",
+    QP_Ref_no: ""
   });
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -28,7 +29,6 @@ const AssignedQpList = () => {
 
         setQps(sortedData);
 
-        // Calculate faculty statistics
         const stats = {};
         sortedData.forEach((qp) => {
           if (!qp.QP_Faculty_assigned_Regno) return;
@@ -38,13 +38,17 @@ const AssignedQpList = () => {
               facultyName: qp.QP_Faculty_assigned,
               regNo: qp.QP_Faculty_assigned_Regno,
               totalAssigned: 0,
-              completed: 0
+              completed: 0,
+              referenceNumbers: []
             };
           }
           
           stats[qp.QP_Faculty_assigned_Regno].totalAssigned++;
           if (qp.QP_Status === "Locked") {
             stats[qp.QP_Faculty_assigned_Regno].completed++;
+          }
+          if (qp.QP_Ref_no) {
+            stats[qp.QP_Faculty_assigned_Regno].referenceNumbers.push(qp.QP_Ref_no);
           }
         });
 
@@ -68,6 +72,12 @@ const AssignedQpList = () => {
     return Object.entries(filters).every(([column, filterValue]) => {
       if (filterValue === "all" || filterValue === "") return true;
       
+      if (column === "QP_Ref_no") {
+        return faculty.referenceNumbers.some(refNo => 
+          refNo.toString().toLowerCase().includes(filterValue.toLowerCase())
+        );
+      }
+      
       const facultyValue = faculty[column === "QP_Faculty_assigned" ? "facultyName" : "regNo"];
       
       return facultyValue
@@ -83,58 +93,57 @@ const AssignedQpList = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  const getFormattedTimestamp = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    
+    return `${year}${month}${day}${hours}${minutes}${seconds}`;
+  };
+
   const handleDownloadPDF = () => {
-    const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    const title = "Faculty Assignment Report";
-
-    const headers = [
-      [
-        "Ref No.",
-        "Faculty",
-        "Faculty RegNo", 
-        "Papers Assigned",
-        "Status"
-      ],
-    ];
-
-    const data = filteredFaculty.map((faculty) => [
-      faculty.regNo,
-      faculty.facultyName,
-      faculty.regNo,
-      faculty.totalAssigned,
-      `${faculty.completed}/${faculty.totalAssigned} Completed`
-    ]);
-
-    doc.setFontSize(16);
-    doc.text(title, 14, 10);
-
-    doc.autoTable({
-      head: headers,
-      body: data,
-      theme: "grid",
-      startY: 20,
-      styles: { fontSize: 10 },
-      headStyles: { fillColor: [44, 62, 80] },
-      alternateRowStyles: { fillColor: [240, 240, 240] },
+    const timestamp = getFormattedTimestamp();
+    const filename = `${timestamp}_faculty_assigned_report`;
+    
+    doc.text("Faculty Assignment Report", 14, 10);
+    
+    autoTable(doc, {
+      head: [["Faculty RegNo", "Faculty", "Papers Assigned", "Reference Numbers", "Status"]],
+      body: filteredFaculty.map(faculty => [
+        faculty.regNo,
+        faculty.facultyName,
+        faculty.totalAssigned,
+        faculty.referenceNumbers.join(", "),
+        `${faculty.completed}/${faculty.totalAssigned} Completed`
+      ]),
+      startY: 20
     });
-
-    doc.save("faculty-assignments-report.pdf");
+  
+    doc.save(filename);
   };
 
   const handleDownloadExcel = () => {
+    const timestamp = getFormattedTimestamp();
+    const filename = `${timestamp}_qp_assigned_report.xlsx`;
+    
     const worksheet = XLSX.utils.json_to_sheet(
       filteredFaculty.map((faculty) => ({
         "Faculty RegNo": faculty.regNo,
         "Faculty Name": faculty.facultyName,
         "Papers Assigned": faculty.totalAssigned,
+        "Reference Numbers": faculty.referenceNumbers.join(", "),
         "Status": `${faculty.completed}/${faculty.totalAssigned} Completed`
       }))
     );
 
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Faculty Assignments");
-    XLSX.writeFile(workbook, "faculty-assignments-report.xlsx");
+    XLSX.writeFile(workbook, filename);
   };
 
   const renderFilter = (column, label) => {
@@ -194,10 +203,10 @@ const AssignedQpList = () => {
         <table className={styles.table}>
           <thead>
             <tr>
-              <th>{renderFilter("QP_Ref_no", "Ref No.")}</th>
-              <th>{renderFilter("QP_Faculty_assigned", "Faculty")}</th>
               <th>{renderFilter("QP_Faculty_assigned_Regno", "Faculty RegNo")}</th>
+              <th>{renderFilter("QP_Faculty_assigned", "Faculty")}</th>
               <th>Papers Assigned</th>
+              <th>{renderFilter("QP_Ref_no", "Reference Numbers")}</th>
               <th>Status</th>
             </tr>
           </thead>
@@ -206,8 +215,8 @@ const AssignedQpList = () => {
               <tr key={faculty.regNo} className={styles.row}>
                 <td>{faculty.regNo}</td>
                 <td>{faculty.facultyName}</td>
-                <td>{faculty.regNo}</td>
                 <td>{faculty.totalAssigned}</td>
+                <td>{faculty.referenceNumbers.join(", ")}</td>
                 <td>
                   <span
                     className={styles.statusBadge}
