@@ -33,7 +33,7 @@ const Utilities = () => {
           onClick={() => setSelectedAction("backup")}
           className={`${styles.actionButton} ${styles.addButton}`}
         >
-          Add Subject
+          Backup Manager
         </button>
         <button
           onClick={() => setSelectedAction("logs")}
