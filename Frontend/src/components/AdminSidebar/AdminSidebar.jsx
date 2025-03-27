@@ -107,7 +107,7 @@ const AdminSidebar = () => {
 
           <li>
             <NavLink
-              to="/edit-database"
+              to="/database-manager"
               className={({ isActive }) =>
                 [styles.navLink, isActive && styles.active]
                   .filter(Boolean)
@@ -117,6 +117,20 @@ const AdminSidebar = () => {
             >
               <FiSettings className={styles.icon} />
               <span className={styles.linkText}>Database Manager</span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/utilities"
+              className={({ isActive }) =>
+                [styles.navLink, isActive && styles.active]
+                  .filter(Boolean)
+                  .join(" ")
+              }
+              onClick={handleNavClick}
+            >
+              <FiSettings className={styles.icon} />
+              <span className={styles.linkText}>Utilities</span>
             </NavLink>
           </li>
         </ul>
