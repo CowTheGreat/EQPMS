@@ -15,6 +15,7 @@ import AccessQP from "./pages/AccessQP";
 import AdminSidebar from "../src/components/AdminSidebar/AdminSidebar";
 import DatabaseManager from "./pages/DatabaseManager";
 import UserManagement from "./pages/UserManagement";
+import Utilities from "./pages/Utilities";
 
 function ProtectedWithPasswordCheck({ allowedRole, children }) {
   const { user } = useAuth();
@@ -93,7 +94,7 @@ function App() {
             }
           />
           <Route
-            path="/edit-database"
+            path="/database-manager"
             element={
               <ProtectedWithPasswordCheck allowedRole="admin">
                 <AdminLayout>
@@ -112,26 +113,16 @@ function App() {
               </ProtectedWithPasswordCheck>
             }
           />
-          {/* <Route
-            path="/add-subject"
+          <Route
+            path="/utilities"
             element={
               <ProtectedWithPasswordCheck allowedRole="admin">
                 <AdminLayout>
-                  <AddSubjects />
+                  <Utilities />
                 </AdminLayout>
               </ProtectedWithPasswordCheck>
             }
           />
-          <Route
-            path="/delete-subject"
-            element={
-              <ProtectedWithPasswordCheck allowedRole="admin">
-                <AdminLayout>
-                  <DeleteSubject />
-                </AdminLayout>
-              </ProtectedWithPasswordCheck>
-            }
-          /> */}
           <Route path="/" element={<Navigate to="/login" replace />} />
         </Routes>
       </Router>

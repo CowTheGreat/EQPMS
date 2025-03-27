@@ -18,9 +18,7 @@
   width: 60vw; /* Using width instead of min-width for better control */
   height: 60vh;
   object-fit: contain;
-  filter: 
-    drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.1))
-    brightness(1.1); /* Enhanced visibility */
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.1)) brightness(1.1); /* Enhanced visibility */
   user-select: none;
 }
 
@@ -32,7 +30,12 @@
   width: 100vw;
   padding: 0;
   z-index: 1; /* Ensure content appears above watermark */
-  background-color: rgba(255, 255, 255, 0.95); /* Slight white overlay to make watermark more subtle */
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.95
+  ); /* Slight white overlay to make watermark more subtle */
 }
 
 .header {
@@ -175,10 +178,11 @@
 .modal {
   background-color: white;
   border-radius: 12px;
-  width: 90%;
-  max-width: 800px;
+  width: 70%;
+  /* max-width: 800px; */
   max-height: 90vh;
   overflow-y: auto;
+  overflow-x: hidden;
   box-shadow: 0 10px 30px rgba(102, 51, 153, 0.2);
   border: 1px solid #d8b4fe;
 }
@@ -322,7 +326,6 @@
 }
 
 .qpRow {
-  width: 100%;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1rem;
