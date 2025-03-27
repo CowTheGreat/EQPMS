@@ -87,7 +87,7 @@ const QPList = () => {
   const filteredQPs = qps.filter((qp) => {
     return Object.entries(filters).every(([column, filterValue]) => {
       if (filterValue === "all" || filterValue === "") return true;
-      
+
       if (column === "QP_Status") {
         if (filterValue === "Completed") {
           return qp.QP_Status === "Locked";
@@ -126,12 +126,12 @@ const QPList = () => {
   const getFormattedTimestamp = () => {
     const now = new Date();
     const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    const seconds = String(now.getSeconds()).padStart(2, '0');
-    
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+    const seconds = String(now.getSeconds()).padStart(2, "0");
+
     return `${year}${month}${day}${hours}${minutes}${seconds}`;
   };
 
@@ -194,7 +194,7 @@ const QPList = () => {
   const handleDownloadExcel = () => {
     const timestamp = getFormattedTimestamp();
     const filename = `${timestamp}_qp_assigned_report.xlsx`;
-    
+
     const worksheet = XLSX.utils.json_to_sheet(
       filteredQPs.map((qp) => ({
         "Ref No.": qp.QP_Ref_no,
@@ -207,7 +207,9 @@ const QPList = () => {
         Subject: qp.QP_Subject,
         Faculty: qp.QP_Faculty_assigned,
         "Faculty RegNo": qp.QP_Faculty_assigned_Regno,
-        Deadline: qp.QP_Deadline ? new Date(qp.QP_Deadline).toLocaleDateString() : "N/A",
+        Deadline: qp.QP_Deadline
+          ? new Date(qp.QP_Deadline).toLocaleDateString()
+          : "N/A",
         Status: qp.QP_Status === "Locked" ? "Completed" : "Pending",
         Type: qp.QP_Type,
       }))
@@ -337,12 +339,18 @@ const QPList = () => {
                 <td>{qp.QP_Subject}</td>
                 <td>{qp.QP_Faculty_assigned}</td>
                 <td>{qp.QP_Faculty_assigned_Regno}</td>
-                <td>{qp.QP_Deadline ? new Date(qp.QP_Deadline).toLocaleDateString() : "N/A"}</td>
+                <td>
+                  {qp.QP_Deadline
+                    ? new Date(qp.QP_Deadline).toLocaleDateString()
+                    : "N/A"}
+                </td>
                 <td>{qp.QP_Type}</td>
                 <td>
                   <span
                     className={styles.statusBadge}
-                    data-status={qp.QP_Status === "Locked" ? "Completed" : "Pending"}
+                    data-status={
+                      qp.QP_Status === "Locked" ? "Completed" : "Pending"
+                    }
                   >
                     {qp.QP_Status === "Locked" ? "Completed" : "Pending"}
                   </span>

@@ -1,8 +1,5 @@
 import React, { useState } from "react";
 import styles from "../page_styles/Utilities.module.css";
-import AddSubjects from "../components/AddSubjects/AddSubjects";
-import DeleteSubject from "../components/DeleteSubject/DeleteSubject";
-
 import BackupManager from "../components/BackupManager/BackupManager";
 import LogsViewer from "../components/LogsViewer/LogsViewer";
 
@@ -17,7 +14,9 @@ const Utilities = () => {
         return <LogsViewer />;
       default:
         return (
-          <div className="text-center text-gray-500 mt-4">
+          <div
+            className={`${styles.textCenter} ${styles.textGray500} ${styles.mt4}`}
+          >
             Select an action to begin
           </div>
         );
@@ -26,7 +25,7 @@ const Utilities = () => {
 
   return (
     <div className={styles.userManagementContainer}>
-      <h1 className={styles.managementHeading}>Database Management System</h1>
+      <h1 className={styles.managementHeading}>Admin Utilities</h1>
 
       <div className={styles.actionButtons}>
         <button
@@ -39,7 +38,7 @@ const Utilities = () => {
           onClick={() => setSelectedAction("logs")}
           className={`${styles.actionButton} ${styles.deleteButton}`}
         >
-          LogsViewer
+          Logs Viewer
         </button>
       </div>
 
