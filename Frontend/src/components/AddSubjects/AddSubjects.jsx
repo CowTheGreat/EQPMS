@@ -78,30 +78,42 @@ export default function AddSubjects() {
       <h2 className={styles.heading}>Add Subjects</h2>
 
       <div className={styles.formGrid}>
-        <input
-          type="text"
+        <select
           name="degree"
-          placeholder="Degree (e.g., B.E)"
           value={formData.degree}
           onChange={handleChange}
           className={styles.input}
-        />
-        <input
-          type="text"
+        >
+          <option value="">Select Degree</option>
+          <option value="B.E">B.E</option>
+          <option value="B.Tech">B.Tech</option>
+          <option value="M.E">M.E</option>
+          <option value="Ph.D">Ph.D</option>
+        </select>
+
+        <select
           name="regulation"
-          placeholder="Regulation (e.g., R2022)"
           value={formData.regulation}
           onChange={handleChange}
           className={styles.input}
-        />
-        <input
-          type="text"
+        >
+          <option value="">Select Regulation</option>
+          <option value="R22">R22</option>
+        </select>
+
+        <select
           name="board_name"
-          placeholder="Board Name (e.g., CSE)"
           value={formData.board_name}
           onChange={handleChange}
           className={styles.input}
-        />
+        >
+          <option value="">Select Board</option>
+          <option value="CSE">CSE</option>
+          <option value="ECE">ECE</option>
+          <option value="EEE">EEE</option>
+          <option value="BIO">BIO</option>
+        </select>
+
         <input
           type="text"
           name="subject_code"

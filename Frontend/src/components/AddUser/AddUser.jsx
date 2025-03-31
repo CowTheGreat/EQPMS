@@ -168,6 +168,7 @@ const AddUser = () => {
               <option value="CSE">CSE</option>
               <option value="ECE">ECE</option>
               <option value="EEE">EEE</option>
+              <option value="BIO">BIO</option>
             </select>
           </div>
 

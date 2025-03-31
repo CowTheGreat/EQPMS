@@ -181,7 +181,7 @@ def add_user(user: AddUserRequest):
         cursor = conn.cursor()
 
         # Validate board and role fields
-        valid_boards = {"CSE", "ECE", "EEE"}
+        valid_boards = {"CSE", "ECE", "EEE", "BIO"}
         valid_roles = {"user", "admin"}
         valid_employee_types = {"Internal", "External"}
 
