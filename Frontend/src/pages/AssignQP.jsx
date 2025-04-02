@@ -6,7 +6,7 @@ const AssignQP = () => {
     degree: "",
     regulation: "",
     board: "",
-    semester: "",
+    semester: "10",
     subjectCode: "",
     subjectType: "",
   });
