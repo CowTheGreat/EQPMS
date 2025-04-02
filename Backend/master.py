@@ -305,7 +305,13 @@ def get_regulations(degree: str):
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
 
-        cursor.execute("SELECT DISTINCT regulation FROM subjects WHERE degree = %s", (degree,))
+        if degree.upper() == "B.E/B.TECH":
+            cursor.execute("SELECT DISTINCT regulation FROM subjects WHERE degree = 'B.E' OR degree = 'B.Tech'")
+        elif degree.upper() == "M.E/M.TECH":
+            cursor.execute("SELECT DISTINCT regulation FROM subjects WHERE degree = 'M.E' OR degree = 'M.Tech'")
+        else:
+            cursor.execute("SELECT DISTINCT regulation FROM subjects WHERE degree = %s", (degree,))
+
         regulations = cursor.fetchall()
 
         return regulations
@@ -324,10 +330,21 @@ def get_boards(degree: str, regulation: str):
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
 
-        cursor.execute(
-            "SELECT DISTINCT board_name FROM subjects WHERE degree = %s AND regulation = %s",
-            (degree, regulation),
-        )
+        if degree.upper() == "B.E/B.TECH":
+            cursor.execute(
+                "SELECT DISTINCT board_name FROM subjects WHERE (degree = 'B.E' OR degree = 'B.Tech') AND regulation = %s",
+                (regulation,),
+            )
+        elif degree.upper() == "M.E/M.TECH":
+            cursor.execute(
+                "SELECT DISTINCT board_name FROM subjects WHERE (degree = 'M.E' OR degree = 'M.Tech') AND regulation = %s",
+                (regulation,),
+            )
+        else:
+            cursor.execute(
+                "SELECT DISTINCT board_name FROM subjects WHERE degree = %s AND regulation = %s",
+                (degree, regulation),
+            )
         boards = cursor.fetchall()
 
         return boards
