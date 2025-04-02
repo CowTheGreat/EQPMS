@@ -88,6 +88,7 @@ export default function AddSubjects() {
           <option value="B.E">B.E</option>
           <option value="B.Tech">B.Tech</option>
           <option value="M.E">M.E</option>
+          <option value="M.E">M.Tech</option>
           <option value="Ph.D">Ph.D</option>
         </select>
 
