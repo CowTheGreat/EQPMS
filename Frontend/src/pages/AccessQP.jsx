@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styles from "../page_styles/AccessQP.module.css";
 import DropdownComponent from "./DropdownComponent";
 import ViewPaper from "./ViewPaper";
+import DownloadFiles from "../components/DownloadFiles/DownloadFiles";
 
 const AccessQP = () => {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -28,11 +29,20 @@ const AccessQP = () => {
           >
             QP Explorer
           </button>
+          <button
+            className={`${styles.squareButton} ${
+              selectedOption === "download" ? styles.selected : ""
+            }`}
+            onClick={() => setSelectedOption("download")}
+          >
+            QP Download
+          </button>
         </div>
 
         {/* Content Section */}
         <div className={styles.contentContainer}>
           {selectedOption === "dropdown" && <DropdownComponent />}
+          {selectedOption === "download" && <DownloadFiles />}
           {selectedOption === "explorer" && <ViewPaper />}
         </div>
       </div>
