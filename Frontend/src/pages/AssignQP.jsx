@@ -252,9 +252,10 @@ const AssignQP = () => {
               required
             >
               <option value="">Select Degree</option>
-              <option value="B.E/B.Tech">B.E/B.Tech</option>
-              {/* <option value="B.Tech">B.Tech</option> */}
-              <option value="M.E/M.Tech">M.E/M.Tech</option>
+              <option value="B.E">B.E</option>
+              <option value="B.Tech">B.Tech</option>
+              <option value="M.E">M.E</option>
+              <option value="M.Tech">M.Tech</option>
               <option value="Ph.D">Ph.D</option>
             </select>
           </div>

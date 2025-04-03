@@ -1610,13 +1610,83 @@ def send_email(recipient, subject, body):
         server.sendmail(SMTP_USER, recipient, msg.as_string())
 
 ## Downaload all papers
-from fastapi import FastAPI, Query
-from fastapi.responses import FileResponse
+# from fastapi import FastAPI, Query
+# from fastapi.responses import FileResponse
+# import os
+# import zipfile
+# from pathlib import Path
+
+# # Set the base directory where files are stored
+# BASE_DIR = r"C:\Users\cowar\OneDrive\Desktop\EQPMS\Backend\uploaded_papers"
+
+# def get_folders(path):
+#     """Returns a list of folder names in a given path."""
+#     return [f.name for f in Path(path).iterdir() if f.is_dir()]
+
+# @app.get("/sessions")
+# async def get_sessions():
+#     """Fetches available session names."""
+#     return get_folders(BASE_DIR)
+
+# @app.get("/degrees")
+# async def get_degrees(session: str = Query(...)):
+#     """Fetches available degree types for a given session."""
+#     session_path = os.path.join(BASE_DIR, session)
+#     return get_folders(session_path)
+
+# @app.get("/boards")
+# async def get_boards(session: str = Query(...), degree: str = Query(...)):
+#     """Fetches available boards for a given session and degree."""
+#     degree_path = os.path.join(BASE_DIR, session, degree)
+#     return get_folders(degree_path)
+
+# def find_leaf_folder_with_files(board_path):
+#     """Finds the deepest folder under board_path that contains files."""
+#     all_folders_with_files = []
+#     for root, _, files in os.walk(board_path):
+#         if files:  # Folder contains files
+#             all_folders_with_files.append((root, files))
+    
+#     if all_folders_with_files:
+#         # Sort by depth and return the deepest folder with files
+#         return sorted(all_folders_with_files, key=lambda x: x[0].count(os.sep), reverse=True)[0]
+    
+#     return None, None
+
+# @app.get("/download")
+# async def download_files(session: str, degree: str, board: str):
+#     """Finds the leaf folder with files, zips them, and provides a download link."""
+#     board_path = os.path.join(BASE_DIR, session, degree, board)
+
+#     print(f"Checking board path: {board_path}")  # Debugging
+
+#     if not os.path.exists(board_path):
+#         return {"error": "Board path does not exist"}
+
+#     leaf_folder, files = find_leaf_folder_with_files(board_path)
+
+#     if not leaf_folder or not files:
+#         return {"error": "No files found in the board folder"}
+
+#     zip_filename = f"{board}_files.zip"
+#     zip_path = os.path.join("temp", zip_filename)
+#     os.makedirs("temp", exist_ok=True)
+
+#     # 🔹 Create zip file with all files from the leaf folder
+#     with zipfile.ZipFile(zip_path, "w") as zipf:
+#         for file in files:
+#             file_path = os.path.join(leaf_folder, file)
+#             zipf.write(file_path, os.path.relpath(file_path, leaf_folder))  # Fixing path
+
+#     print(f"Created zip at: {zip_path}")  # Debugging
+#     return FileResponse(zip_path, media_type="application/zip", filename=zip_filename)
+
 import os
 import zipfile
 from pathlib import Path
+from fastapi import FastAPI, Query
+from fastapi.responses import FileResponse
 
-# Set the base directory where files are stored
 BASE_DIR = r"C:\Users\cowar\OneDrive\Desktop\EQPMS\Backend\uploaded_papers"
 
 def get_folders(path):
@@ -1640,46 +1710,44 @@ async def get_boards(session: str = Query(...), degree: str = Query(...)):
     degree_path = os.path.join(BASE_DIR, session, degree)
     return get_folders(degree_path)
 
-def find_leaf_folder_with_files(board_path):
-    """Finds the deepest folder under board_path that contains files."""
-    all_folders_with_files = []
-    for root, _, files in os.walk(board_path):
-        if files:  # Folder contains files
-            all_folders_with_files.append((root, files))
+def collect_docx_files(root_path):
+    """Recursively collects only .docx files from all leaf directories, without retaining folder structure."""
+    docx_files = []
     
-    if all_folders_with_files:
-        # Sort by depth and return the deepest folder with files
-        return sorted(all_folders_with_files, key=lambda x: x[0].count(os.sep), reverse=True)[0]
+    for folder_path, _, files in os.walk(root_path):
+        if not any(os.path.isdir(os.path.join(folder_path, subdir)) for subdir in os.listdir(folder_path)):
+            # 🔹 Check if it's a leaf folder (no subdirectories)
+            for file in files:
+                if file.endswith(".docx"):  # 🔹 Filter only .docx files
+                    full_path = os.path.join(folder_path, file)
+                    docx_files.append(full_path)  # Store only the full path
     
-    return None, None
+    return docx_files
 
 @app.get("/download")
-async def download_files(session: str, degree: str, board: str):
-    """Finds the leaf folder with files, zips them, and provides a download link."""
+async def download_docx_files(session: str, degree: str, board: str):
+    """Finds all .docx files from leaf folders, zips them, and provides a download link."""
     board_path = os.path.join(BASE_DIR, session, degree, board)
-
-    print(f"Checking board path: {board_path}")  # Debugging
 
     if not os.path.exists(board_path):
         return {"error": "Board path does not exist"}
 
-    leaf_folder, files = find_leaf_folder_with_files(board_path)
+    docx_files = collect_docx_files(board_path)
 
-    if not leaf_folder or not files:
-        return {"error": "No files found in the board folder"}
+    if not docx_files:
+        return {"error": "No .docx files found in the board folder"}
 
-    zip_filename = f"{board}_files.zip"
+    zip_filename = f"{board}_docx_files.zip"
     zip_path = os.path.join("temp", zip_filename)
     os.makedirs("temp", exist_ok=True)
 
-    # 🔹 Create zip file with all files from the leaf folder
+    # 🔹 Create zip with only .docx files (no folder structure)
     with zipfile.ZipFile(zip_path, "w") as zipf:
-        for file in files:
-            file_path = os.path.join(leaf_folder, file)
-            zipf.write(file_path, os.path.relpath(file_path, leaf_folder))  # Fixing path
+        for full_path in docx_files:
+            zipf.write(full_path, os.path.basename(full_path))  # Store only filenames in ZIP
 
-    print(f"Created zip at: {zip_path}")  # Debugging
     return FileResponse(zip_path, media_type="application/zip", filename=zip_filename)
+
 
 if __name__ == "__main__":
     uvicorn.run("master:app", host="0.0.0.0", port=8080, reload=True)
