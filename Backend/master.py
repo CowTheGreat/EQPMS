@@ -48,7 +48,8 @@ import zipfile
 import io
 from urllib.parse import unquote
 from fastapi.responses import StreamingResponse
-
+from reportlab.lib.pagesizes import A4
+from datetime import date
 
 # FastAPI instance
 app = FastAPI()
@@ -72,7 +73,7 @@ ALGORITHM = "HS256"
 # MySQL Connection
 db_config = {
     "user": "root",
-    "password": "CowTheGreat",
+    "password": "tiger",
     "host": "localhost",
     "database": "eqpms",
 }
@@ -1171,6 +1172,164 @@ def download_order(username: str):
     return Response(buffer.read(), media_type="application/pdf", headers={
         "Content-Disposition": f"attachment; filename={username}_order.pdf"
     })
+
+
+# @app.get("/download_order/{username}")
+# def download_order(username: str):
+#     buffer = io.BytesIO()
+#     c = canvas.Canvas(buffer, pagesize=A4)
+#     width, height = A4
+    
+#     # Header
+#     c.setFont("Times-Bold", 14)
+#     c.drawCentredString(width / 2, height - 40, "Sri Venkateswara College of Engineering")
+    
+#     c.setFont("Times-Roman", 10)
+#     c.drawCentredString(width / 2, height - 55, "(An Autonomous Institution, Affiliated to Anna University, Chennai)")
+#     c.drawCentredString(width / 2, height - 70, "Post Bag No.1, Pennalur, Sriperumbudur Tk. – 602117")
+    
+#     # Contact information
+#     c.setFont("Helvetica", 9)
+#     c.drawString(40, height - 90, "CoE's Office: 044-27152000; Extn. 600")
+#     c.drawString(width - 200, height - 90, "Mobile No. +91 9445218415")
+#     c.drawString(40, height - 102, "Email: coe@svce.ac.in")
+
+#     # Office title
+#     c.setFont("Helvetica-Bold", 11)
+#     c.drawCentredString(width / 2, height - 120, "Office of the Controller of Examinations")
+
+#     # Controller details
+#     c.setFont("Helvetica-Bold", 10)
+#     c.drawString(40, height - 135, "Dr. K. Pitchandi, M.E., Ph.D.")
+#     c.setFont("Helvetica", 10)
+#     c.drawString(40, height - 147, "Controller of Examinations")
+
+#     # Horizontal line
+#     c.line(40, height - 155, width - 40, height - 155)
+
+#     # Date and To section with proper spacing
+#     c.setFont("Helvetica", 11)
+#     c.drawString(width - 100, height - 175, "Date:")
+#     c.drawString(40, height - 175, "To")
+
+#     # Body text
+#     y = height - 205
+#     c.setFont("Helvetica", 11)
+    
+#     # Dear Sir/Madam
+#     c.drawString(40, y, "Dear Sir/Madam,")
+#     y -= 25
+    
+#     # Subject line with proper spacing
+#     c.drawString(40, y, "Sub: UG/PG Degree Examinations,")
+#     c.drawString(265, y, "– Appointment of Question Paper Setter – Reg.")
+#     y -= 25
+    
+#     # Content paragraph with proper indentation and spacing
+#     c.drawString(60, y, "We are pleased to inform you that you have been appointed as Question Paper Setter for the End")
+#     y -= 15
+#     c.drawString(40, y, "Semester Examinations to be held in")
+#     c.drawString(265, y, "under the Autonomous stream of our Institution. We")
+#     y -= 15
+#     c.drawString(40, y, "request you to set the following Question Papers (Both Soft and Hard Copy) as per the format.")
+#     y -= 25
+    
+#     # Details line
+#     c.drawString(40, y, 'Details of the Question Paper: "ANSWER KEY NOT REQUIRED"')
+#     y -= 20
+    
+#     # Table with empty cells (just the outline)
+#     table_top = y
+#     table_bottom = y - 60
+#     table_width = width - 80
+    
+#     # Draw table borders
+#     c.rect(40, table_bottom, table_width, 60)  # Outer rectangle
+    
+#     # Vertical lines
+#     col_widths = [35, 60, 90, 140, 110]  # Width of each column
+#     x_positions = [40]  # Starting position
+#     for width_col in col_widths:
+#         x_positions.append(x_positions[-1] + width_col)
+    
+#     for x in x_positions[1:-1]:  # Skip first and last
+#         c.line(x, table_top, x, table_bottom)
+    
+#     # Horizontal line for header
+#     c.line(40, table_top - 20, 40 + table_width, table_top - 20)
+    
+#     # Table headers
+#     c.setFont("Helvetica-Bold", 10)
+#     headers = ["S. No", "Degree", "Subject Code", "Title of the Subject", "Reference Number"]
+    
+#     for i, header in enumerate(headers):
+#         # Center text in column
+#         col_center = (x_positions[i] + x_positions[i+1]) / 2
+        
+#         if header == "S. No":
+#             c.drawCentredString(col_center, table_top - 10, "S.")
+#             c.drawCentredString(col_center, table_top - 20 + 5, "No")
+#         elif header == "Subject Code":
+#             c.drawCentredString(col_center, table_top - 10, "Subject")
+#             c.drawCentredString(col_center, table_top - 20 + 5, "Code")
+#         elif header == "Reference Number":
+#             c.drawCentredString(col_center, table_top - 10, "Reference")
+#             c.drawCentredString(col_center, table_top - 20 + 5, "Number")
+#         else:
+#             c.drawCentredString(col_center, table_top - 10, header)
+    
+#     # Footer instructions
+#     y = table_bottom - 30
+#     c.setFont("Helvetica", 11)
+    
+#     # First paragraph
+#     c.drawString(40, y, "        The Question Paper template is available in our web site. The Hard copy of the Question Paper,")
+#     y -= 15
+#     c.drawString(40, y, "Check list / Declaration form & CD should be kept inside the small cover provided. The question paper")
+#     y -= 15
+#     c.drawString(40, y, "should be submitted in person to the Controller of Examinations on or before the last date mentioned. Claim")
+#     y -= 15
+#     c.drawString(40, y, "form should be submitted in hand separately (Do not enclose with question paper). Question paper should reach")
+#     y -= 15
+#     c.drawString(40, y, "us on or before:")
+    
+#     # Spacing
+#     y -= 30
+    
+#     # Closing
+#     c.drawString(40, y, "With Kind regards")
+    
+#     # Signature space
+#     y -= 60
+    
+#     # Controller signature
+#     c.drawString(40, y, "Controller of Examinations")
+    
+#     c.save()
+#     buffer.seek(0)
+
+#     return Response(buffer.read(), media_type="application/pdf", headers={
+#         "Content-Disposition": f"attachment; filename={username}_question_order.pdf"
+#     })
+
+# # SMTP Configuration
+# SMTP_SERVER = "smtp.gmail.com"
+# SMTP_PORT = 587
+# SMTP_USER = "cletocite@gmail.com"  # Your email
+# SMTP_PASS = "ivpewaafeehsslfn"  # Your app password
+
+
+# def send_email(recipient, subject, body):
+#     msg = MIMEMultipart()
+#     msg['From'] = SMTP_USER
+#     msg['To'] = recipient
+#     msg['Subject'] = subject
+#     msg.attach(MIMEText(body, 'plain'))
+    
+#     with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+#         server.starttls()
+#         server.login(SMTP_USER, SMTP_PASS)
+#         server.sendmail(SMTP_USER, recipient, msg.as_string())
 
 # SMTP Configuration
 SMTP_SERVER = "smtp.gmail.com"
